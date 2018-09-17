@@ -1,0 +1,94 @@
+@font-face {
+  font-family: 'Avenir';
+  src: url('../fonts/AvenirLTStd-Roman.otf') format("opentype");
+  font-style: normal;
+  font-weight: 400;
+}
+@font-face {
+  font-family: 'Avenir Light';
+  src: url('../fonts/AvenirNextLTPro-Regular.otf') format("opentype");
+  font-style: normal;
+  font-weight: 400;
+}
+@font-face {
+  font-family: 'Avenir Bold';
+  src: url('../fonts/AvenirNextLTPro-Bold.otf') format("opentype");
+  font-style: normal;
+  font-weight: 400;
+}
+@font-face {
+  font-family: 'Rift Soft';
+  src: url('../fonts/RiftSoft-Regular.otf') format("opentype");
+  font-style: normal;
+  font-weight: 400;
+}
+@font-face {
+  font-family: 'Rift Soft Demi';
+  src: url('../fonts/RiftSoft-Demi.otf') format("opentype");
+  font-style: normal;
+  font-weight: 400;
+}
+textarea, input:focus, button {
+  outline-color: transparent;
+  outline-style: none;
+  box-shadow: none !important;
+}
+html, body, body #root, body #root > div{
+  height:100%;
+}
+html{
+  overflow: hidden;
+}
+body{
+  background: url('../images/bg.jpg');
+  background-size: cover;
+  background-position: top center;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
+}
+.button-shine {
+  position: relative;
+  text-align: center;
+  color: #00c7ec;
+  border: 1px solid #00c7ec;
+  border-radius: 5px;
+  box-shadow: 0 0 0 0 transparent;
+  padding: 8px 12px 6px;
+  -webkit-transition: all 0.2s ease-in;
+  -moz-transition: all 0.2s ease-in;
+  transition: all 0.2s ease-in;
+}
+.button-shine:hover {
+  color: white;
+  box-shadow: 0 0 30px 0 rgba(0, 199, 236, 0.5);
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
+}
+.button-shine:hover:before {
+  -webkit-animation: shine 0.5s 0s linear;
+  -moz-animation: shine 0.5s 0s linear;
+  animation: shine 0.5s 0s linear;
+}
+.button-shine:active {
+  box-shadow: 0 0 0 0 transparent;
+  -webkit-transition: box-shadow 0.2s ease-in;
+  -moz-transition: box-shadow 0.2s ease-in;
+  transition: box-shadow 0.2s ease-in;
+}
+.button-shine:before {
+  content: '';
+  display: block;
+  width: 0px;
+  height: 86%;
+  position: absolute;
+  top: 7%;
+  left: 0%;
+  opacity: 0;
+  background: white;
+  box-shadow: 0 0 15px 3px white;
+  -webkit-transform: skewX(-20deg);
+  -moz-transform: skewX(-20deg);
+  -ms-transform: skewX(-20deg);
+  -o-transform: skewX(-20deg);
+  transform: skewX(-20deg);
+}
