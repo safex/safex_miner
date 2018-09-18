@@ -1,13 +1,11 @@
 # SAFEX CASH MINIG APP
 
-Official repository for SAFEX cash mining app.
+Official repository for SAFEX 1 click mining app.
 
 ## Development
-
-#### Backend:
 
 To start the app, run this:
 
 ```
-npm run dev
+$ npm run dev
 ```

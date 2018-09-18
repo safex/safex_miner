@@ -1,10 +1,3 @@
-//handle setupevents as quickly as possible
-const setupEvents = require('./setupWinEvents');
-if (setupEvents.handleSquirrelEvent()) {
-   // squirrel event handled and app will exit in 1000ms, so don't do anything else
-   return;
-}
-
 const electron = require('electron');
 // Module to control application life.
 const {app, Menu} = require('electron');
@@ -58,9 +51,9 @@ function createWindow() {
 
     if (os.platform() !== 'win32') {
         const template = [{
-            label: "Safex Wallet 0.0.7",
+            label: "Safex 1 Click Mining App",
             submenu: [
-                { label: "About Safex Wallet v0.0.7", selector: "orderFrontStandardAboutPanel:" },
+                { label: "About Safex 1 Click Mining App", selector: "orderFrontStandardAboutPanel:" },
                 { type: "separator" },
                 { label: "Quit", accelerator: "Command+Q", click: function() { app.quit(); }}
             ]}, {

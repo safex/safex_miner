@@ -1,5 +1,6 @@
 import React from 'react';
 import packageJson from "../../package";
+const os = window.require('os');
 
 export default class MiningApp extends React.Component {
     constructor(props) {
@@ -11,7 +12,7 @@ export default class MiningApp extends React.Component {
         };
 
         this.onChange = this.onChange.bind(this);
-        this.openMiningInfo = this.openMiningInfo.bind(this);
+        this.openInfoPopup = this.openInfoPopup.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
@@ -27,7 +28,7 @@ export default class MiningApp extends React.Component {
         }
     }
 
-    openMiningInfo(message) {
+    openInfoPopup(message) {
         this.setState({
             mining_info: true,
             mining_info_text: message
@@ -52,22 +53,22 @@ export default class MiningApp extends React.Component {
                         this.setState({
                             active: true,
                         });
-                        this.openMiningInfo('Mining in progress')
+                        this.openInfoPopup('Mining in progress')
                     }
                 } else {
-                    this.openMiningInfo('Please select mining type');
+                    this.openInfoPopup('Please select mining type');
                 }
             } else {
-                this.openMiningInfo('Please enter valid pool url');
+                this.openInfoPopup('Please enter valid pool url');
             }
         } else {
-            this.openMiningInfo('Please enter valid address');
+            this.openInfoPopup('Please enter valid address');
         }
     }
 
     render() {
         var cores_options = [];
-        for (var i = 1; i <= 9; i += 1) {
+        for (var i = 1; i <= os.cpus().length; i += 1) {
             cores_options.push(<option key={i} value={i}>{i}</option>);
         }
         return (
