@@ -69,7 +69,7 @@
     "make-all-installers": "npm run build && electron-builder build -ml && electron-builder build -w --x64 --ia32"
   },
   "build": {
-    "appId": "com.electron.safex_wallet",
+    "appId": "com.electron.safex_1_click_app",
     "extends": null,
     "files": [
       "**/*",
@@ -82,7 +82,7 @@
     ],
     "mac": {
       "category": "public.app-category.business",
-      "icon": "public/images/icons/wallet-icon2.icns",
+      "icon": "public/images/icons/icon.icns",
       "type": "distribution",
       "target": [
         "dmg"
@@ -90,7 +90,7 @@
     },
     "win": {
       "target": "nsis",
-      "icon": "public/images/icons/wallet-icon2.ico",
+      "icon": "public/images/icons/icon.ico",
       "certificateFile": "../../../safexDevelopersCertificate.p12",
       "certificatePassword": ""
     },

@@ -1,5 +1,5 @@
 .mining-app-wrap {
-  padding: 45px 0 0;
+  padding: 15px 0 0;
   background: url('../images/circles.png') no-repeat center center / cover;
 }
 header {
@@ -7,31 +7,28 @@ header {
 }
 header p {
   color: #fff;
-  margin-top: 10px;
+  margin-top: 5px;
 }
 
 /* Main */
-.main {
-  padding: 20px 0 0;
-}
 .main form {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 0px;
 }
 .address-wrap {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 30px;
+  margin-bottom: 15px;
 }
 .address-wrap input {
-  width: 621px;
+  width: 396px;
   z-index: 2;
   display: inline-block;
   border: 0px none;
   border-radius: 8px;
-  padding: 5px 10px 3px;
+  padding: 3px 10px;
   background: url('../images/input-bg.png') repeat-y top left;
   background-size: 100% 100%;
   color: #fff;
@@ -52,40 +49,40 @@ header p {
 .main form input::-webkit-input-placeholder { /* Chrome/Opera/Safari */
   opacity: 1;
   color: #fff;
-  font-size: 14px;
+  font-size: 11px;
   text-transform: uppercase;
 }
 .main form input::-moz-placeholder { /* Firefox 19+ */
   opacity: 1;
   color: #fff;
-  font-size: 14px;
+  font-size: 11px;
   text-transform: uppercase;
 }
 .main form input:-moz-placeholder { /* Firefox 18- */
   opacity: 1;
   color: #fff;
-  font-size: 14px;
+  font-size: 11px;
   text-transform: uppercase;
 }
 .main form input:-ms-input-placeholder { /* IE 10+ */
   opacity: 1;
   color: #fff;
-  font-size: 14px;
+  font-size: 11px;
   text-transform: uppercase;
 }
 .pool-url {
   background: rgba(10, 26, 45, .5);
   border: 1px solid rgba(26, 157, 189, .6);
-  padding: 8px 10px 6px;
+  padding: 7px 10px 6px;
   color: #fff;
   border-radius: 8px;
-  width: 450px;
+  width: 350px;
 }
 .options {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  padding: 40px 0 30px;
+  padding: 15px 0;
 }
 .custom-checkbox input[type=checkbox]{
   display: none;
@@ -139,7 +136,7 @@ header p {
   color: #fff;
   margin-bottom: 0;
   margin-right: 10px;
-  font-size: 16px;
+  font-size: 13px;
 }
 .input-group {
   display: flex;
@@ -158,8 +155,8 @@ header p {
   line-height: 1.2;
   position: relative;
   border: 2px solid #54BCD9;
-  margin: 20px 0 12px;
-  padding: 9px 0px 7px;
+  margin: 0px 0 5px;
+  padding: 6px 0px 4px;
   width: 148px;
   -webkit-transition: all 0.2s ease-in;
   -moz-transition: all 0.2s ease-in;
@@ -176,11 +173,12 @@ header p {
   border: 2px solid #ff004e;
 }
 .mining-info {
-  font-size: 14px;
   color: #fff;
   text-transform: uppercase;
   visibility: hidden;
   min-height: 20px;
+  margin-bottom: 5px;
+  font-size: 13px;
 }
 .mining-info.active {
   visibility: visible;
@@ -197,7 +195,7 @@ header p {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 .hashrate,
 .balance {
@@ -219,10 +217,14 @@ header p {
   text-align: right;
 }
 .white-text {
+  font-size: 14px;
   color: #fff;
   margin-bottom: 0;
+  line-height: 1;
 }
 .blue-text {
+  font-size: 14px;
+  line-height: 1;
   color: #00deff;
   text-transform: uppercase;
   margin-bottom: 5px;
@@ -231,8 +233,8 @@ header p {
 /* Footer */
 footer {
   position: absolute;
-  right: 30px;
-  bottom: 30px;
+  right: 15px;
+  bottom: 15px;
   text-align: right;
 }
 footer p {
@@ -240,7 +242,7 @@ footer p {
   color: #1caacb;
   text-transform: uppercase;
   margin-bottom: 0;
-  font-size: 16px;
+  font-size: 11px;
   letter-spacing: 4px;
   position: relative;
   right: -5px;
@@ -256,5 +258,5 @@ footer h3 {
   font-weight: 600;
 }
 footer img {
-  width: 170px;
+  width: 130px;
 }
