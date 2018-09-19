@@ -101,21 +101,21 @@ header p {
 }
 .custom-checkbox:before{
   content: "";
-  background: url('../images/check-off.png');
+  background: url(../images/check-off.png);
   background-size: 100% 100%;
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   display: block;
   position: absolute;
   left: 0;
-  top: 0px;
+  top: 4px;
 }
 .custom-checkbox.checked:before{
   background: url('../images/check-on.png');
   background-size: 100% 100%;
 }
 .main form select {
-  font-size: 20px;
+  font-size: 14px;
   font-weight: 600;
   line-height: 1;
   padding: 2px 29px 3px 12px;
@@ -125,7 +125,7 @@ header p {
   border-radius: 10px;
   text-align-last: center;
   width: auto;
-  height: 35px;
+  height: 30px;
 }
 .main form select[disabled] {
   background-color: rgba(28, 170, 203, .35);
@@ -142,7 +142,7 @@ header p {
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding-left: 20px;
+  padding-left: 15px;
 }
 .submit {
   border-radius: 7px;
@@ -157,7 +157,7 @@ header p {
   border: 2px solid #54BCD9;
   margin: 0px 0 5px;
   padding: 6px 0px 4px;
-  width: 148px;
+  width: 140px;
   -webkit-transition: all 0.2s ease-in;
   -moz-transition: all 0.2s ease-in;
   transition: all 0.2s ease-in;
@@ -177,8 +177,9 @@ header p {
   text-transform: uppercase;
   visibility: hidden;
   min-height: 20px;
-  margin-bottom: 5px;
+  margin-bottom: 0;
   font-size: 13px;
+  line-height: 1;
 }
 .mining-info.active {
   visibility: visible;
