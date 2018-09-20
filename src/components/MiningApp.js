@@ -73,6 +73,9 @@ export default class MiningApp extends React.Component {
         }
         return (
             <div className="mining-app-wrap">
+                <div className="mining-bg-wrap">
+                    <img className={this.state.active ? "rotating" : ""} src="/images/circles.png" alt="Circles" />
+                </div>
                 <header>
                     <img src="images/logo.png" alt="Logo" />
                     <p>{packageJson.version}</p>
@@ -151,5 +154,3 @@ export default class MiningApp extends React.Component {
 MiningApp.contextTypes = {
     router: React.PropTypes.object.isRequired
 };
-
-//if wallet is found main image is new wallet found

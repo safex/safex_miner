@@ -1,9 +1,27 @@
 .mining-app-wrap {
   padding: 15px 0 0;
-  background: url('../images/circles.png') no-repeat center center / cover;
+  z-index: 2;
+  position: absolute;
+  width: 100%;
+}
+.mining-bg-wrap {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+
+  z-index: 0;
+}
+.mining-bg-wrap img {
+  position: absolute;
+  width: 100%;
+  top: calc(50% + -390px);
+  z-index: 0;
 }
 header {
   text-align: center;
+  position: absolute;
+  width: 100%;
+  z-index: 1;
 }
 header p {
   color: #fff;
@@ -11,9 +29,15 @@ header p {
 }
 
 /* Main */
+.main {
+  z-index: 2;
+  position: absolute;
+  width: 100%;
+  top: 120px;
+}
 .main form {
   text-align: center;
-  margin-bottom: 0px;
+  margin-bottom: 5px;
 }
 .address-wrap {
   display: flex;
