@@ -74,7 +74,7 @@ export default class MiningApp extends React.Component {
         return (
             <div className="mining-app-wrap">
                 <div className="mining-bg-wrap">
-                    <img className={this.state.active ? "rotating" : ""} src="/images/circles.png" alt="Circles" />
+                    <img className={this.state.active ? "rotating" : ""} src="images/circles.png" alt="Circles" />
                 </div>
                 <header>
                     <img src="images/logo.png" alt="Logo" />
