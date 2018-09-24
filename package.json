@@ -34,6 +34,7 @@
     "electron-installer-dmg": "^0.2.1",
     "electron-packager": "^8.7.2",
     "electron-react-devtools": "^0.5.3",
+    "electron-rebuild": "^1.8.2",
     "electron-winstaller": "^2.6.3",
     "foreman": "^2.0.0",
     "react-scripts": "^0.8.5"
@@ -61,7 +62,7 @@
     "make-all-installers": "npm run build && electron-builder build -ml && electron-builder build -w --x64 --ia32"
   },
   "build": {
-    "appId": "com.electron.safex_1_click_app",
+    "appId": "com.electron.safex_1_click_mining_app",
     "extends": null,
     "files": [
       "**/*",

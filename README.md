@@ -4,7 +4,7 @@ Official repository for SAFEX 1 click mining app.
 
 ## Releases
 
-You can download the lates release from (https://github.com/safex/safex_miner/releases)
+You can download the latest release from (https://github.com/safex/safex_miner/releases)
 
 ## Development
 
