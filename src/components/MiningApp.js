@@ -1,6 +1,8 @@
 import React from 'react';
 import packageJson from "../../package";
 const os = window.require('os');
+const { shell } = window.require('electron')
+// const xmrigCpu = window.require('node-xmrig-cpu');
 
 export default class MiningApp extends React.Component {
     constructor(props) {
@@ -66,11 +68,16 @@ export default class MiningApp extends React.Component {
         }
     }
 
+    footerLink() {
+        shell.openExternal('http://www.balkaneum.com/')
+    }
+
     render() {
         var cores_options = [];
         for (var i = 1; i <= os.cpus().length; i += 1) {
             cores_options.push(<option key={i} value={i}>{i}</option>);
         }
+
         return (
             <div className="mining-app-wrap">
                 <div className="mining-bg-wrap">
@@ -142,7 +149,7 @@ export default class MiningApp extends React.Component {
 
                 <footer>
                     <p>powered by</p>
-                    <a>
+                    <a onClick={this.footerLink}>
                         <img src="images/balkaneum.png" alt="Balkaneum" />
                     </a>
                 </footer>

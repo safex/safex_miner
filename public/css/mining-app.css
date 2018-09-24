@@ -282,6 +282,9 @@ footer h3 {
   right: -5px;
   font-weight: 600;
 }
+footer a:hover {
+  cursor: pointer;
+}
 footer img {
   width: 130px;
 }

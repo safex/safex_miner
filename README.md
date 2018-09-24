@@ -2,6 +2,10 @@
 
 Official repository for SAFEX 1 click mining app.
 
+## Releases
+
+You can download the lates release from (https://github.com/safex/safex_miner/releases)
+
 ## Development
 
 #### Backend:
@@ -9,7 +13,7 @@ Official repository for SAFEX 1 click mining app.
 To start project backend
 
 ```
-$npm install
+$ npm install
 $ npm run dev
 ```
 
