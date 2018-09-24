@@ -47,17 +47,17 @@ header p {
   margin-bottom: 15px;
 }
 .address-wrap input {
-  width: 396px;
+  width: 394px;
   z-index: 2;
   display: inline-block;
   border: 0px none;
   border-radius: 8px;
   padding: 3px 10px;
-  background: url('../images/input-bg.png') repeat-y top left;
+  background: url(../images/input-bg.png) repeat-y top left;
   background-size: 100% 100%;
   color: #fff;
   position: absolute;
-  left: 211px;
+  left: 212px;
 }
 .main form input {
   transition: all ease 0.3s;

@@ -149,7 +149,7 @@ export default class MiningApp extends React.Component {
 
                 <footer>
                     <p>powered by</p>
-                    <a onClick={this.footerLink}>
+                    <a onClick={this.footerLink} title="Visit Balkaneum site">
                         <img src="images/balkaneum.png" alt="Balkaneum" />
                     </a>
                 </footer>
