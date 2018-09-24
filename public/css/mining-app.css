@@ -161,6 +161,7 @@ header p {
   margin-bottom: 0;
   margin-right: 10px;
   font-size: 13px;
+  white-space: nowrap;
 }
 .input-group {
   display: flex;

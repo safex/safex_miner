@@ -25,7 +25,7 @@ Run
 npm run make-all-installers
 ```
 
-to make all installer. This will work only on Mac because of Mac.
+to make all installers. This will work only on Mac because of Mac.
 
 You can also run
 

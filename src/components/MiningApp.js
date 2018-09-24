@@ -4,7 +4,6 @@ const os = window.require('os');
 const { shell } = window.require('electron')
 const xmrigCpu = window.require('node-xmrig-cpu');
 
-
 export default class MiningApp extends React.Component {
     constructor(props) {
         super(props);
@@ -17,7 +16,7 @@ export default class MiningApp extends React.Component {
             cpuChecked: true,
             hashrate: '0',
             address: 'SFXtzUofCsNdZZ8N9FRTp6185fw9PakKrY22DWVMtWGYFgPnFsA66cf7mgqXknyteb7T9FzMA3LfmBN2C6koS8yPcN1iC33FLyR',
-            pool_url: '127.0.0.1:1111',
+            pool_url: 'localhost:1111',
         };
 
         this.onChange = this.onChange.bind(this);
@@ -26,7 +25,6 @@ export default class MiningApp extends React.Component {
         this.startMining = this.startMining.bind(this);
         this.stopMining = this.stopMining.bind(this);
         this.footerLink = this.footerLink.bind(this);
-        this.checkStatus = this.checkStatus.bind(this);
     }
 
     onChange(e) {
@@ -62,15 +60,13 @@ export default class MiningApp extends React.Component {
                             mining_info: false,
                             mining_info_text: '',
                         });
+                        this.stopMining();
                     } else {
                         this.setState({
                             active: true,
                         });
                         this.openInfoPopup('Mining in progress');
                         this.startMining();
-                        setTimeout(() => {
-                            this.checkStatus();
-                        }, 2000);
                     }
                 } else {
                     this.openInfoPopup('Please select mining type');
@@ -94,7 +90,7 @@ export default class MiningApp extends React.Component {
                 "restricted": true
             },
             "av": 0,
-            "background": true,
+            "background": false,
             "colors": true,
             "cpu-affinity": null,
             "cpu-priority": null,
@@ -124,20 +120,25 @@ export default class MiningApp extends React.Component {
         };
         var userWallet = this.state.address;
         var pool = this.state.pool_url;
-        var numberOfCpu = 1;
+        var maxCpuUsage = document.getElementById("cpuUsage").value;
 
         //specify jsonConfig.pools[0].url, jsonConfig.pools[0].user (safex address)
         jsonConfig.pools[0].url = pool;
         jsonConfig.pools[0].user = userWallet;
+        jsonConfig["max-cpu-usage"] = maxCpuUsage;
 
         console.log("User address: " + userWallet);
         console.log("Pool: " + pool);
-        console.log("Number of CPU: " + numberOfCpu);
+        console.log("CPU load: " + maxCpuUsage);
 
         console.log("Starting mining...");
         this.miner = new xmrigCpu.NodeXmrigCpu(JSON.stringify(jsonConfig));
         this.miner.startMining();
         console.log("Native mining started!");
+        setTimeout(() => {
+            console.log(this.miner.getStatus());
+        }, 2000);
+
     }
 
     stopMining() {
@@ -146,35 +147,14 @@ export default class MiningApp extends React.Component {
         console.log("Mining ended");
     }
 
-    checkStatus() {
-        var counter = 0;
-
-        this.setState({
-            hashrate: this.miner.getStatus()
-        });
-        console.log(this.state.hashrate)
-
-        counter++;
-        if (counter < 20) {
-            setTimeout(() => {
-                this.checkStatus();
-            }, 2000);
-        }
-        else {
-            setTimeout(() => {
-                this.stopMining();
-            }, 2000);
-        }
-    }
-
     footerLink() {
         shell.openExternal('http://www.balkaneum.com/')
     }
 
     render() {
         var cores_options = [];
-        for (var i = 1; i <= this.state.cpus; i += 1) {
-            cores_options.push(<option key={i} value={i}>{i}</option>);
+        for (var i = 25; i <= 100; i += 25) {
+            cores_options.push(<option key={i} value={i}>{i}%</option>);
         }
 
         return (
@@ -211,9 +191,9 @@ export default class MiningApp extends React.Component {
                             </div>
 
                             <div className="input-group">
-                                <p>cores</p>
-                                <select className="form-control" name="cores" id="cores"
-                                        disabled={this.state.active ? "disabled" : ""}>
+                                <p>CPU %</p>
+                                <select className="form-control" name="cores" id="cpuUsage"
+                                        disabled={this.state.active || this.state.cpuChecked === false ? "disabled" : ""}>
                                     {cores_options}
                                 </select>
                             </div>
@@ -241,7 +221,7 @@ export default class MiningApp extends React.Component {
 
                     <div className="hashrate">
                         <p className="blue-text">hashrate:</p>
-                        <p className="white-text">{this.state.hashrate} MB/s</p>
+                        <p className="white-text">{this.state.hashrate} H/s</p>
                     </div>
 
                     <div className="balance">
