@@ -26,6 +26,7 @@ header {
 header p {
   color: #fff;
   margin-top: 5px;
+  margin-bottom: 5px;
 }
 
 /* Main */
@@ -48,14 +49,16 @@ header p {
   position: relative;
   border: 2px solid #54BCD9;
   margin: 0px 0 5px;
-  padding: 6px 0px 5px;
-  width: 140px;
+  padding: 6px 12px 5px;
   -webkit-transition: all 0.2s ease-in;
   -moz-transition: all 0.2s ease-in;
   transition: all 0.2s ease-in;
 }
 .new-wallet-btn:hover {
   box-shadow: 0 0 30px 0 rgba(0, 199, 236, 0.5) !important;
+}
+.new-wallet-btn:active {
+  box-shadow: none !important;
 }
 .main form {
   text-align: center;
@@ -66,7 +69,7 @@ header p {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 .address-wrap input {
   width: 380px;

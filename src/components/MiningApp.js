@@ -1,6 +1,5 @@
 import React from 'react';
 import packageJson from "../../package";
-const os = window.require('os');
 const { shell } = window.require('electron')
 const xmrigCpu = window.require('node-xmrig-cpu');
 
@@ -12,7 +11,7 @@ export default class MiningApp extends React.Component {
 
         this.state = {
             active: false,
-            cpus: os.cpus().length,
+            stopping: false,
             cpuChecked: true,
             hashrate: '0',
             address: '',
@@ -86,7 +85,6 @@ export default class MiningApp extends React.Component {
 
         if (userInputValue.startsWith("SFXt")) {
             if (!userInputValue.startsWith("SFXts") || !userInputValue.startsWith("SFXti") || !userInputValue.startsWith("Safex")) {
-                console.log('SUFIX IS GOOD');
                 return true;
             } else {
                 console.log('SUFIX IS NOT GOOD');
@@ -111,11 +109,16 @@ export default class MiningApp extends React.Component {
                         if (pool.value !== '') {
                             if (this.state.cpuChecked) {
                                 if (this.state.active) {
+                                    this.setState({
+                                       active: false,
+                                       stopping: true
+                                    });
+                                    this.openInfoPopup('Stopping miner...');
                                     setTimeout(() => {
                                         this.setState({
-                                            active: false,
                                             mining_info: false,
                                             mining_info_text: '',
+                                            stopping: false
                                         });
                                     }, 4000);
                                     this.stopMining();
@@ -237,7 +240,7 @@ export default class MiningApp extends React.Component {
         return (
             <div className="mining-app-wrap">
                 <div className="mining-bg-wrap">
-                    <img className={this.state.active ? "rotating" : ""} src="images/circles.png" alt="Circles"/>
+                    <img className={this.state.active || this.state.stopping ? "rotating" : ""} src="images/circles.png" alt="Circles"/>
                 </div>
                 <header>
                     <img src="images/logo.png" alt="Logo"/>
@@ -285,29 +288,39 @@ export default class MiningApp extends React.Component {
                                     Stop
                                 </button>
                             :
-                                <button type="submit" className="submit button-shine">
-                                    Start
-                                </button>
+                                <div>
+                                {
+                                    this.state.stopping
+                                    ?
+                                        <button type="submit" className="submit button-shine active" disabled={this.state.active || this.state.stopping ? "disabled" : ""}>
+                                            <span>Stopping</span>
+                                        </button>
+                                    :
+                                        <button type="submit" className="submit button-shine" disabled={this.state.active || this.state.stopping ? "disabled" : ""}>
+                                            <span>Start</span>
+                                        </button>
+                                }
+                                </div>
                         }
                         <p className={this.state.mining_info ? "mining-info active" : "mining-info"}>
                             {this.state.mining_info_text}
                         </p>
                     </form>
 
-                    {/*<div className="block">*/}
-                        {/*<p className="blue-text">Block:</p>*/}
-                        {/*<p className="white-text">0/1000</p>*/}
-                    {/*</div>*/}
+                    <div className="block">
+                        <p className="blue-text">Block:</p>
+                        <p className="white-text">0/1000</p>
+                    </div>
 
                     <div className="hashrate">
                         <p className="blue-text">hashrate:</p>
                         <p className="white-text">{this.state.hashrate} H/s</p>
                     </div>
 
-                    {/*<div className="balance">*/}
-                        {/*<p className="blue-text">balance:</p>*/}
-                        {/*<p className="white-text">0.000</p>*/}
-                    {/*</div>*/}
+                    <div className="balance">
+                        <p className="blue-text">balance:</p>
+                        <p className="white-text">0.000</p>
+                    </div>
                 </div>
 
                 <footer>
@@ -324,8 +337,8 @@ export default class MiningApp extends React.Component {
                     </button>
 
                     <div className="form-group">
-                        <label htmlFor="new-address">Your new address:</label>
-                        <input type="text" placeholder="New Wallet" readOnly />
+                        <label htmlFor="new-address">Your new wallet address:</label>
+                        <input type="text" placeholder="New Wallet Address" readOnly />
                     </div>
                 </div>
 
