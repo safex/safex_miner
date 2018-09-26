@@ -87,8 +87,8 @@ export default class MiningApp extends React.Component {
     checkInputValuePrefix(inputValue) {
         let userInputValue = inputValue;
 
-        if (userInputValue.startsWith("SFXt")) {
-            if (!userInputValue.startsWith("SFXts") || !userInputValue.startsWith("SFXti") || !userInputValue.startsWith("Safex")) {
+        if (userInputValue.startsWith("SFXt") || userInputValue.startsWith("Safex")) {
+            if (!userInputValue.startsWith("SFXts") || !userInputValue.startsWith("SFXti")) {
                 return true;
             } else {
                 console.log('SUFIX IS NOT GOOD');
@@ -235,7 +235,7 @@ export default class MiningApp extends React.Component {
         const seed = sa.sc_reduce32(sa.rand_32());
         const keys = sa.create_address(seed);
         const pubkey = sa.pubkeys_to_string(keys.spend.pub, keys.view.pub);
-        
+
         this.setState({
             new_wallet: pubkey
         })
