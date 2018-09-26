@@ -42,10 +42,12 @@
   "dependencies": {
     "axios": "^0.16.2",
     "electron-context-menu": "^0.9.1",
+    "node-xmrig-cpu": "git+https://github.com/atanmarko/node-xmrig.git",
     "react": "^15.6.2",
+    "react-copy-to-clipboard": "^5.0.1",
     "react-dom": "^15.6.2",
     "react-router": "^3.2.1",
-    "node-xmrig-cpu": "git+https://github.com/atanmarko/node-xmrig.git"
+    "safex-addressjs": "git+https://github.com/atanmarko/safex_addressjs"
   },
   "main": "src/electron-starter.js",
   "scripts": {

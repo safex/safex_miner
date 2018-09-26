@@ -2,6 +2,8 @@ import React from 'react';
 import packageJson from "../../package";
 const { shell } = window.require('electron')
 const xmrigCpu = window.require('node-xmrig-cpu');
+const sa = window.require('safex-addressjs');
+import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 export default class MiningApp extends React.Component {
     constructor(props) {
@@ -12,6 +14,7 @@ export default class MiningApp extends React.Component {
         this.state = {
             active: false,
             stopping: false,
+            new_wallet: '',
             cpuChecked: true,
             hashrate: '0',
             address: '',
@@ -30,6 +33,7 @@ export default class MiningApp extends React.Component {
         this.startMining = this.startMining.bind(this);
         this.stopMining = this.stopMining.bind(this);
         this.checkStatus = this.checkStatus.bind(this);
+        this.newWallet = this.newWallet.bind(this);
         this.footerLink = this.footerLink.bind(this);
     }
 
@@ -227,6 +231,16 @@ export default class MiningApp extends React.Component {
         console.log(this.miner.getStatus(), this.state.hashrate);
     }
 
+    newWallet(){
+        const seed = sa.sc_reduce32(sa.rand_32());
+        const keys = sa.create_address(seed);
+        const pubkey = sa.pubkeys_to_string(keys.spend.pub, keys.view.pub);
+        
+        this.setState({
+            new_wallet: pubkey
+        })
+    }
+
     footerLink() {
         shell.openExternal('http://www.balkaneum.com/')
     }
@@ -332,13 +346,30 @@ export default class MiningApp extends React.Component {
 
                 <div className={this.state.modal_active ? 'modal active' : 'modal'}>
                     <span className="close" onClick={this.closeModal}>X</span>
-                    <button id="new-wallet" className="button-shine">
+                    <button id="new-wallet" className="button-shine" onClick={this.newWallet}>
                         Generate new wallet
                     </button>
 
                     <div className="form-group">
                         <label htmlFor="new-address">Your new wallet address:</label>
-                        <input type="text" placeholder="New Wallet Address" readOnly />
+                        <textarea placeholder="New Wallet Address" value={this.state.new_wallet} rows="2" onChange={({target: {value}}) => this.setState({value, copied: false})} readOnly >
+
+                        </textarea>
+                        {
+                            this.state.copied
+                            ?
+                                <CopyToClipboard text={this.state.new_wallet} onCopy={() => this.setState({copied: true})} className="button-shine" disabled={this.state.new_wallet === '' ? "disabled" : ""}>
+                                    <button>
+                                        Copied
+                                    </button>
+                                </CopyToClipboard>
+                            :
+                                <CopyToClipboard text={this.state.new_wallet} onCopy={() => this.setState({copied: true})} className="button-shine" disabled={this.state.new_wallet === '' ? "disabled" : ""}>
+                                    <button>
+                                        Copy
+                                    </button>
+                                </CopyToClipboard>
+                        }
                     </div>
                 </div>
 
