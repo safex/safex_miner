@@ -1,3 +1,10 @@
+//handle setupevents as quickly as possible
+const setupEvents = require('./setupWinEvents');
+if (setupEvents.handleSquirrelEvent()) {
+    // squirrel event handled and app will exit in 1000ms, so don't do anything else
+    return;
+}
+
 const electron = require('electron');
 // Module to control application life.
 const {app, Menu} = require('electron');
