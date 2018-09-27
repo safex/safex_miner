@@ -393,20 +393,36 @@ export default class MiningApp extends React.Component {
                         <div className={this.state.new_wallet_generated ? "spendview active" : "spendview"}>
                             {
                                 this.state.copied
-                                    ?
+                                ?
                                     <CopyToClipboard text={this.state.new_wallet} onCopy={() => this.setState({copied: true})} className="button-shine copy-btn" disabled={this.state.new_wallet === '' ? "disabled" : ""}>
                                         <button>
                                             Copied Address
                                         </button>
                                     </CopyToClipboard>
-                                    :
+                                :
                                     <CopyToClipboard text={this.state.new_wallet} onCopy={() => this.setState({copied: true})} className="button-shine copy-btn" disabled={this.state.new_wallet === '' ? "disabled" : ""}>
                                         <button>
                                             Copy Address
                                         </button>
                                     </CopyToClipboard>
                             }
-                            <h5 className="warning">The following keys are to control your coins, do not share them. Save your wallet keys and keep them for yourself only!</h5>
+
+                            {
+                                this.state.exported
+                                ?
+                                    <h5 className="warning green">
+                                        Wallet keys have been successfuly saved.
+                                        Please do not share your keys with others and keep them safe at all times.
+                                        Happy mining!
+                                    </h5>
+                                :
+                                    <h5 className="warning red">
+                                        The following keys are to control your coins, do not share them.
+                                        Keep your keys for yourself only!
+                                        Before you proceed to mine please save your keys now.
+                                    </h5>
+                            }
+
                             <h5>Secret Spendkey</h5>
                             <p>{this.state.spendkey_sec}</p>
 
@@ -424,7 +440,6 @@ export default class MiningApp extends React.Component {
                                         Save Wallet Keys
                                     </button>
                             }
-
                         </div>
                     </div>
                 </div>

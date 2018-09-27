@@ -352,7 +352,7 @@ footer img {
   text-transform: uppercase;
   font-size: 17px;
   padding: 15px;
-  width: 530px;
+  width: 560px;
   visibility: hidden;
   opacity: 0;
   transition: all ease 0.3s;
@@ -360,6 +360,7 @@ footer img {
   -moz-transition: all ease 0.3s;
   -webkit-transition: all ease 0.3s;
   margin: auto;
+  text-align: center;
   position: fixed;
   top: 0;
   left: 0;
@@ -402,12 +403,13 @@ footer img {
 }
 .modal .form-group {
   margin-bottom: 0;
-  margin-top: 10px;
+  margin-top: 5px;
 }
 .modal label {
   width: 100%;
   text-transform: capitalize;
-  font-size: 15px;
+  font-size: 14px;
+  margin-bottom: 0;
 }
 .modal textarea {
   display: inline-block;
@@ -419,8 +421,8 @@ footer img {
   background: url(../images/input-bg.png) repeat-y top left;
   background-size: 100% 100%;
   color: #fff;
-  width: 488px;
-  max-width: 488px;
+  width: 528px;
+  max-width: 528px;
   max-height: 90px;
   transition: all ease 0.3s;
   -o-transition: all ease 0.3s;
@@ -468,6 +470,13 @@ footer img {
 .modal .warning {
   color: #c80e4b;
 }
+.modal .warning.red {
+  color: #c80e4b;
+}
+.modal .warning.green {
+  color: #0ec8c1;
+  text-transform: initial;
+}
 .modal .spendview {
   display: none;
 }
@@ -491,18 +500,27 @@ footer img {
 .modal .save-btn.green:hover {
   box-shadow: 0 0 30px 0 rgba(14, 200, 193, .5) !important;
 }
-.modal .copy-btn,
+.modal .copy-btn {
+  margin-top: 0;
+  margin-right: 10px;
+  font-size: 11.5px;
+  padding: 7px 12px 4px;
+}
 .modal .save-btn {
   margin-top: 5px;
   margin-right: 10px;
+  font-size: 11.5px;
+  padding: 7px 12px 4px;
 }
 .modal h5 {
   margin-top: 0;
   margin-bottom: 5px;
   margin-top: 10px;
+  text-align: left;
 }
 .modal p {
   font-size: 13px;
   text-transform: initial;
   margin-bottom: 2px;
+  text-align: left;
 }
