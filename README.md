@@ -14,6 +14,7 @@ To start project backend
 
 ```
 $ npm install
+$ ./node_modules/.bin/electron-rebuild
 $ npm run dev
 ```
 

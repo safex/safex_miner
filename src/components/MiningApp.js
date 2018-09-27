@@ -4,6 +4,7 @@ const { shell } = window.require('electron')
 const xmrigCpu = window.require('node-xmrig-cpu');
 const sa = window.require('safex-addressjs');
 import {CopyToClipboard} from 'react-copy-to-clipboard';
+const fileDownload = window.require('react-file-download');
 
 export default class MiningApp extends React.Component {
     constructor(props) {
@@ -15,6 +16,10 @@ export default class MiningApp extends React.Component {
             active: false,
             stopping: false,
             new_wallet: '',
+            new_wallet_generated: false,
+            spendkey_sec: '',
+            viewkey_sec: '',
+            exported: false,
             cpuChecked: true,
             hashrate: '0',
             address: '',
@@ -35,6 +40,7 @@ export default class MiningApp extends React.Component {
         this.checkStatus = this.checkStatus.bind(this);
         this.newWallet = this.newWallet.bind(this);
         this.footerLink = this.footerLink.bind(this);
+        this.exportWallet = this.exportWallet.bind(this);
     }
 
     onChange(e) {
@@ -172,7 +178,7 @@ export default class MiningApp extends React.Component {
             "huge-pages": true,
             "hw-aes": null,
             "log-file": null,
-            "max-cpu-usage": 75,
+            "max-cpu-usage": 100,
             "pools": [
                 {
                     "url": "",
@@ -210,7 +216,7 @@ export default class MiningApp extends React.Component {
         this.miner.startMining();
         console.log("Native mining started!");
 
-        let checkStatusInterval = setInterval(this.checkStatus, 2000)
+        let checkStatusInterval = setInterval(this.checkStatus, 2000);
         this.setState({
             checkStatusInterval: checkStatusInterval,
         })
@@ -232,12 +238,38 @@ export default class MiningApp extends React.Component {
     }
 
     newWallet(){
-        const seed = sa.sc_reduce32(sa.rand_32());
-        const keys = sa.create_address(seed);
+        const seed   = sa.sc_reduce32(sa.rand_32());
+        const keys   = sa.create_address(seed);
         const pubkey = sa.pubkeys_to_string(keys.spend.pub, keys.view.pub);
 
+        localStorage.setItem('wallet', JSON.stringify(keys));
+        console.log(keys);
         this.setState({
-            new_wallet: pubkey
+            exported: false,
+            new_wallet_generated: true,
+            new_wallet: pubkey,
+            spendkey_sec: keys.spend.sec,
+            viewkey_sec: keys.view.sec,
+        })
+    }
+
+    exportWallet() {
+        var wallet_data = JSON.parse(localStorage.getItem('wallet'));
+        var keys = "";
+
+        keys += "Public address: " + wallet_data.public_addr + '\n';
+        keys += "Spendkey " + '\n';
+        keys += "pub: "     + wallet_data.spend.pub + '\n';
+        keys += "sec: "     + wallet_data.spend.sec + '\n';
+        keys += "Viewkey "  + '\n';
+        keys += "pub: "     + wallet_data.view.pub + '\n';
+        keys += "sec: "     + wallet_data.view.sec + '\n';
+        var date = Date.now();
+
+        fileDownload(keys, date + 'unsafex.txt');
+
+        this.setState({
+            exported: true
         })
     }
 
@@ -273,8 +305,11 @@ export default class MiningApp extends React.Component {
                             <img src="images/line-right.png" alt="Line Right"/>
                         </div>
 
-                        <input type="text" className="pool-url" name="pool" id="pool" placeholder="pool url"
-                            disabled={this.state.active ? "disabled" : ""}/>
+                        <select className="pool-url" name="pool" id="pool" className="pool-url" name="pool" id="pool" disabled={this.state.active ? "disabled" : ""}>
+                            <option>safex.luckypool.io:3366</option>
+                            <option>eu.pool.safexnews.net:1111</option>
+                            <option>safex.xmining.pro:3333</option>
+                        </select>
 
                         <div className="options">
                             <div className="input-group">
@@ -321,20 +356,20 @@ export default class MiningApp extends React.Component {
                         </p>
                     </form>
 
-                    <div className="block">
-                        <p className="blue-text">Block:</p>
-                        <p className="white-text">0/1000</p>
-                    </div>
+                    {/*<div className="block">*/}
+                        {/*<p className="blue-text">Block:</p>*/}
+                        {/*<p className="white-text">0/1000</p>*/}
+                    {/*</div>*/}
 
                     <div className="hashrate">
                         <p className="blue-text">hashrate:</p>
                         <p className="white-text">{this.state.hashrate} H/s</p>
                     </div>
 
-                    <div className="balance">
-                        <p className="blue-text">balance:</p>
-                        <p className="white-text">0.000</p>
-                    </div>
+                    {/*<div className="balance">*/}
+                        {/*<p className="blue-text">balance:</p>*/}
+                        {/*<p className="white-text">0.000</p>*/}
+                    {/*</div>*/}
                 </div>
 
                 <footer>
@@ -355,26 +390,46 @@ export default class MiningApp extends React.Component {
                         <textarea placeholder="New Wallet Address" value={this.state.new_wallet} rows="2" onChange={({target: {value}}) => this.setState({value, copied: false})} readOnly >
 
                         </textarea>
-                        {
-                            this.state.copied
-                            ?
-                                <CopyToClipboard text={this.state.new_wallet} onCopy={() => this.setState({copied: true})} className="button-shine" disabled={this.state.new_wallet === '' ? "disabled" : ""}>
-                                    <button>
-                                        Copied
+                        <div className={this.state.new_wallet_generated ? "spendview active" : "spendview"}>
+                            {
+                                this.state.copied
+                                    ?
+                                    <CopyToClipboard text={this.state.new_wallet} onCopy={() => this.setState({copied: true})} className="button-shine copy-btn" disabled={this.state.new_wallet === '' ? "disabled" : ""}>
+                                        <button>
+                                            Copied Address
+                                        </button>
+                                    </CopyToClipboard>
+                                    :
+                                    <CopyToClipboard text={this.state.new_wallet} onCopy={() => this.setState({copied: true})} className="button-shine copy-btn" disabled={this.state.new_wallet === '' ? "disabled" : ""}>
+                                        <button>
+                                            Copy Address
+                                        </button>
+                                    </CopyToClipboard>
+                            }
+                            <h5 className="warning">The following keys are to control your coins, do not share them. Save your wallet keys and keep them for yourself only!</h5>
+                            <h5>Secret Spendkey</h5>
+                            <p>{this.state.spendkey_sec}</p>
+
+                            <h5>Secret Viewkey</h5>
+                            <p>{this.state.viewkey_sec}</p>
+
+                            {
+                                this.state.exported
+                                ?
+                                    <button className="save-btn green" onClick={this.exportWallet}>
+                                        Wallet Keys Saved
                                     </button>
-                                </CopyToClipboard>
-                            :
-                                <CopyToClipboard text={this.state.new_wallet} onCopy={() => this.setState({copied: true})} className="button-shine" disabled={this.state.new_wallet === '' ? "disabled" : ""}>
-                                    <button>
-                                        Copy
+                                :
+                                    <button className="save-btn" onClick={this.exportWallet}>
+                                        Save Wallet Keys
                                     </button>
-                                </CopyToClipboard>
-                        }
+                            }
+
+                        </div>
                     </div>
                 </div>
 
-                <div className={this.state.modal_active ? 'backdrop active' : 'backdrop'}
-                     onClick={this.closeModal}>
+                <div className={this.state.modal_active ? 'backdrop active' : 'backdrop'} onClick={this.closeModal}>
                 </div>
             </div>
         );
