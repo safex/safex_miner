@@ -268,7 +268,7 @@ header p {
   line-height: 1;
   position: relative;
   top: -3px;
-  width: 75px;
+  width: 150px;
   text-align: left;
 }
 .blue-text {
@@ -278,7 +278,7 @@ header p {
   text-transform: uppercase;
   margin-bottom: 5px;
   margin-right: 15px;
-  width: 97px;
+  width: 180px;
   text-align: right;
 }
 
