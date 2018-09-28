@@ -14,13 +14,13 @@ function getInstallerConfig () {
     const outPath = path.join(rootPath, 'installers')
 
     return Promise.resolve({
-       appDirectory: path.join(rootPath, 'release-builds', 'SafexWallet-win32-ia32'),
+       appDirectory: path.join(rootPath, 'release-builds', 'Safex1ClickMinigApp-win32-ia32'),
        authors: 'Safex Developers',
        noMsi: true,
        outputDirectory: outPath,
-       exe: 'SafexWallet.exe',
-       setupExe: 'SafexWalletWindowsInstaller.exe',
-       setupIcon: 'public/images/icons/wallet-icon2.ico',
+       exe: 'Safex1ClickMinigApp.exe',
+       setupExe: 'Safex1ClickMinigAppWindowsInstaller.exe',
+       setupIcon: 'public/images/icons/icon.ico',
        skipUpdateIcon: true
    })
 }

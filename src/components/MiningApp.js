@@ -243,7 +243,6 @@ export default class MiningApp extends React.Component {
         const pubkey = sa.pubkeys_to_string(keys.spend.pub, keys.view.pub);
 
         localStorage.setItem('wallet', JSON.stringify(keys));
-        console.log(keys);
         this.setState({
             exported: false,
             new_wallet_generated: true,
