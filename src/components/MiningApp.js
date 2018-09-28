@@ -305,7 +305,7 @@ export default class MiningApp extends React.Component {
                             <img src="images/line-right.png" alt="Line Right"/>
                         </div>
 
-                        <select className="pool-url" name="pool" id="pool" className="pool-url" name="pool" id="pool" disabled={this.state.active ? "disabled" : ""}>
+                        <select className="pool-url" name="pool" id="pool" disabled={this.state.active ? "disabled" : ""}>
                             <option>safex.luckypool.io:3366</option>
                             <option>eu.pool.safexnews.net:1111</option>
                             <option>safex.xmining.pro:3333</option>
