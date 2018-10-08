@@ -97,11 +97,11 @@ export default class MiningApp extends React.Component {
             if (!userInputValue.startsWith("SFXts") || !userInputValue.startsWith("SFXti")) {
                 return true;
             } else {
-                console.log('SUFIX IS NOT GOOD');
+                console.log('SUFFIX IS NOT GOOD');
                 return false;
             }
         } else {
-            console.log('SUFIX IS NOT GOOD');
+            console.log('SUFFIX IS NOT GOOD');
             return false;
         }
     }
@@ -146,10 +146,10 @@ export default class MiningApp extends React.Component {
                             this.openInfoPopup('Please enter valid pool url');
                         }
                     } else {
-                        this.openInfoPopup('Address sufix is not valid');
+                        this.openInfoPopup('Address suffix is not valid');
                     }
                 } else {
-                    this.openInfoPopup('Address length in too short');
+                    this.openInfoPopup('Address length is too short');
                 }
             else {
                 this.openInfoPopup('Please enter valid address');
@@ -273,7 +273,7 @@ export default class MiningApp extends React.Component {
     }
 
     footerLink() {
-        shell.openExternal('http://www.balkaneum.com/')
+        shell.openExternal('https://www.safex.io/')
     }
 
     render() {
@@ -305,8 +305,8 @@ export default class MiningApp extends React.Component {
                         </div>
 
                         <select className="pool-url" name="pool" id="pool" disabled={this.state.active ? "disabled" : ""}>
-                            <option>safex.luckypool.io:3366</option>
                             <option>eu.pool.safexnews.net:1111</option>
+                            <option>safex.luckypool.io:3366</option>
                             <option>safex.xmining.pro:3333</option>
                         </select>
 
@@ -322,7 +322,7 @@ export default class MiningApp extends React.Component {
                             </div>
 
                             <div className="input-group">
-                                <p>CPU %</p>
+                                <p># CPU</p>
                                 <select className="form-control" name="cores" id="cpuUsage"
                                     disabled={this.state.active || this.state.cpuChecked === false ? "disabled" : ""}>
                                     {cores_options}
