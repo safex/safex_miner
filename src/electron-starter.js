@@ -21,17 +21,29 @@ let mainWindow;
 
 function createWindow() {
     // Create the browser window.
-    mainWindow = new BrowserWindow({
-        width: 800,
-        height: 472,
-        minWidth: 800,
-        minHeight: 472,
-        webPreferences: {
-            webSecurity: false
-        }
-    });
+    if (os.platform() !== 'win32') {
+        mainWindow = new BrowserWindow({
+            width: 800,
+            height: 472,
+            minWidth: 800,
+            minHeight: 472,
+            webPreferences: {
+                webSecurity: false
+            }
+        });
+    } else {
+        mainWindow = new BrowserWindow({
+            width: 816,
+            height: 499,
+            minWidth: 816,
+            minHeight: 499,
+            webPreferences: {
+                webSecurity: false
+            }
+        });
+    }
 
-    // mainWindow.setResizable(false);
+    mainWindow.setResizable(false);
 
     // and load the index.html of the app.
     const startUrl = process.env.ELECTRON_START_URL || url.format({
@@ -41,12 +53,12 @@ function createWindow() {
     });
     mainWindow.loadURL(startUrl);
 
-    mainWindow.webContents.openDevTools();
+    // mainWindow.webContents.openDevTools();
 
     // Open the DevTools.
-    if (process.env.ELECTRON_DEV) {
-        mainWindow.webContents.openDevTools();
-    }
+    // if (process.env.ELECTRON_DEV) {
+    //     mainWindow.webContents.openDevTools();
+    // }
 
     // Emitted when the window is closed.
     mainWindow.on('closed', function () {

@@ -86,9 +86,7 @@
     },
     "win": {
       "target": "nsis",
-      "icon": "public/images/icons/icon.ico",
-      "certificateFile": "../../../safexDevelopersCertificate.p12",
-      "certificatePassword": ""
+      "icon": "public/images/icons/icon.ico"
     },
     "linux": {
       "target": [
