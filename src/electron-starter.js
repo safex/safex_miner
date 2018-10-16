@@ -21,28 +21,19 @@ let mainWindow;
 
 function createWindow() {
     // Create the browser window.
-    if (os.platform() !== 'win32') {
-        mainWindow = new BrowserWindow({
-            width: 800,
-            height: 472,
-            minWidth: 800,
-            minHeight: 472,
-            webPreferences: {
-                webSecurity: false
-            }
-        });
-    } else {
-        mainWindow = new BrowserWindow({
-            width: 816,
-            height: 499,
-            minWidth: 816,
-            minHeight: 499,
-            webPreferences: {
-                webSecurity: false
-            }
-        });
-    }
-
+    mainWindow = new BrowserWindow({
+        width: 800,
+        height: 472,
+        minWidth: 800,
+        minHeight: 472,
+        webPreferences: {
+            webSecurity: false
+        },
+        resizable: false,
+        maximizable: false,
+        useContentSize: true
+    });
+    
     mainWindow.setResizable(false);
 
     // and load the index.html of the app.
