@@ -4,7 +4,7 @@ const { shell } = window.require('electron')
 const xmrigCpu = window.require('node-xmrig-cpu');
 const sa = window.require('safex-addressjs');
 import {CopyToClipboard} from 'react-copy-to-clipboard';
-const fileDownload = window.require('react-file-download');
+const fileDownload = window.require('js-file-download');
 
 export default class MiningApp extends React.Component {
     constructor(props) {
