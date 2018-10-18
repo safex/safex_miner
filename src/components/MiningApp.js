@@ -24,7 +24,45 @@ export default class MiningApp extends React.Component {
             hashrate: '0',
             address: '',
             pool_url: '',
-            modal_active: false
+            modal_active: false,
+            jsonConfig: {
+                "algo": "cryptonight/1",
+                "api": {
+                    "port": 0,
+                    "access-token": null,
+                    "worker-id": null,
+                    "ipv6": false,
+                    "restricted": true
+                },
+                "av": 0,
+                "background": false,
+                "colors": true,
+                "cpu-affinity": null,
+                "cpu-priority": null,
+                "donate-level": 5,
+                "huge-pages": true,
+                "hw-aes": null,
+                "log-file": null,
+                "max-cpu-usage": 100,
+                "pools": [
+                    {
+                        "url": "",
+                        "user": "",
+                        "pass": "x",
+                        "rig-id": null,
+                        "nicehash": false,
+                        "keepalive": false,
+                        "variant": 1
+                    }
+                ],
+                "print-time": 60,
+                "retries": 5,
+                "retry-pause": 5,
+                "safe": false,
+                "threads": null,
+                "user-agent": null,
+                "watch": false
+            }
         };
 
         this.onChange = this.onChange.bind(this);
@@ -117,30 +155,27 @@ export default class MiningApp extends React.Component {
                 if (this.checkInputValueLenght(inputValue)) {
                     if (this.checkInputValuePrefix(inputValue)) {
                         if (pool.value !== '') {
-                            if (this.state.cpuChecked) {
-                                if (this.state.active) {
+                            if (this.state.active) {
+                                this.setState({
+                                   active: false,
+                                   stopping: true
+                                });
+                                this.openInfoPopup('Stopping miner...');
+                                setTimeout(() => {
                                     this.setState({
-                                       active: false,
-                                       stopping: true
+                                        mining_info: false,
+                                        mining_info_text: '',
+                                        stopping: false
                                     });
-                                    this.openInfoPopup('Stopping miner...');
-                                    setTimeout(() => {
-                                        this.setState({
-                                            mining_info: false,
-                                            mining_info_text: '',
-                                            stopping: false
-                                        });
-                                    }, 4000);
-                                    this.stopMining();
-                                } else {
-                                    this.setState({
-                                        active: true,
-                                    });
-                                    this.openInfoPopup('Mining in progress');
-                                    this.startMining();
-                                }
+                                    // location.reload();
+                                }, 4000);
+                                this.stopMining();
                             } else {
-                                this.openInfoPopup('Please select mining type');
+                                this.setState({
+                                    active: true,
+                                });
+                                this.openInfoPopup('Mining in progress');
+                                this.startMining();
                             }
                         } else {
                             this.openInfoPopup('Please enter valid pool url');
@@ -160,59 +195,21 @@ export default class MiningApp extends React.Component {
     }
 
     startMining() {
-        var jsonConfig = {
-            "algo": "cryptonight/1",
-            "api": {
-                "port": 0,
-                "access-token": null,
-                "worker-id": null,
-                "ipv6": false,
-                "restricted": true
-            },
-            "av": 0,
-            "background": false,
-            "colors": true,
-            "cpu-affinity": null,
-            "cpu-priority": null,
-            "donate-level": 5,
-            "huge-pages": true,
-            "hw-aes": null,
-            "log-file": null,
-            "max-cpu-usage": 100,
-            "pools": [
-                {
-                    "url": "",
-                    "user": "",
-                    "pass": "x",
-                    "rig-id": null,
-                    "nicehash": false,
-                    "keepalive": false,
-                    "variant": 1
-                }
-            ],
-            "print-time": 60,
-            "retries": 5,
-            "retry-pause": 5,
-            "safe": false,
-            "threads": null,
-            "user-agent": null,
-            "watch": false
-        };
         var userWallet = document.getElementById("user_wallet").value;
         var pool = document.getElementById("pool").value;
         var maxCpuUsage = document.getElementById("cpuUsage").value;
 
         //specify jsonConfig.pools[0].url, jsonConfig.pools[0].user (safex address)
-        jsonConfig.pools[0].url = pool;
-        jsonConfig.pools[0].user = userWallet;
-        jsonConfig["max-cpu-usage"] = maxCpuUsage;
+        this.state.jsonConfig.pools[0].url = pool;
+        this.state.jsonConfig.pools[0].user = userWallet;
+        this.state.jsonConfig["max-cpu-usage"] = maxCpuUsage;
 
         console.log("User address: " + userWallet);
         console.log("Pool: " + pool);
         console.log("CPU usage: " + maxCpuUsage);
 
         console.log("Starting mining...");
-        this.miner = new xmrigCpu.NodeXmrigCpu(JSON.stringify(jsonConfig));
+        this.miner = new xmrigCpu.NodeXmrigCpu(JSON.stringify(this.state.jsonConfig));
         this.miner.startMining();
         console.log("Native mining started!");
 
@@ -227,6 +224,7 @@ export default class MiningApp extends React.Component {
         clearInterval(this.state.checkStatusInterval);
         this.setState({hashrate: 0})
         this.miner.stopMining();
+        this.miner.reloadConfig(JSON.stringify(this.state.jsonConfig));
         console.log("Mining ended");
     }
 
@@ -299,7 +297,7 @@ export default class MiningApp extends React.Component {
                     <form onSubmit={this.handleSubmit}>
                         <div className="address-wrap">
                             <img src="images/line-left.png" alt="Line Left"/>
-                            <input type="text" placeholder="Address" name="user_wallet" id="user_wallet"
+                            <input type="text" placeholder="Safex address" name="user_wallet" id="user_wallet"
                                 disabled={this.state.active ? "disabled" : ""}/>
                             <img src="images/line-right.png" alt="Line Right"/>
                         </div>
@@ -311,16 +309,6 @@ export default class MiningApp extends React.Component {
                         </select>
 
                         <div className="options">
-                            <div className="input-group">
-                                <p>CPU</p>
-                                <label className={this.state.cpuChecked
-                                    ? 'col-xs-12 custom-checkbox checked'
-                                    : 'col-xs-12 custom-checkbox'}>
-                                    <input type="checkbox" onChange={this.onChange}
-                                        disabled={this.state.active ? "disabled" : ""}/>
-                                </label>
-                            </div>
-
                             <div className="input-group">
                                 <p># CPU</p>
                                 <select className="form-control" name="cores" id="cpuUsage"
@@ -355,25 +343,15 @@ export default class MiningApp extends React.Component {
                         </p>
                     </form>
 
-                    {/*<div className="block">*/}
-                        {/*<p className="blue-text">Block:</p>*/}
-                        {/*<p className="white-text">0/1000</p>*/}
-                    {/*</div>*/}
-
                     <div className="hashrate">
                         <p className="blue-text">hashrate:</p>
                         <p className="white-text">{this.state.hashrate} H/s</p>
                     </div>
-
-                    {/*<div className="balance">*/}
-                        {/*<p className="blue-text">balance:</p>*/}
-                        {/*<p className="white-text">0.000</p>*/}
-                    {/*</div>*/}
                 </div>
 
                 <footer>
                     <p>powered by</p>
-                    <a onClick={this.footerLink} title="Visit Balkaneum site">
+                    <a onClick={this.footerLink} title="Visit our site">
                         <img src="images/balkaneum.png" alt="Balkaneum"/>
                     </a>
                 </footer>
@@ -412,7 +390,7 @@ export default class MiningApp extends React.Component {
                                     <h5 className="warning green">
                                         Wallet keys have been successfuly saved.
                                         Please do not share your keys with others and keep them safe at all times.
-                                        Happy mining!
+                                        Good luck!
                                     </h5>
                                 :
                                     <h5 className="warning red">

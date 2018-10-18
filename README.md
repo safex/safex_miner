@@ -1,6 +1,6 @@
 # SAFEX 1 CLICK MINIG APP
 
-Official repository for SAFEX 1 click mining app.
+Official repository for SAFEX 1 click cpu mining app.
 
 ## Releases
 
@@ -36,8 +36,6 @@ npm run make-mac-installer
 npm run make-linux-installer
 ```
 separately.
-
-For linux builds, you will need to have `rpmbuild` available on system (`apt-get install rpm`).
 
 ## License
 

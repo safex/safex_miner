@@ -94,7 +94,7 @@
         "rpm"
       ],
       "category": "Utility",
-      "icon": "public/images/icons/"
+      "icon": "public/images/icons/icon.ico"
     }
   }
 }
