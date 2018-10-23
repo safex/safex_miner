@@ -60,7 +60,7 @@
     "dev": "nf start -p 4000",
     "dist": "build",
     "make-mac-installer": "npm run build && electron-builder build -m",
-    "make-win-installer": "npm run build && electron-builder build -w --x64 --ia32",
+    "make-win-installer": "npm run build && electron-builder build -w --x64",
     "make-linux-installer": "npm run build && electron-builder build -l",
     "make-all-installers": "npm run build && electron-builder build -ml && electron-builder build -w --x64 --ia32"
   },
@@ -94,7 +94,7 @@
         "rpm"
       ],
       "category": "Utility",
-      "icon": "public/images/icons/icon.ico"
+      "icon": "public/images/icons/icon.png"
     }
   }
 }

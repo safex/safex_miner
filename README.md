@@ -12,9 +12,20 @@ You can download the latest release from (https://github.com/safex/safex_miner/r
 
 To start project backend
 
+#### MacOS
+
 ```
 $ npm install
 $ ./node_modules/.bin/electron-rebuild
+$ npm run dev
+```
+
+#### Windows
+
+Run Command Prompt as Administrator
+```
+$ npm install --global --production windows-buld-tools
+$ npm install
 $ npm run dev
 ```
 
@@ -36,6 +47,8 @@ npm run make-mac-installer
 npm run make-linux-installer
 ```
 separately.
+
+For linux builds, you will need to have `rpmbuild` available on system (`apt-get install rpm`).
 
 ## License
 

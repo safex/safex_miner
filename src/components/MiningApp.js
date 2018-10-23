@@ -14,6 +14,7 @@ export default class MiningApp extends React.Component {
 
         this.state = {
             active: false,
+            starting: false,
             stopping: false,
             new_wallet: '',
             new_wallet_generated: false,
@@ -25,6 +26,10 @@ export default class MiningApp extends React.Component {
             address: '',
             pool_url: '',
             modal_active: false,
+            instructions_modal_active: false,
+            instructions_lang: 'english',
+            instructions_en: 'Instructions',
+            instructions_srb: 'Uputstvo',
             jsonConfig: {
                 "algo": "cryptonight/1",
                 "api": {
@@ -68,7 +73,9 @@ export default class MiningApp extends React.Component {
         this.onChange = this.onChange.bind(this);
         this.openInfoPopup = this.openInfoPopup.bind(this);
         this.openModal = this.openModal.bind(this);
+        this.openInstructionsModal = this.openInstructionsModal.bind(this);
         this.closeModal = this.closeModal.bind(this);
+        this.closeInstructionsModal = this.closeInstructionsModal.bind(this);
         this.inputValidate = this.inputValidate.bind(this);
         this.checkInputValueLenght = this.checkInputValueLenght.bind(this);
         this.checkInputValuePrefix = this.checkInputValuePrefix.bind(this);
@@ -106,9 +113,27 @@ export default class MiningApp extends React.Component {
         })
     }
 
+    openInstructionsModal() {
+        this.setState({
+            instructions_modal_active: true
+        })
+    }
+
     closeModal() {
         this.setState({
             modal_active: false
+        })
+    }
+
+    closeInstructionsModal() {
+        this.setState({
+            instructions_modal_active: false
+        })
+    }
+
+    changeInstructionLang(lang) {
+        this.setState({
+            instructions_lang: lang
         })
     }
 
@@ -167,14 +192,20 @@ export default class MiningApp extends React.Component {
                                         mining_info_text: '',
                                         stopping: false
                                     });
-                                    // location.reload();
-                                }, 4000);
+                                }, 5000);
                                 this.stopMining();
                             } else {
                                 this.setState({
                                     active: true,
+                                    starting: true
                                 });
-                                this.openInfoPopup('Mining in progress');
+                                this.openInfoPopup('Starting miner...');
+                                setTimeout(() => {
+                                    this.setState({
+                                        starting: false
+                                    });
+                                    this.openInfoPopup('Mining in progress');
+                                }, 12500);
                                 this.startMining();
                             }
                         } else {
@@ -209,7 +240,11 @@ export default class MiningApp extends React.Component {
         console.log("CPU usage: " + maxCpuUsage);
 
         console.log("Starting mining...");
-        this.miner = new xmrigCpu.NodeXmrigCpu(JSON.stringify(this.state.jsonConfig));
+        if (this.miner) {
+            this.miner.reloadConfig(JSON.stringify(this.state.jsonConfig));
+        } else {
+            this.miner = new xmrigCpu.NodeXmrigCpu(JSON.stringify(this.state.jsonConfig));
+        }
         this.miner.startMining();
         console.log("Native mining started!");
 
@@ -224,7 +259,6 @@ export default class MiningApp extends React.Component {
         clearInterval(this.state.checkStatusInterval);
         this.setState({hashrate: 0})
         this.miner.stopMining();
-        this.miner.reloadConfig(JSON.stringify(this.state.jsonConfig));
         console.log("Mining ended");
     }
 
@@ -294,6 +328,9 @@ export default class MiningApp extends React.Component {
                     <button className="button-shine new-wallet-btn" onClick={this.openModal}>
                         New wallet
                     </button>
+                    {/*<button className="button-shine instructions-btn" onClick={this.openInstructionsModal} title="Instructions">*/}
+                        {/*?*/}
+                    {/*</button>*/}
                     <form onSubmit={this.handleSubmit}>
                         <div className="address-wrap">
                             <img src="images/line-left.png" alt="Line Left"/>
@@ -320,9 +357,20 @@ export default class MiningApp extends React.Component {
                         {
                             this.state.active
                             ?
-                                <button type="submit" className="submit button-shine active">
-                                    Stop
-                                </button>
+                                <div>
+                                    {
+                                        this.state.starting
+                                        ?
+                                            <button type="submit" className="submit button-shine active" disabled>
+                                                Starting
+                                            </button>
+                                        :
+                                            <button type="submit" className="submit button-shine active">
+                                                Stop
+                                            </button>
+                                    }
+                                </div>
+
                             :
                                 <div>
                                 {
@@ -421,7 +469,29 @@ export default class MiningApp extends React.Component {
                     </div>
                 </div>
 
-                <div className={this.state.modal_active ? 'backdrop active' : 'backdrop'} onClick={this.closeModal}>
+                <div className={this.state.instructions_modal_active ? 'modal instructions-modal active' : 'modal instructions-modal'}>
+                    <span className="close" onClick={this.closeInstructionsModal}>X</span>
+                    <div className="lang-bts-wrap">
+                        <button className={this.state.instructions_lang === 'english' ? "button-shine active" : "button-shine"} onClick={this.changeInstructionLang.bind(this, 'english')}>EN</button>
+                        <button className={this.state.instructions_lang === 'serbian' ? "button-shine active" : "button-shine"} onClick={this.changeInstructionLang.bind(this, 'serbian')}>SRB</button>
+                    </div>
+                        {
+                            this.state.instructions_lang === 'english'
+                            ?
+                                <div>
+                                    <h3>Instructions</h3>
+                                    <p>{this.state.instructions_en}</p>
+                                </div>
+
+                            :
+                                <div>
+                                    <h3>Upustvo</h3>
+                                    <p>{this.state.instructions_srb}</p>
+                                </div>
+                        }
+                </div>
+
+                <div className={this.state.modal_active || this.state.instructions_modal_active ? 'backdrop active' : 'backdrop'} onClick={this.state.modal_active ? this.closeModal : this.closeInstructionsModal}>
                 </div>
             </div>
         );
