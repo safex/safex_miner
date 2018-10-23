@@ -19,7 +19,7 @@
       "email": "uros@balkaneum.com"
     }
   ],
-  "license": "MIT",
+  "license": "LicenseRef-LICENSE",
   "bugs": "https://github.com/safex/safex_miner/issues",
   "keywords": [
     "safex cash",
@@ -94,8 +94,7 @@
         "rpm"
       ],
       "category": "Utility",
-      "icon": "public/images/icons/icon.png",
-      "license": "LicenseRef-LICENSE"
+      "icon": "public/images/icons/icon.png"
     }
   }
 }
