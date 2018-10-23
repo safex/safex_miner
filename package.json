@@ -94,7 +94,8 @@
         "rpm"
       ],
       "category": "Utility",
-      "icon": "public/images/icons/icon.png"
+      "icon": "public/images/icons/icon.png",
+      "license": "LicenseRef-LICENSE"
     }
   }
 }
