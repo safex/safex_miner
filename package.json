@@ -78,7 +78,7 @@
     ],
     "mac": {
       "category": "public.app-category.business",
-      "icon": "public/images/icons/icon.icns",
+      "icon": "public/images/icons/icon2.icns",
       "type": "distribution",
       "target": [
         "dmg"
@@ -86,7 +86,7 @@
     },
     "win": {
       "target": "nsis",
-      "icon": "public/images/icons/icon.ico"
+      "icon": "public/images/icons/icon2.ico"
     },
     "linux": {
       "target": [
@@ -94,7 +94,7 @@
         "rpm"
       ],
       "category": "Utility",
-      "icon": "public/images/icons/icon.png"
+      "icon": "public/images/icons/icon2.png"
     }
   }
 }

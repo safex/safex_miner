@@ -21,7 +21,6 @@ export default class MiningApp extends React.Component {
             spendkey_sec: '',
             viewkey_sec: '',
             exported: false,
-            cpuChecked: true,
             hashrate: '0',
             address: '',
             pool_url: '',
@@ -70,7 +69,6 @@ export default class MiningApp extends React.Component {
             }
         };
 
-        this.onChange = this.onChange.bind(this);
         this.openInfoPopup = this.openInfoPopup.bind(this);
         this.openModal = this.openModal.bind(this);
         this.openInstructionsModal = this.openInstructionsModal.bind(this);
@@ -86,18 +84,6 @@ export default class MiningApp extends React.Component {
         this.newWallet = this.newWallet.bind(this);
         this.footerLink = this.footerLink.bind(this);
         this.exportWallet = this.exportWallet.bind(this);
-    }
-
-    onChange(e) {
-        if (this.state.cpuChecked) {
-            this.setState({
-                cpuChecked: false
-            });
-        } else {
-            this.setState({
-                cpuChecked: true
-            });
-        }
     }
 
     openInfoPopup(message) {
@@ -349,7 +335,7 @@ export default class MiningApp extends React.Component {
                             <div className="input-group">
                                 <p># CPU</p>
                                 <select className="form-control" name="cores" id="cpuUsage"
-                                    disabled={this.state.active || this.state.cpuChecked === false ? "disabled" : ""}>
+                                    disabled={this.state.active ? "disabled" : ""}>
                                     {cores_options}
                                 </select>
                             </div>
@@ -482,7 +468,6 @@ export default class MiningApp extends React.Component {
                                     <h3>Instructions</h3>
                                     <p>{this.state.instructions_en}</p>
                                 </div>
-
                             :
                                 <div>
                                     <h3>Upustvo</h3>
