@@ -129,8 +129,13 @@ export default class MiningApp extends React.Component {
     checkInputValueLenght(inputValue) {
         let inputValueLength = inputValue.length;
 
-        if (inputValueLength >= 105 || inputValueLength <= 95) {
-            console.log('safexhashaddress length is too short.');
+        if (inputValueLength <= 95) {
+            console.log('Safexhashaddress length is too short');
+            this.openInfoPopup('Address length is too short');
+            return false;
+        } else if (inputValueLength >= 105) {
+            console.log('Safexhashaddress length is too long');
+            this.openInfoPopup('Address length is too long');
             return false;
         } else {
             return true;
@@ -144,11 +149,11 @@ export default class MiningApp extends React.Component {
             if (!userInputValue.startsWith("SFXts") || !userInputValue.startsWith("SFXti")) {
                 return true;
             } else {
-                console.log('SUFFIX IS NOT GOOD');
+                console.log('Suffix is invalid');
                 return false;
             }
         } else {
-            console.log('SUFFIX IS NOT GOOD');
+            console.log('Suffix is invalid');
             return false;
         }
     }
@@ -163,43 +168,39 @@ export default class MiningApp extends React.Component {
             if (this.inputValidate(inputValue))
                 if (this.checkInputValueLenght(inputValue)) {
                     if (this.checkInputValuePrefix(inputValue)) {
-                        if (pool.value !== '') {
-                            if (this.state.active) {
+                        if (this.state.active) {
+                            this.setState({
+                                active: false,
+                                stopping: true
+                            });
+                            this.openInfoPopup('Stopping miner...');
+                            setTimeout(() => {
                                 this.setState({
-                                   active: false,
-                                   stopping: true
+                                    mining_info: false,
+                                    mining_info_text: '',
+                                    stopping: false
                                 });
-                                this.openInfoPopup('Stopping miner...');
-                                setTimeout(() => {
-                                    this.setState({
-                                        mining_info: false,
-                                        mining_info_text: '',
-                                        stopping: false
-                                    });
-                                }, 5000);
-                                this.stopMining();
-                            } else {
-                                this.setState({
-                                    active: true,
-                                    starting: true
-                                });
-                                this.openInfoPopup('Starting miner...');
-                                setTimeout(() => {
-                                    this.setState({
-                                        starting: false
-                                    });
-                                    this.openInfoPopup('Mining in progress');
-                                }, 12000);
-                                this.startMining();
-                            }
+                            }, 5000);
+                            this.stopMining();
                         } else {
-                            this.openInfoPopup('Please enter valid pool url');
+                            this.setState({
+                                active: true,
+                                starting: true
+                            });
+                            this.openInfoPopup('Starting miner...');
+                            setTimeout(() => {
+                                this.setState({
+                                    starting: false
+                                });
+                                this.openInfoPopup('Mining in progress');
+                            }, 12000);
+                            this.startMining();
                         }
                     } else {
-                        this.openInfoPopup('Address suffix is not valid');
+                        this.openInfoPopup('Your address must start with Safex or SFXt');
                     }
                 } else {
-                    this.openInfoPopup('Address length is too short');
+                    console.log('Address length is not valid')
                 }
             else {
                 this.openInfoPopup('Please enter valid address');
@@ -479,7 +480,8 @@ export default class MiningApp extends React.Component {
                                         Once your wallet keys are saved, you are ready to start mining. <img src="images/wallet-keys-saved.png" alt="Wallet-keys-saved"/>
                                     </p>
                                     <p>
-                                        Enter you wallet address in the Safex Address field, select one of the pools you want to connect to, choose how much CPU power you want to use for mining and click start to begin. That's it, mining will start in a couple of seconds. Good luck!
+                                        Enter you wallet address in the Safex Address field, select one of the pools you want to connect to, choose how much CPU power you want to use for mining and click start to begin.
+                                        That's it, mining will start in a couple of seconds. Good luck!
                                     </p>
                                 </div>
                             :
@@ -500,7 +502,8 @@ export default class MiningApp extends React.Component {
                                         Sačuvate Vaše ključeve, i spremni ste da počnete sa rudarenjem. <img src="images/wallet-keys-saved.png" alt="Wallet-keys-saved"/>
                                     </p>
                                     <p>
-                                        Ukucajte adresu Vašeg wallet-a u predviđeno polje, izaberite pool na koji želite da se povežete, izaberite koliku procesorku snagu želite da koristite i počnite sa rudarenjem. To je to, rudarenje će početi za par sekundi. Srećno!
+                                        Ukucajte adresu Vašeg wallet-a u predviđeno polje, izaberite pool na koji želite da se povežete, izaberite koliku procesorku snagu želite da koristite i počnite sa rudarenjem.
+                                        To je to, rudarenje će početi za par sekundi. Srećno!
                                     </p>
                                 </div>
                         }

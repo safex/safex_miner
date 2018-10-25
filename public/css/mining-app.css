@@ -25,11 +25,12 @@ header {
   width: 100%;
   z-index: 1;
   margin: -30px 0 35px;
+  position: relative;
 }
 header p {
   color: #fff;
   position: absolute;
-  top: 15px;
+  top: -15px;
   right: 15px;
   margin-bottom: 0;
 }
@@ -73,7 +74,7 @@ header p {
   line-height: 1;
   color: #fff;
   position: relative;
-  top: 4px;
+  top: 3px;
   opacity: .5;
 }
 .instructions-btn:hover {
@@ -573,6 +574,7 @@ footer img {
   margin-right: 10px;
   padding: 4px 8px 3px;
   width: 48px;
+  text-indent: 2px;
 }
 .instructions-modal .lang-bts-wrap button.active {
   background: #0ec8c1;
@@ -589,7 +591,7 @@ footer img {
 }
 .instructions-modal .save-wallet-keys,
 .instructions-modal .gen-new-wallet {
-  margin: 0 4px 0 0;
+  margin: 0 4px 5px 0;
 }
 .instructions-modal p strong {
   color: #c80e4b;
