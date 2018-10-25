@@ -26,6 +26,7 @@ header {
   z-index: 1;
   margin: -30px 0 35px;
   position: relative;
+  animation-delay: .3s;
 }
 header p {
   color: #fff;
@@ -33,6 +34,7 @@ header p {
   top: -15px;
   right: 15px;
   margin-bottom: 0;
+  animation-delay: .8s;
 }
 
 /* Main */
@@ -41,6 +43,7 @@ header p {
   width: 100%;
   top: 115px;
   text-align: center;
+  animation-delay: .3s;
 }
 .new-wallet-btn {
   border-radius: 7px;
@@ -314,6 +317,7 @@ footer {
   right: 15px;
   bottom: 15px;
   text-align: right;
+  animation-delay: .8s;
 }
 footer p {
   font-family: 'Rift Soft', Helvetica, Arial, sans-serif;

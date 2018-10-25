@@ -93,6 +93,10 @@ body{
   transform: skewX(-20deg);
 }
 
+.animated{
+  animation-duration: 1s;
+  animation-fill-mode: both;
+}
 @-webkit-keyframes rotating /* Safari and Chrome */ {
   from {
     -webkit-transform: rotate(0deg);
@@ -127,4 +131,15 @@ body{
   -ms-animation: rotating 20s linear infinite;
   -o-animation: rotating 20s linear infinite;
   animation: rotating 20s linear infinite;
+}
+@keyframes fadeIn {
+  0% {
+    opacity: 0
+  }
+  to {
+    opacity: 1
+  }
+}
+.fadeIn {
+  animation-name: fadeIn;
 }

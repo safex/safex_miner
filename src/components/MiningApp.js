@@ -304,12 +304,12 @@ export default class MiningApp extends React.Component {
                 <div className="mining-bg-wrap">
                     <img className={this.state.active || this.state.stopping ? "rotating" : ""} src="images/circles.png" alt="Circles"/>
                 </div>
-                <header>
+                <header className="animated fadeIn">
                     <img src="images/logo.png" alt="Logo"/>
-                    <p>{packageJson.version}</p>
+                    <p className="animated fadeIn">{packageJson.version}</p>
                 </header>
 
-                <div className="main">
+                <div className="main animated fadeIn">
                     <button className="button-shine new-wallet-btn" onClick={this.openModal}>
                         New wallet
                     </button>
@@ -382,7 +382,7 @@ export default class MiningApp extends React.Component {
                     </div>
                 </div>
 
-                <footer>
+                <footer className="animated fadeIn">
                     <p>powered by</p>
                     <a onClick={this.footerLink} title="Visit our site">
                         <img src="images/balkaneum.png" alt="Balkaneum"/>
