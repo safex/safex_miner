@@ -71,7 +71,7 @@ header p {
   line-height: 1;
   color: #fff;
   position: relative;
-  top: 3px;
+  top: 4px;
 }
 .instructions-btn:hover {
   color: #00c7ec;
@@ -510,7 +510,7 @@ footer img {
 }
 .modal .save-btn.green {
   background: #0ec8c1;
-  border: 1px solid rgba(0, 231, 255, 1);
+  border: 1px solid #0ec8c1;
 }
 .modal .save-btn.green:hover {
   box-shadow: 0 0 30px 0 rgba(14, 200, 193, .5) !important;
@@ -541,6 +541,8 @@ footer img {
 }
 .instructions-modal {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
+  width: 625px;
+  min-height: 295px;
 }
 .instructions-modal h3 {
   margin: 0 0 25px;
@@ -549,6 +551,7 @@ footer img {
 }
 .instructions-modal p {
   font-size: 14px;
+  line-height: 1.2;
 }
 .instructions-modal .lang-bts-wrap {
   display: flex;
@@ -568,4 +571,19 @@ footer img {
 .instructions-modal .lang-bts-wrap button.active:hover {
   box-shadow: 0 0 30px 0 rgba(14, 200, 193, .5) !important;
 }
+.instructions-modal p img {
+  position: relative;
+  top: -1px;
+  height: 28px;
+  margin: 0 4px;
+}
+.instructions-modal .save-wallet-keys,
+.instructions-modal .gen-new-wallet {
+  margin: 0 4px 0 0;
+}
+.instructions-modal p strong {
+  color: #c80e4b;
+  text-transform: uppercase;
+}
+
 

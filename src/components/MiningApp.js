@@ -27,8 +27,6 @@ export default class MiningApp extends React.Component {
             modal_active: false,
             instructions_modal_active: false,
             instructions_lang: 'english',
-            instructions_en: 'Instructions',
-            instructions_srb: 'Uputstvo',
             jsonConfig: {
                 "algo": "cryptonight/1",
                 "api": {
@@ -191,7 +189,7 @@ export default class MiningApp extends React.Component {
                                         starting: false
                                     });
                                     this.openInfoPopup('Mining in progress');
-                                }, 12500);
+                                }, 12000);
                                 this.startMining();
                             }
                         } else {
@@ -314,9 +312,9 @@ export default class MiningApp extends React.Component {
                     <button className="button-shine new-wallet-btn" onClick={this.openModal}>
                         New wallet
                     </button>
-                    {/*<button className="button-shine instructions-btn" onClick={this.openInstructionsModal} title="Instructions">*/}
-                        {/*?*/}
-                    {/*</button>*/}
+                    <button className="button-shine instructions-btn" onClick={this.openInstructionsModal} title="Instructions">
+                        ?
+                    </button>
                     <form onSubmit={this.handleSubmit}>
                         <div className="address-wrap">
                             <img src="images/line-left.png" alt="Line Left"/>
@@ -466,12 +464,44 @@ export default class MiningApp extends React.Component {
                             ?
                                 <div>
                                     <h3>Instructions</h3>
-                                    <p>{this.state.instructions_en}</p>
+                                    <p>
+                                        If you don't already have a Safex Wallet, click the <img src="images/new-wallet.png" alt="New-wallet"/> button.
+                                        In the dialog box, click <img src="images/gen-new-wallet.png" alt="Generate-new-wallet"/> which will create new Safex Wallet. Be sure to
+                                        <img src="images/save-wallet-keys.png" className="save-wallet-keys" alt="Save-wallet-keys"/> before proceeding.
+                                    </p>
+                                    <p>
+                                        <strong>
+                                            Wallet keys are made to control your coins, make sure you keep them safe at all times.
+                                            If your keys get stolen it can and will result in total loss of your Safex Cash.
+                                        </strong>
+                                    </p>
+                                    <p className="warning green">
+                                        Once your wallet keys are saved, you are ready to start mining. <img src="images/wallet-keys-saved.png" alt="Wallet-keys-saved"/>
+                                    </p>
+                                    <p>
+                                        Enter you wallet address in the Safex Address field, select one of the pools you want to connect to, choose how much CPU power you want to use for mining and click start to begin. That's it, mining will start in a couple of seconds. Good luck!
+                                    </p>
                                 </div>
                             :
                                 <div>
-                                    <h3>Upustvo</h3>
-                                    <p>{this.state.instructions_srb}</p>
+                                    <h3>Uputstvo</h3>
+                                    <p>
+                                        Ako nemate Safex Wallet, kliknite <img src="images/new-wallet.png" alt="New-wallet"/> dugme.
+                                        U dialog prozoru kliknite <img src="images/gen-new-wallet.png" className="gen-new-wallet" alt="Generate-new-wallet"/> dugme koje će kreirati novi Safex Wallet. Obavezno sačuvajte Vaše ključeve
+                                        <img src="images/save-wallet-keys.png" alt="Save-wallet-keys"/> pre nego što nastavite.
+                                    </p>
+                                    <p>
+                                        <strong>
+                                            Ovi ključevi kontrolišu Vaše novčiće, zato ih uvek čuvajte na bezbednom.
+                                            Ako Vaši ključevi budu ukradeni sigurno ćete izgubiti sav Vaš Safex Cash.
+                                        </strong>
+                                    </p>
+                                    <p className="warning green">
+                                        Sačuvate Vaše ključeve, i spremni ste da počnete sa rudarenjem. <img src="images/wallet-keys-saved.png" alt="Wallet-keys-saved"/>
+                                    </p>
+                                    <p>
+                                        Ukucajte adresu Vašeg wallet-a u predviđeno polje, izaberite pool na koji želite da se povežete, izaberite koliku procesorku snagu želite da koristite i počnite sa rudarenjem. To je to, rudarenje će početi za par sekundi. Srećno!
+                                    </p>
                                 </div>
                         }
                 </div>
