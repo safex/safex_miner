@@ -24,7 +24,7 @@ $ npm run dev
 
 Run Command Prompt as Administrator
 ```
-$ npm install --global --production windows-buld-tools
+$ npm install --global --production windows-build-tools
 $ npm install
 $ npm run dev
 ```
