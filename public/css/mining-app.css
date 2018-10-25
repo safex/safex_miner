@@ -24,12 +24,14 @@ header {
   text-align: center;
   width: 100%;
   z-index: 1;
-  margin: -30px 0 0px;
+  margin: -30px 0 35px;
 }
 header p {
   color: #fff;
-  margin-top: 5px;
-  margin-bottom: 5px;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  margin-bottom: 0;
 }
 
 /* Main */
@@ -50,7 +52,7 @@ header p {
   line-height: 1.2;
   position: relative;
   border: 2px solid #54BCD9;
-  margin: 0px 0 5px;
+  margin: 0px 0 5px 30px;
   padding: 6px 12px 5px;
   -webkit-transition: all 0.2s ease-in;
   -moz-transition: all 0.2s ease-in;
@@ -66,15 +68,17 @@ header p {
   background: transparent;
   border: 0px none;
   font-weight: 600;
-  font-size: 23px;
+  font-size: 19px;
   padding: 0px 10px;
   line-height: 1;
   color: #fff;
   position: relative;
   top: 4px;
+  opacity: .5;
 }
 .instructions-btn:hover {
   color: #00c7ec;
+  opacity: 1;
 }
 .main form {
   text-align: center;
@@ -158,7 +162,7 @@ header p {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  padding: 12px 0;
+  padding: 12px 0 20px;
 }
 .custom-checkbox input[type=checkbox]{
   display: none;
@@ -214,6 +218,8 @@ header p {
   margin-right: 10px;
   font-size: 13px;
   white-space: nowrap;
+  position: relative;
+  top: 2px;
 }
 .input-group {
   display: flex;
@@ -231,7 +237,7 @@ header p {
   line-height: 1.2;
   position: relative;
   border: 2px solid #54BCD9;
-  margin: 0px 0 5px;
+  margin: 0px 0 10px;
   padding: 7px 0px 3px;
   width: 140px;
   -webkit-transition: all 0.2s ease-in;
@@ -247,6 +253,9 @@ header p {
 .submit.active {
   background-color: rgba(221, 18, 99, 0.4);
   border: 2px solid #ff004e;
+}
+.submit.active:hover {
+  box-shadow: 0 0 30px 0 rgba(200, 14, 75, 1) !important;
 }
 .mining-info {
   color: #fff;
@@ -280,10 +289,11 @@ header p {
   font-size: 14px;
   color: #fff;
   margin-bottom: 0;
+  margin-left: 7px;
   line-height: 1;
   position: relative;
   top: -3px;
-  width: 150px;
+  width: 165px;
   text-align: left;
 }
 .blue-text {
@@ -292,7 +302,7 @@ header p {
   color: #00deff;
   text-transform: uppercase;
   margin-bottom: 5px;
-  margin-right: 15px;
+  margin-right: 7px;
   width: 180px;
   text-align: right;
 }
@@ -542,7 +552,7 @@ footer img {
 .instructions-modal {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   width: 625px;
-  min-height: 295px;
+  min-height: 343px;
 }
 .instructions-modal h3 {
   margin: 0 0 25px;
@@ -575,7 +585,7 @@ footer img {
   position: relative;
   top: -1px;
   height: 28px;
-  margin: 0 4px;
+  margin: 4px 5px;
 }
 .instructions-modal .save-wallet-keys,
 .instructions-modal .gen-new-wallet {
