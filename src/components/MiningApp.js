@@ -466,9 +466,9 @@ export default class MiningApp extends React.Component {
                                 <div>
                                     <h3>Instructions</h3>
                                     <p>
-                                        If you don't already have a Safex Wallet, click the <img src="images/new-wallet.png" alt="New-wallet"/> button.
-                                        In the dialog box, click <img src="images/gen-new-wallet.png" alt="Generate-new-wallet"/> which will create new Safex Wallet. Be sure to
-                                        <img src="images/save-wallet-keys.png" className="save-wallet-keys" alt="Save-wallet-keys"/> before proceeding.
+                                        If you don't already have a Safex Wallet, click the <button>new wallet</button> button.
+                                        In the dialog box, click <button>generate new wallet</button> which will create new Safex Wallet. Be sure to
+                                        <button className="red-btn red-btn-en">save wallet keys</button> before proceeding.
                                     </p>
                                     <p>
                                         <strong>
@@ -477,7 +477,7 @@ export default class MiningApp extends React.Component {
                                         </strong>
                                     </p>
                                     <p className="warning green">
-                                        Once your wallet keys are saved, you are ready to start mining. <img src="images/wallet-keys-saved.png" alt="Wallet-keys-saved"/>
+                                        Once your wallet keys are saved, you are ready to start mining. <button className="green-btn">wallet keys saved</button>
                                     </p>
                                     <p>
                                         Enter you wallet address in the Safex Address field, select one of the pools you want to connect to, choose how much CPU power you want to use for mining and click start to begin.
@@ -488,9 +488,9 @@ export default class MiningApp extends React.Component {
                                 <div>
                                     <h3>Uputstvo</h3>
                                     <p>
-                                        Ako nemate Safex Wallet, kliknite <img src="images/new-wallet.png" alt="New-wallet"/> dugme.
-                                        U dialog prozoru kliknite <img src="images/gen-new-wallet.png" className="gen-new-wallet" alt="Generate-new-wallet"/> dugme koje će kreirati novi Safex Wallet. Obavezno sačuvajte Vaše ključeve
-                                        <img src="images/save-wallet-keys.png" alt="Save-wallet-keys"/> pre nego što nastavite.
+                                        Ako nemate Safex Wallet, kliknite <button>new wallet</button> dugme.
+                                        U dialog prozoru kliknite <button className="gen-new-wallet-sr">generate new wallet</button> dugme koje će kreirati novi Safex Wallet.
+                                        Obavezno sačuvajte Vaše ključeve <button className="red-btn">save wallet keys</button> pre nego što nastavite.
                                     </p>
                                     <p>
                                         <strong>
@@ -499,7 +499,7 @@ export default class MiningApp extends React.Component {
                                         </strong>
                                     </p>
                                     <p className="warning green">
-                                        Sačuvate Vaše ključeve, i spremni ste da počnete sa rudarenjem. <img src="images/wallet-keys-saved.png" alt="Wallet-keys-saved"/>
+                                        Sačuvate Vaše ključeve, i spremni ste da počnete sa rudarenjem. <button className="green-btn">wallet keys saved</button>
                                     </p>
                                     <p>
                                         Ukucajte adresu Vašeg wallet-a u predviđeno polje, izaberite pool na koji želite da se povežete, izaberite koliku procesorku snagu želite da koristite i počnite sa rudarenjem.
