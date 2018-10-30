@@ -26,6 +26,7 @@ header {
   z-index: 1;
   margin: -30px 0 35px;
   position: relative;
+  animation-delay: .3s;
 }
 header p {
   color: #fff;
@@ -33,6 +34,7 @@ header p {
   top: -15px;
   right: 15px;
   margin-bottom: 0;
+  animation-delay: .8s;
 }
 
 /* Main */
@@ -41,6 +43,7 @@ header p {
   width: 100%;
   top: 115px;
   text-align: center;
+  animation-delay: .3s;
 }
 .new-wallet-btn {
   border-radius: 7px;
@@ -69,7 +72,7 @@ header p {
   background: transparent;
   border: 0px none;
   font-weight: 600;
-  font-size: 19px;
+  font-size: 20px;
   padding: 0px 10px;
   line-height: 1;
   color: #fff;
@@ -314,6 +317,7 @@ footer {
   right: 15px;
   bottom: 15px;
   text-align: right;
+  animation-delay: .8s;
 }
 footer p {
   font-family: 'Rift Soft', Helvetica, Arial, sans-serif;
@@ -522,6 +526,7 @@ footer img {
 .modal .save-btn.green {
   background: #0ec8c1;
   border: 1px solid #0ec8c1;
+  margin-right: 0;
 }
 .modal .save-btn.green:hover {
   box-shadow: 0 0 30px 0 rgba(14, 200, 193, .5) !important;
@@ -552,7 +557,7 @@ footer img {
 }
 .instructions-modal {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
-  width: 625px;
+  width: 630px;
   min-height: 343px;
 }
 .instructions-modal h3 {
@@ -564,6 +569,37 @@ footer img {
   font-size: 14px;
   line-height: 1.2;
 }
+.instructions-modal p button {
+  border-radius: 7px;
+  background-color: rgba(18, 190, 221, 0.45);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.26px;
+  line-height: 1.2;
+  position: relative;
+  border: 2px solid #54BCD9;
+  margin: 4px 5px;
+  padding: 6px 12px 5px;
+  transition: none;
+}
+.instructions-modal p button:hover {
+  box-shadow: none !important;
+  cursor: initial;
+}
+.instructions-modal p button.red-btn {
+  background: #c80e4b;
+  border: 1px solid #c80e4b;
+}
+.instructions-modal p button.red-btn-en,
+.instructions-modal p button.gen-new-wallet-sr {
+  margin-left: 0;
+}
+.instructions-modal p button.green-btn {
+  background: #0ec8c1;
+  border: 1px solid #0ec8c1;
+}
 .instructions-modal .lang-bts-wrap {
   display: flex;
   flex-direction: row;
@@ -571,7 +607,7 @@ footer img {
   position: absolute;
 }
 .instructions-modal .lang-bts-wrap button {
-  margin-right: 10px;
+  margin: 0 10px 0 0;
   padding: 4px 8px 3px;
   width: 48px;
   text-indent: 2px;
