@@ -598,4 +598,9 @@ footer img {
   text-transform: uppercase;
 }
 
+@media (min-width: 1200px) {
+  .address-wrap input {
+    text-align: center;
+  }
+}
 

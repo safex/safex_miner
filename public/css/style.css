@@ -45,6 +45,9 @@ body{
   background-position: top center;
   font-family: "Avenir", Helvetica, Arial, sans-serif;
 }
+body img {
+  pointer-events: none;
+}
 .button-shine {
   position: relative;
   text-align: center;
