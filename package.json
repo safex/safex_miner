@@ -1,6 +1,6 @@
 {
-  "name": "1-click-mining-app",
-  "description": "Safex 1 Click Mining App",
+  "name": "Safex1ClickMiner",
+  "description": "Safex 1 Click Mining App Blockchain proof of work Safex Cash",
   "version": "v0.0.1",
   "homepage": ".",
   "repository": {
@@ -26,6 +26,7 @@
     "safex mining app",
     "bitcoin",
     "blockchain",
+    "proof of work",
     "electron"
   ],
   "devDependencies": {
