@@ -327,7 +327,7 @@ export default class MiningApp extends React.Component {
                         <select className="pool-url" name="pool" id="pool" disabled={this.state.active ? "disabled" : ""}>
                             <option>pool.safexnews.net:3333</option>
                             <option>safex.cnpools.space:3333</option>
-                            <option>safex.cryptominingpools.net:3333</option>   
+                            <option>safex.cryptominingpools.net:3333</option>
                             <option>safex.luckypool.io:3366</option>
                             <option>safex.xmining.pro:3333</option>
                         </select>
@@ -501,7 +501,7 @@ export default class MiningApp extends React.Component {
                                         </strong>
                                     </p>
                                     <p className="warning green">
-                                        Sačuvate Vaše ključeve, i spremni ste da počnete sa rudarenjem. <button className="green-btn">wallet keys saved</button>
+                                        Sačuvajte Vaše ključeve, i spremni ste da počnete sa rudarenjem. <button className="green-btn">wallet keys saved</button>
                                     </p>
                                     <p>
                                         Ukucajte adresu Vašeg wallet-a u predviđeno polje, izaberite pool na koji želite da se povežete, izaberite koliku procesorku snagu želite da koristite i počnite sa rudarenjem.
