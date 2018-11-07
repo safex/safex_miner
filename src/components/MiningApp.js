@@ -325,7 +325,7 @@ export default class MiningApp extends React.Component {
                         </div>
 
                         <select className="pool-url" name="pool" id="pool" disabled={this.state.active ? "disabled" : ""}>
-                            <option>pool.safexnews.net:3333</option>
+                            <option>pool.safexnews.net:1111</option>
                             <option>safex.cnpools.space:3333</option>
                             <option>safex.cryptominingpools.net:3333</option>
                             <option>safex.luckypool.io:3366</option>
