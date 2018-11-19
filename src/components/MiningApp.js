@@ -5,6 +5,8 @@ const xmrigCpu = window.require('node-xmrig-cpu');
 const sa = window.require('safex-addressjs');
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 const fileDownload = window.require('js-file-download');
+const safex = window.require('safex-nodejs-libwallet');
+
 
 export default class MiningApp extends React.Component {
     constructor(props) {
@@ -26,7 +28,13 @@ export default class MiningApp extends React.Component {
             pool_url: '',
             modal_active: false,
             instructions_modal_active: false,
+            balance_modal_active: false,
             instructions_lang: 'english',
+            balance_wallet: 'SFXtzRzqWR2J3ytgxg1AxBfM8ZFgZmywoXHtqeqwsk3Gi63B2c3mvLNct35m268Pg2eGqHLmJubC7GPdvb1KxhTvHeVd4WKD9RQ',
+            balance_view_key: '9e7aba8ae9ee134e5d5464d9145a4db26793d7411af7d06f20e755cb2a5ad50f',
+            balance_spend_key: '283d8bab1aeaee8f8b5aed982fc894c67d3e03db9006e488321c053f5183310d',
+            balance_check: false,
+            wallet_password: '',
             jsonConfig: {
                 "algo": "cryptonight/1",
                 "api": {
@@ -70,13 +78,14 @@ export default class MiningApp extends React.Component {
         this.openInfoPopup = this.openInfoPopup.bind(this);
         this.openModal = this.openModal.bind(this);
         this.openInstructionsModal = this.openInstructionsModal.bind(this);
+        this.openBalanceModal = this.openBalanceModal.bind(this);
         this.closeModal = this.closeModal.bind(this);
-        this.closeInstructionsModal = this.closeInstructionsModal.bind(this);
         this.inputValidate = this.inputValidate.bind(this);
         this.checkInputValueLenght = this.checkInputValueLenght.bind(this);
         this.checkInputValuePrefix = this.checkInputValuePrefix.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.startMining = this.startMining.bind(this);
+        this.startBalanceCheck = this.startBalanceCheck.bind(this);
         this.stopMining = this.stopMining.bind(this);
         this.checkStatus = this.checkStatus.bind(this);
         this.newWallet = this.newWallet.bind(this);
@@ -103,17 +112,40 @@ export default class MiningApp extends React.Component {
         })
     }
 
+
+    startBalanceCheck() {
+        this.setState({
+            balance_check: true
+        });
+
+        var args = {
+            'path': wallet_path,
+            'password': '123',
+            'network': 'testnet',
+            'daemonAddress': 'localhost:29393',
+            'restoreHeight': 0,
+            'mnemonic' : 'nifty inflamed against focus gasp ethics spying gulp tiger cogs evicted cohesive woken nylon erosion tell saved fatal alkaline acquire lemon maps hull imitate saved'
+        }
+
+    }
+
+    openBalanceModal() {
+        this.setState({
+            balance_modal_active: true
+        });
+
+        this.startBalanceCheck();
+    }
+
     closeModal() {
         this.setState({
-            modal_active: false
+            modal_active: false,
+            instructions_modal_active: false,
+            balance_modal_active: false
         })
     }
 
-    closeInstructionsModal() {
-        this.setState({
-            instructions_modal_active: false
-        })
-    }
+
 
     changeInstructionLang(lang) {
         this.setState({
@@ -293,6 +325,7 @@ export default class MiningApp extends React.Component {
         shell.openExternal('https://www.safex.io/')
     }
 
+
     render() {
         var cores_options = [];
         for (var i = 25; i <= 100; i += 25) {
@@ -384,6 +417,10 @@ export default class MiningApp extends React.Component {
                         <p className="blue-text">hashrate:</p>
                         <p className="white-text">{this.state.hashrate} H/s</p>
                     </div>
+
+                    <button className="button-shine balance-wallet-btn" onClick={this.openBalanceModal}>
+                        CHECK BALANCE
+                    </button>
                 </div>
 
                 <footer className="animated fadeIn">
@@ -392,6 +429,7 @@ export default class MiningApp extends React.Component {
                         <img src="images/balkaneum.png" alt="Balkaneum"/>
                     </a>
                 </footer>
+
 
                 <div className={this.state.modal_active ? 'modal active' : 'modal'}>
                     <span className="close" onClick={this.closeModal}>X</span>
@@ -458,8 +496,9 @@ export default class MiningApp extends React.Component {
                     </div>
                 </div>
 
+
                 <div className={this.state.instructions_modal_active ? 'modal instructions-modal active' : 'modal instructions-modal'}>
-                    <span className="close" onClick={this.closeInstructionsModal}>X</span>
+                    <span className="close" onClick={this.closeModal}>X</span>
                     <div className="lang-bts-wrap">
                         <button className={this.state.instructions_lang === 'english' ? "button-shine active" : "button-shine"} onClick={this.changeInstructionLang.bind(this, 'english')}>EN</button>
                         <button className={this.state.instructions_lang === 'serbian' ? "button-shine active" : "button-shine"} onClick={this.changeInstructionLang.bind(this, 'serbian')}>SRB</button>
@@ -513,7 +552,21 @@ export default class MiningApp extends React.Component {
                         }
                 </div>
 
-                <div className={this.state.modal_active || this.state.instructions_modal_active ? 'backdrop active' : 'backdrop'} onClick={this.state.modal_active ? this.closeModal : this.closeInstructionsModal}>
+                <div className={this.state.balance_modal_active ? 'modal balance-modal active' : 'modal balance-modal'}>
+                    <span className="close" onClick={this.closeModal}>X</span>
+                    <div className="lang-bts-wrap">
+                        {/*<button className={this.state.instructions_lang === 'english' ? "button-shine active" : "button-shine"} onClick={this.changeInstructionLang.bind(this, 'english')}>EN</button>*/}
+                        {/*<button className={this.state.instructions_lang === 'serbian' ? "button-shine active" : "button-shine"} onClick={this.changeInstructionLang.bind(this, 'serbian')}>SRB</button>*/}
+                    </div>
+                    <textarea placeholder="Safex Wallet Address" value={this.state.balance_wallet} rows="2" readOnly />
+                    <textarea placeholder="Safex Private View Key" value={this.state.balance_view_key} rows="1" readOnly />
+                    <textarea placeholder="Safex Private View Key" value={this.state.balance_spend_key} rows="1" readOnly />
+                    <textarea placeholder="Wallet pass" value={this.state.wallet_password} rows="1" readOnly />
+
+
+                </div>
+
+                <div className={this.state.modal_active || this.state.instructions_modal_active  || this.state.balance_modal_active ? 'backdrop active' : 'backdrop'} onClick={this.closeModal}>
                 </div>
             </div>
         );

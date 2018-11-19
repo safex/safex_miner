@@ -84,6 +84,30 @@ header p {
   color: #00c7ec;
   opacity: 1;
 }
+
+.balance-wallet-btn {
+  border-radius: 7px;
+  background-color: rgba(18, 190, 221, 0.45);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.26px;
+  line-height: 1.2;
+  position: relative;
+  border: 2px solid #54BCD9;
+  margin: 0px 0 5px 30px;
+  padding: 6px 12px 5px;
+  -webkit-transition: all 0.2s ease-in;
+  -moz-transition: all 0.2s ease-in;
+  transition: all 0.2s ease-in;
+}
+.balance-wallet-btn:hover {
+  box-shadow: 0 0 30px 0 rgba(0, 199, 236, 0.5) !important;
+}
+.balance-wallet-btn:active {
+  box-shadow: none !important;
+}
 .main form {
   text-align: center;
   margin-bottom: 10px;
@@ -555,6 +579,7 @@ footer img {
   margin-bottom: 2px;
   text-align: left;
 }
+
 .instructions-modal {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   width: 630px;
@@ -633,6 +658,89 @@ footer img {
   color: #c80e4b;
   text-transform: uppercase;
 }
+
+
+
+
+.balance-modal {
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  width: 730px;
+  min-height: 500px;
+}
+.balance-modal h3 {
+  margin: 0 0 25px;
+  font-size: 20px;
+  text-transform: initial;
+}
+.balance-modal p {
+  font-size: 14px;
+  line-height: 1.2;
+}
+.balance-modal p button {
+  border-radius: 7px;
+  background-color: rgba(18, 190, 221, 0.45);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.26px;
+  line-height: 1.2;
+  position: relative;
+  border: 2px solid #54BCD9;
+  margin: 4px 5px;
+  padding: 6px 12px 5px;
+  transition: none;
+}
+.balance-modal p button:hover {
+  box-shadow: none !important;
+  cursor: initial;
+}
+.balance-modal p button.red-btn {
+  background: #c80e4b;
+  border: 1px solid #c80e4b;
+}
+.balance-modal p button.red-btn-en,
+.balance-modal p button.gen-new-wallet-sr {
+  margin-left: 0;
+}
+.balance-modal p button.green-btn {
+  background: #0ec8c1;
+  border: 1px solid #0ec8c1;
+}
+.balance-modal .lang-bts-wrap {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  position: absolute;
+}
+.balance-modal .lang-bts-wrap button {
+  margin: 0 10px 0 0;
+  padding: 4px 8px 3px;
+  width: 48px;
+  text-indent: 2px;
+}
+.balance-modal .lang-bts-wrap button.active {
+  background: #0ec8c1;
+  border: 2px solid #0ec8c1;
+}
+.balance-modal .lang-bts-wrap button.active:hover {
+  box-shadow: 0 0 30px 0 rgba(14, 200, 193, .5) !important;
+}
+.balance-modal p img {
+  position: relative;
+  top: -1px;
+  height: 28px;
+  margin: 4px 5px;
+}
+.balance-modal .save-wallet-keys,
+.balance-modal .gen-new-wallet {
+  margin: 0 4px 5px 0;
+}
+.balance-modal p strong {
+  color: #c80e4b;
+  text-transform: uppercase;
+}
+
 
 @media (min-width: 1200px) {
   .address-wrap input {
