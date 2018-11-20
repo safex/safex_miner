@@ -33,6 +33,7 @@ export default class MiningApp extends React.Component {
             balance_wallet: 'SFXtzRzqWR2J3ytgxg1AxBfM8ZFgZmywoXHtqeqwsk3Gi63B2c3mvLNct35m268Pg2eGqHLmJubC7GPdvb1KxhTvHeVd4WKD9RQ',
             balance_view_key: '9e7aba8ae9ee134e5d5464d9145a4db26793d7411af7d06f20e755cb2a5ad50f',
             balance_spend_key: '283d8bab1aeaee8f8b5aed982fc894c67d3e03db9006e488321c053f5183310d',
+            wallet_path: '.',
             balance_check: false,
             wallet_password: '',
             jsonConfig: {
@@ -119,7 +120,7 @@ export default class MiningApp extends React.Component {
         });
 
         var args = {
-            'path': wallet_path,
+            'path': this.state.wallet_path,
             'password': '123',
             'network': 'testnet',
             'daemonAddress': 'localhost:29393',
