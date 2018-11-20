@@ -6,13 +6,17 @@ const sa = window.require('safex-addressjs');
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 const fileDownload = window.require('js-file-download');
 const safex = window.require('safex-nodejs-libwallet');
+const path = window.require('path');
 
+const wallet_path = path.join(__dirname, '/test-wallet');
 
 export default class MiningApp extends React.Component {
     constructor(props) {
         super(props);
 
         this.miner = null;
+
+
 
         this.state = {
             active: false,
@@ -31,8 +35,9 @@ export default class MiningApp extends React.Component {
             balance_modal_active: false,
             instructions_lang: 'english',
             balance_wallet: 'SFXtzRzqWR2J3ytgxg1AxBfM8ZFgZmywoXHtqeqwsk3Gi63B2c3mvLNct35m268Pg2eGqHLmJubC7GPdvb1KxhTvHeVd4WKD9RQ',
-            balance_view_key: '9e7aba8ae9ee134e5d5464d9145a4db26793d7411af7d06f20e755cb2a5ad50f',
-            balance_spend_key: '283d8bab1aeaee8f8b5aed982fc894c67d3e03db9006e488321c053f5183310d',
+            balance_view_key: '',
+            balance_spend_key: '',
+            wallet_path: wallet_path,
             balance_check: false,
             wallet_password: '',
             jsonConfig: {
@@ -119,13 +124,98 @@ export default class MiningApp extends React.Component {
         });
 
         var args = {
-            'path': wallet_path,
+            'path': this.state.wallet_path,
             'password': '123',
             'network': 'testnet',
             'daemonAddress': 'localhost:29393',
             'restoreHeight': 0,
-            'mnemonic' : 'nifty inflamed against focus gasp ethics spying gulp tiger cogs evicted cohesive woken nylon erosion tell saved fatal alkaline acquire lemon maps hull imitate saved'
+            'addressString':  this.state.balance_wallet,
+            'viewKeyString':  this.state.balance_view_key,
+            'spendKeyString': this.state.balance_spend_key
         }
+
+        var promise = null;
+
+        if (!safex.walletExists(this.state.wallet_path)) {
+            console.log("wallet doesn't exist. creating new one: " + this.state.wallet_path);
+            if(args.mnemonic)
+                promise = safex.recoveryWallet(args);
+            else if(args.addressString)
+                promise = safex.createWalletFromKeys(args);
+            else
+                promise = safex.createWallet(args);
+        } else {
+            console.log("wallet already exists. opening: " + this.state.wallet_path);
+            promise = safex.openWallet(args);
+        }
+
+        var wallet = null;
+
+        const nextTick = () => {
+            if (wallet) {
+                console.log("balance: " + wallet.balance());
+                console.log("unlocked balance: " + wallet.unlockedBalance());
+                console.log("token balance: " + wallet.tokenBalance());
+                console.log("unlocked token balance: " + wallet.unlockedTokenBalance());
+            }
+
+            setTimeout(nextTick, 10000);
+        }
+
+        var lastHeight = 0;
+        promise.then((w) => {
+                console.log("address: " + w.address());
+                console.log("seed: " + w.seed());
+
+                wallet = w;
+                wallet.on('newBlock', function (height) {
+                    if(height-lastHeight>1000) {
+                        console.log("blockchain updated, height: " + height);
+                        lastHeight = height;
+                    }
+                });
+
+                wallet.on('refreshed', function () {
+                    console.log("wallet refreshed");
+
+                    wallet.store()
+                        .then(() => {console.log("wallet stored")})
+                        .catch((e) => {console.log("unable to store wallet: " + e)})
+                });
+
+                wallet.on('updated', function () {
+                    console.log("updated");
+                });
+
+                wallet.on('unconfirmedMoneyReceived', function(tx, amount) {
+                    console.log("unconfirmed money received. tx: " + tx + ", amount: " + amount);
+                });
+
+                wallet.on('moneyReceived', function(tx, amount) {
+                    console.log("money received. tx: " + tx + ", amount: " + amount);
+                });
+
+                wallet.on('moneySpent', function(tx, amount) {
+                    console.log("money spent. tx: " + tx + ", amount: " + amount);
+                });
+
+                wallet.on('unconfirmedTokensReceived', function(tx, token_amount) {
+                    console.log("unconfirmed tokens received. tx: " + tx + ", token amount: " + token_amount);
+                });
+
+                wallet.on('tokensReceived', function(tx, token_amount) {
+                    console.log("tokens received. tx: " + tx + ", token amount: " + token_amount);
+                });
+
+                wallet.on('tokensSpent', function(tx, token_amount) {
+                    console.log("tokens spent. tx: " + tx + ", token amount: " + token_amount);
+                });
+
+                nextTick();
+            })
+            .catch((e) => {
+                console.log("no luck tonight: " + e);
+            });
 
     }
 
