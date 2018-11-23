@@ -28,7 +28,7 @@ export default class MiningApp extends React.Component {
             instructions_modal_active: false,
             instructions_lang: 'english',
             jsonConfig: {
-                "algo": "cryptonight/1",
+                "algo": "cryptonight/2",
                 "api": {
                     "port": 0,
                     "access-token": null,
