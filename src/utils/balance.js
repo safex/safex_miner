@@ -18,6 +18,19 @@ function verify_safex_address(spend, view, address) {
 
 /**
  * Structure Safex Address
+ *
+ * key object
+ * {
+ *     spend : {
+ *         sec : secret_key
+ *         pub: : public_key
+ *     },
+ *     view : {
+ *         sec : secret_key
+ *         pub: : public_key
+ *     },
+ *     checksum : checksum of address
+ * }
  */
 function structureSafexKeys(spend, view) {
     const keys = swg.structure_keys(spend, view);

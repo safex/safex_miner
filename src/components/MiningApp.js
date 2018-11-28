@@ -6,6 +6,9 @@ const sa = window.require('safex-addressjs');
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 const fileDownload = window.require('js-file-download');
 const safex = window.require('safex-nodejs-libwallet');
+
+const {dialog} = window.require('electron').remote;
+
 const path = window.require('path');
 
 const wallet_path = path.join(__dirname, '/Users/uros/Downloads/Development/safex_miner/temp/test-wallet');
@@ -121,6 +124,8 @@ export default class MiningApp extends React.Component {
         this.setCloseSendPopup = this.setCloseSendPopup.bind(this);
         this.sendCash = this.sendCash.bind(this);
         this.sendToken = this.sendToken.bind(this);
+
+        this.set_wallet_path = this.set_wallet_path.bind(this);
     }
 
     openInfoPopup(message) {
@@ -152,8 +157,8 @@ export default class MiningApp extends React.Component {
         if (balance_wallet === '' || balance_view_key === '' || balance_spend_key === '') {
             this.setOpenBalanceAlert('Fill out all the fields');
         } else {
-            //if (verify_safex_address(balance_spend_key, balance_view_key, balance_wallet)) {
-            // const safex_keys = structureSafexKeys(balance_spend_key, balance_view_key);
+            if (verify_safex_address(balance_spend_key, balance_view_key, balance_wallet)) {
+             const safex_keys = structureSafexKeys(balance_spend_key, balance_view_key);
 
             this.setState(() => ({
                 balance_check: true,
@@ -165,8 +170,8 @@ export default class MiningApp extends React.Component {
             var args = {
                 'path': this.state.wallet_path,
                 'password': '123',
-                'network': 'testnet',
-                'daemonAddress': '192.168.1.194:29393',
+                'network': 'mainnet',
+                'daemonAddress': 'rpc.safex.io:17402',
                 'restoreHeight': 0,
                 'addressString': this.state.balance_wallet,
                 'viewKeyString': this.state.balance_view_key,
@@ -219,14 +224,14 @@ export default class MiningApp extends React.Component {
                 console.log("seed: " + w.seed());
 
                 wallet = w;
-                wallet.on('newBlock', function (height) {
-                    if (height - lastHeight > 1000) {
+                wallet.on('newBlock', (height) => {
+                    if (height - lastHeight > 60) {
                         console.log("blockchain updated, height: " + height);
                         lastHeight = height;
                     }
                 });
 
-                wallet.on('refreshed', function () {
+                wallet.on('refreshed', () => {
                     console.log("wallet refreshed");
 
                     wallet.store()
@@ -267,10 +272,10 @@ export default class MiningApp extends React.Component {
                 .catch((e) => {
                     console.log("no luck tonight: " + e);
                 });
-            // } else {
-            //     console.log('Incorrect or duplicate keys');
-            //     this.setOpenBalanceAlert('Incorrect or duplicate keys');
-            // }
+             } else {
+                 console.log('Incorrect or duplicate keys');
+                 this.setOpenBalanceAlert('Incorrect or duplicate keys');
+             }
         }
     }
 
@@ -315,8 +320,8 @@ export default class MiningApp extends React.Component {
         let args = {
             'path': this.state.wallet_path,
             'password': '123',
-            'network': 'testnet',
-            'daemonAddress': '192.168.1.194:29393',
+            'network': 'mainnet',
+            'daemonAddress': 'rpc.safex.io:17402',
             'restoreHeight': 0,
             'addressString': this.state.balance_wallet,
             'viewKeyString': this.state.balance_view_key,
@@ -602,6 +607,18 @@ export default class MiningApp extends React.Component {
         shell.openExternal('https://www.safex.io/')
     }
 
+
+
+    set_wallet_path() {
+        dialog.showOpenDialog({
+            properties: ['openFile']
+        }, (filepaths) => {
+            console.log(filepaths);
+
+        })
+    }
+
+
     render() {
         var cores_options = [];
         for (var i = 25; i <= 100; i += 25) {
@@ -619,6 +636,9 @@ export default class MiningApp extends React.Component {
                 </header>
 
                 <div className="main animated fadeIn">
+                    <button className="button-shine new-wallet-btn" onClick={this.set_wallet_path}>
+                        Set Wallet
+                    </button>
                     <button className="button-shine new-wallet-btn" onClick={this.openModal}>
                         New wallet
                     </button>
