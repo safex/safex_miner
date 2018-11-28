@@ -3,15 +3,29 @@ import packageJson from "../../package";
 const { shell } = window.require('electron')
 const xmrigCpu = window.require('node-xmrig-cpu');
 const sa = window.require('safex-addressjs');
-import {CopyToClipboard} from 'react-copy-to-clipboard';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 const fileDownload = window.require('js-file-download');
+const safex = window.require('safex-nodejs-libwallet');
+const path = window.require('path');
+
+const wallet_path = path.join(__dirname, '/Users/uros/Downloads/Development/safex_miner/temp/test-wallet');
+
+import {
+    verify_safex_address,
+    structureSafexKeys,
+    openBalanceAlert,
+    closeBalanceAlert,
+    openSendCashPopup,
+    openSendTokenPopup,
+    closeSendPopup
+} from '../utils/balance';
+import BalanceAlert from './partials/BalanceAlert';
+import SendModal from './partials/SendModal';
 
 export default class MiningApp extends React.Component {
     constructor(props) {
         super(props);
-
         this.miner = null;
-
         this.state = {
             active: false,
             starting: false,
@@ -26,7 +40,23 @@ export default class MiningApp extends React.Component {
             pool_url: '',
             modal_active: false,
             instructions_modal_active: false,
+            balance_modal_active: false,
             instructions_lang: 'english',
+            balance: 0,
+            unlocked_balance: 0,
+            tokens: 0,
+            unlocked_tokens: 0,
+            balance_wallet: '',
+            balance_view_key: '',
+            balance_spend_key: '',
+            wallet_path: wallet_path,
+            balance_check: false,
+            wallet_password: '',
+            wallet_exists: false,
+            balance_alert: '',
+            balance_alert_text: '',
+            send_cash: false,
+            send_token: false,
             jsonConfig: {
                 "algo": "cryptonight/2",
                 "api": {
@@ -70,18 +100,27 @@ export default class MiningApp extends React.Component {
         this.openInfoPopup = this.openInfoPopup.bind(this);
         this.openModal = this.openModal.bind(this);
         this.openInstructionsModal = this.openInstructionsModal.bind(this);
+        this.openBalanceModal = this.openBalanceModal.bind(this);
         this.closeModal = this.closeModal.bind(this);
-        this.closeInstructionsModal = this.closeInstructionsModal.bind(this);
         this.inputValidate = this.inputValidate.bind(this);
         this.checkInputValueLenght = this.checkInputValueLenght.bind(this);
         this.checkInputValuePrefix = this.checkInputValuePrefix.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.startMining = this.startMining.bind(this);
+        this.startBalanceCheck = this.startBalanceCheck.bind(this);
         this.stopMining = this.stopMining.bind(this);
         this.checkStatus = this.checkStatus.bind(this);
         this.newWallet = this.newWallet.bind(this);
         this.footerLink = this.footerLink.bind(this);
         this.exportWallet = this.exportWallet.bind(this);
+        this.backToBalanceModal = this.backToBalanceModal.bind(this);
+        this.setOpenBalanceAlert = this.setOpenBalanceAlert.bind(this);
+        this.setCloseBalanceAlert = this.setCloseBalanceAlert.bind(this);
+        this.setOpenSendCash = this.setOpenSendCash.bind(this);
+        this.setOpenSendTokens = this.setOpenSendTokens.bind(this);
+        this.setCloseSendPopup = this.setCloseSendPopup.bind(this);
+        this.sendCash = this.sendCash.bind(this);
+        this.sendToken = this.sendToken.bind(this);
     }
 
     openInfoPopup(message) {
@@ -103,22 +142,289 @@ export default class MiningApp extends React.Component {
         })
     }
 
-    closeModal() {
-        this.setState({
-            modal_active: false
-        })
+    startBalanceCheck(e) {
+        e.preventDefault();
+
+        var balance_wallet = e.target.wallet_balance_address.value;
+        var balance_view_key = e.target.wallet_balance_private_view_key.value;
+        var balance_spend_key = e.target.wallet_balance_private_spend_key.value;
+
+        if (balance_wallet === '' || balance_view_key === '' || balance_spend_key === '') {
+            this.setOpenBalanceAlert('Fill out all the fields');
+        } else {
+            //if (verify_safex_address(balance_spend_key, balance_view_key, balance_wallet)) {
+            // const safex_keys = structureSafexKeys(balance_spend_key, balance_view_key);
+
+            this.setState(() => ({
+                balance_check: true,
+                balance_wallet: balance_wallet,
+                balance_view_key: balance_view_key,
+                balance_spend_key: balance_spend_key,
+            }));
+
+            var args = {
+                'path': this.state.wallet_path,
+                'password': '123',
+                'network': 'testnet',
+                'daemonAddress': '192.168.1.194:29393',
+                'restoreHeight': 0,
+                'addressString': this.state.balance_wallet,
+                'viewKeyString': this.state.balance_view_key,
+                'spendKeyString': this.state.balance_spend_key
+            }
+
+            var promise = null;
+
+            if (!safex.walletExists(this.state.wallet_path)) {
+                this.setState(() => ({
+                    wallet_exists: false
+                }));
+                console.log("wallet doesn't exist. creating new one: " + this.state.wallet_path);
+                if (args.mnemonic)
+                    promise = safex.recoveryWallet(args);
+                else if (args.addressString)
+                    promise = safex.createWalletFromKeys(args);
+                else
+                    promise = safex.createWallet(args);
+            } else {
+                this.setState(() => ({
+                    wallet_exists: true
+                }));
+                console.log("wallet already exists. opening: " + this.state.wallet_path);
+                promise = safex.openWallet(args);
+            }
+
+            var wallet = null;
+
+            const nextTick = () => {
+                if (wallet) {
+                    this.setState(() => ({
+                        balance: parseInt(wallet.balance() / 10000000000).toFixed(2),
+                        unlocked_balance: parseInt(wallet.unlockedBalance() / 10000000000).toFixed(2),
+                        tokens: parseInt(wallet.tokenBalance() / 10000000000).toFixed(2),
+                        unlocked_tokens: parseInt(wallet.unlockedTokenBalance() / 10000000000).toFixed(2),
+                    }));
+                    console.log("balance: " + wallet.balance());
+                    console.log("unlocked balance: " + wallet.unlockedBalance());
+                    console.log("token balance: " + wallet.tokenBalance());
+                    console.log("unlocked token balance: " + wallet.unlockedTokenBalance());
+                }
+
+                setTimeout(nextTick, 10000);
+            }
+
+            var lastHeight = 0;
+            promise.then((w) => {
+                console.log("balance address: " + w.address());
+                console.log("seed: " + w.seed());
+
+                wallet = w;
+                wallet.on('newBlock', function (height) {
+                    if (height - lastHeight > 1000) {
+                        console.log("blockchain updated, height: " + height);
+                        lastHeight = height;
+                    }
+                });
+
+                wallet.on('refreshed', function () {
+                    console.log("wallet refreshed");
+
+                    wallet.store()
+                        .then(() => { console.log("wallet stored") })
+                        .catch((e) => { console.log("unable to store wallet: " + e) })
+                });
+
+                wallet.on('updated', function () {
+                    console.log("updated");
+                });
+
+                wallet.on('unconfirmedMoneyReceived', function (tx, amount) {
+                    console.log("unconfirmed money received. tx: " + tx + ", amount: " + amount);
+                });
+
+                wallet.on('moneyReceived', function (tx, amount) {
+                    console.log("money received. tx: " + tx + ", amount: " + amount);
+                });
+
+                wallet.on('moneySpent', function (tx, amount) {
+                    console.log("money spent. tx: " + tx + ", amount: " + amount);
+                });
+
+                wallet.on('unconfirmedTokensReceived', function (tx, token_amount) {
+                    console.log("unconfirmed tokens received. tx: " + tx + ", token amount: " + token_amount);
+                });
+
+                wallet.on('tokensReceived', function (tx, token_amount) {
+                    console.log("tokens received. tx: " + tx + ", token amount: " + token_amount);
+                });
+
+                wallet.on('tokensSpent', function (tx, token_amount) {
+                    console.log("tokens spent. tx: " + tx + ", token amount: " + token_amount);
+                });
+
+                nextTick();
+            })
+                .catch((e) => {
+                    console.log("no luck tonight: " + e);
+                });
+            // } else {
+            //     console.log('Incorrect or duplicate keys');
+            //     this.setOpenBalanceAlert('Incorrect or duplicate keys');
+            // }
+        }
     }
 
-    closeInstructionsModal() {
-        this.setState({
-            instructions_modal_active: false
-        })
+    openBalanceModal() {
+        this.setState(() => ({
+            balance_modal_active: true
+        }));
+    }
+
+    setOpenBalanceAlert(alert) {
+        openBalanceAlert(this, alert);
+    }
+
+    setCloseBalanceAlert() {
+        closeBalanceAlert(this);
+    }
+
+    backToBalanceModal() {
+        this.setState(() => ({
+            wallet_exists: false
+        }));
+    }
+
+    setOpenSendCash() {
+        openSendCashPopup(this);
+    }
+
+    setOpenSendTokens() {
+        openSendTokenPopup(this);
+    }
+
+    setCloseSendPopup() {
+        closeSendPopup(this);
+    }
+
+    sendCash(e) {
+        e.preventDefault();
+        let sendingAddress = e.target.send_to.value;
+        let amount = parseInt(e.target.amount.value) * 10000000000;
+        let promise = null;
+        let wallet = null;
+        let args = {
+            'path': this.state.wallet_path,
+            'password': '123',
+            'network': 'testnet',
+            'daemonAddress': '192.168.1.194:29393',
+            'restoreHeight': 0,
+            'addressString': this.state.balance_wallet,
+            'viewKeyString': this.state.balance_view_key,
+            'spendKeyString': this.state.balance_spend_key
+        }
+
+        promise = safex.openWallet(args);
+
+        if (sendingAddress === '' || amount === '') {
+            this.setOpenBalanceAlert('Fill out all the fields');
+        } else {
+            promise.then((w) => {
+                wallet = w;
+
+                wallet.createTransaction({
+                    'address': sendingAddress,
+                    'amount': amount,
+                    'tx_type': 0 // cash transaction
+                }).then((tx) => {
+                    console.log("Cash transaction created: " + tx.transactionsIds());
+
+                    tx.commit().then(() => {
+                        console.log("Transaction commited successfully");
+                        this.setCloseSendPopup();
+                        this.setOpenBalanceAlert('Transaction commited successfully');
+
+                    }).catch((e) => {
+                        console.log("Error on commiting transaction: " + e);
+                        this.setOpenBalanceAlert("Error on commiting transaction: " + e);
+                    });
+                }).catch((e) => {
+                    console.log("Couldn't create transaction: " + e);
+                    this.setOpenBalanceAlert("Couldn't create transaction: " + e);
+                });
+            })
+                .catch((e) => {
+                    console.log("Error parsing wallet file: " + e);
+                    this.setOpenBalanceAlert("Error parsing wallet file: " + e);
+                });
+        }
+    }
+
+    sendToken(e) {
+        e.preventDefault();
+        let sendingAddress = e.target.send_to.value;
+        let amount = parseInt(e.target.amount.value) * 10000000000;
+        let promise = null;
+        let wallet = null;
+        let args = {
+            'path': this.state.wallet_path,
+            'password': '123',
+            'network': 'testnet',
+            'daemonAddress': '192.168.1.194:29393',
+            'restoreHeight': 0,
+            'addressString': this.state.balance_wallet,
+            'viewKeyString': this.state.balance_view_key,
+            'spendKeyString': this.state.balance_spend_key
+        }
+
+        promise = safex.openWallet(args);
+
+        if (sendingAddress === '' || amount === '') {
+            this.setOpenBalanceAlert('Fill out all the fields');
+        } else {
+            promise.then((w) => {
+                wallet = w;
+
+                wallet.createTransaction({
+                    'address': sendingAddress,
+                    'amount': amount,
+                    'tx_type': 1 // token transaction
+                }).then((tx) => {
+                    console.log("Cash transaction created: " + tx.transactionsIds());
+
+                    tx.commit().then(() => {
+                        console.log("Transaction commited successfully");
+                        this.setCloseSendPopup();
+                        this.setOpenBalanceAlert('Transaction commited successfully');
+
+                    }).catch((e) => {
+                        console.log("Error on commiting transaction: " + e);
+                        this.setOpenBalanceAlert("Error on commiting transaction: " + e);
+                    });
+                }).catch((e) => {
+                    console.log("Couldn't create transaction: " + e);
+                    this.setOpenBalanceAlert("Couldn't create transaction: " + e);
+                });
+            })
+                .catch((e) => {
+                    console.log("Error parsing wallet file: " + e);
+                    this.setOpenBalanceAlert("Error parsing wallet file: " + e);
+                });
+        }
+    }
+
+    closeModal() {
+        this.setState(() => ({
+            modal_active: false,
+            instructions_modal_active: false,
+            balance_modal_active: false,
+            balance_alert: false
+        }));
     }
 
     changeInstructionLang(lang) {
-        this.setState({
+        this.setState(() => ({
             instructions_lang: lang
-        })
+        }));
     }
 
     inputValidate(inputValue) {
@@ -130,11 +436,11 @@ export default class MiningApp extends React.Component {
         let inputValueLength = inputValue.length;
 
         if (inputValueLength <= 95) {
-            console.log('Safexhashaddress length is too short');
+            console.log('Safex hash address length is too short');
             this.openInfoPopup('Address length is too short');
             return false;
         } else if (inputValueLength >= 105) {
-            console.log('Safexhashaddress length is too long');
+            console.log('Safex hash address length is too long');
             this.openInfoPopup('Address length is too long');
             return false;
         } else {
@@ -169,29 +475,29 @@ export default class MiningApp extends React.Component {
                 if (this.checkInputValueLenght(inputValue)) {
                     if (this.checkInputValuePrefix(inputValue)) {
                         if (this.state.active) {
-                            this.setState({
+                            this.setState(() => ({
                                 active: false,
                                 stopping: true
-                            });
+                            }));
                             this.openInfoPopup('Stopping miner...');
                             setTimeout(() => {
-                                this.setState({
+                                this.setState(() => ({
                                     mining_info: false,
                                     mining_info_text: '',
                                     stopping: false
-                                });
+                                }));
                             }, 5000);
                             this.stopMining();
                         } else {
-                            this.setState({
+                            this.setState(() => ({
                                 active: true,
                                 starting: true
-                            });
+                            }));
                             this.openInfoPopup('Starting miner...');
                             setTimeout(() => {
-                                this.setState({
+                                this.setState(() => ({
                                     starting: false
-                                });
+                                }));
                                 this.openInfoPopup('Mining in progress');
                             }, 12000);
                             this.startMining();
@@ -242,7 +548,9 @@ export default class MiningApp extends React.Component {
     stopMining() {
         console.log("Ending mining...");
         clearInterval(this.state.checkStatusInterval);
-        this.setState({hashrate: 0})
+        this.setState(() => ({
+            hashrate: 0
+        }));
         this.miner.stopMining();
         console.log("Mining ended");
     }
@@ -254,19 +562,20 @@ export default class MiningApp extends React.Component {
         console.log(this.miner.getStatus(), this.state.hashrate);
     }
 
-    newWallet(){
-        const seed   = sa.sc_reduce32(sa.rand_32());
-        const keys   = sa.create_address(seed);
+    newWallet() {
+        const seed = sa.sc_reduce32(sa.rand_32());
+        const keys = sa.create_address(seed);
         const pubkey = sa.pubkeys_to_string(keys.spend.pub, keys.view.pub);
 
         localStorage.setItem('wallet', JSON.stringify(keys));
-        this.setState({
+
+        this.setState(() => ({
             exported: false,
             new_wallet_generated: true,
             new_wallet: pubkey,
             spendkey_sec: keys.spend.sec,
             viewkey_sec: keys.view.sec,
-        })
+        }));
     }
 
     exportWallet() {
@@ -275,18 +584,18 @@ export default class MiningApp extends React.Component {
 
         keys += "Public address: " + wallet_data.public_addr + '\n';
         keys += "Spendkey " + '\n';
-        keys += "pub: "     + wallet_data.spend.pub + '\n';
-        keys += "sec: "     + wallet_data.spend.sec + '\n';
-        keys += "Viewkey "  + '\n';
-        keys += "pub: "     + wallet_data.view.pub + '\n';
-        keys += "sec: "     + wallet_data.view.sec + '\n';
+        keys += "pub: " + wallet_data.spend.pub + '\n';
+        keys += "sec: " + wallet_data.spend.sec + '\n';
+        keys += "Viewkey " + '\n';
+        keys += "pub: " + wallet_data.view.pub + '\n';
+        keys += "sec: " + wallet_data.view.sec + '\n';
         var date = Date.now();
 
         fileDownload(keys, date + 'unsafex.txt');
 
-        this.setState({
+        this.setState(() => ({
             exported: true
-        })
+        }));
     }
 
     footerLink() {
@@ -302,10 +611,10 @@ export default class MiningApp extends React.Component {
         return (
             <div className="mining-app-wrap">
                 <div className="mining-bg-wrap">
-                    <img className={this.state.active || this.state.stopping ? "rotating" : ""} src="images/circles.png" alt="Circles"/>
+                    <img className={this.state.active || this.state.stopping ? "rotating" : ""} src="images/circles.png" alt="Circles" />
                 </div>
                 <header className="animated fadeIn">
-                    <img src="images/logo.png" alt="Logo"/>
+                    <img src="images/logo.png" alt="Logo" />
                     <p className="animated fadeIn">{packageJson.version}</p>
                 </header>
 
@@ -318,10 +627,10 @@ export default class MiningApp extends React.Component {
                     </button>
                     <form onSubmit={this.handleSubmit}>
                         <div className="address-wrap">
-                            <img src="images/line-left.png" alt="Line Left"/>
+                            <img src="images/line-left.png" alt="Line Left" />
                             <input type="text" placeholder="Safex address" name="user_wallet" id="user_wallet"
-                                disabled={this.state.active ? "disabled" : ""}/>
-                            <img src="images/line-right.png" alt="Line Right"/>
+                                disabled={this.state.active ? "disabled" : ""} />
+                            <img src="images/line-right.png" alt="Line Right" />
                         </div>
 
                         <select className="pool-url" name="pool" id="pool" disabled={this.state.active ? "disabled" : ""}>
@@ -345,34 +654,34 @@ export default class MiningApp extends React.Component {
                         </div>
                         {
                             this.state.active
-                            ?
+                                ?
                                 <div>
                                     {
                                         this.state.starting
-                                        ?
+                                            ?
                                             <button type="submit" className="submit button-shine active" disabled>
                                                 Starting
                                             </button>
-                                        :
+                                            :
                                             <button type="submit" className="submit button-shine active">
                                                 Stop
                                             </button>
                                     }
                                 </div>
 
-                            :
+                                :
                                 <div>
-                                {
-                                    this.state.stopping
-                                    ?
-                                        <button type="submit" className="submit button-shine active" disabled={this.state.active || this.state.stopping ? "disabled" : ""}>
-                                            <span>Stopping</span>
-                                        </button>
-                                    :
-                                        <button type="submit" className="submit button-shine" disabled={this.state.active || this.state.stopping ? "disabled" : ""}>
-                                            <span>Start</span>
-                                        </button>
-                                }
+                                    {
+                                        this.state.stopping
+                                            ?
+                                            <button type="submit" className="submit button-shine active" disabled={this.state.active || this.state.stopping ? "disabled" : ""}>
+                                                <span>Stopping</span>
+                                            </button>
+                                            :
+                                            <button type="submit" className="submit button-shine" disabled={this.state.active || this.state.stopping ? "disabled" : ""}>
+                                                <span>Start</span>
+                                            </button>
+                                    }
                                 </div>
                         }
                         <p className={this.state.mining_info ? "mining-info active" : "mining-info"}>
@@ -384,14 +693,19 @@ export default class MiningApp extends React.Component {
                         <p className="blue-text">hashrate:</p>
                         <p className="white-text">{this.state.hashrate} H/s</p>
                     </div>
+
+                    <button className="button-shine balance-wallet-btn" onClick={this.openBalanceModal}>
+                        CHECK BALANCE
+                    </button>
                 </div>
 
                 <footer className="animated fadeIn">
                     <p>powered by</p>
                     <a onClick={this.footerLink} title="Visit our site">
-                        <img src="images/balkaneum.png" alt="Balkaneum"/>
+                        <img src="images/balkaneum.png" alt="Balkaneum" />
                     </a>
                 </footer>
+
 
                 <div className={this.state.modal_active ? 'modal active' : 'modal'}>
                     <span className="close" onClick={this.closeModal}>X</span>
@@ -401,20 +715,20 @@ export default class MiningApp extends React.Component {
 
                     <div className="form-group">
                         <label htmlFor="new-address">Your new wallet address:</label>
-                        <textarea placeholder="New Wallet Address" value={this.state.new_wallet} rows="2" onChange={({target: {value}}) => this.setState({value, copied: false})} readOnly >
+                        <textarea placeholder="New Wallet Address" value={this.state.new_wallet} rows="2" onChange={({ target: { value } }) => this.setState({ value, copied: false })} readOnly >
 
                         </textarea>
                         <div className={this.state.new_wallet_generated ? "spendview active" : "spendview"}>
                             {
                                 this.state.copied
-                                ?
-                                    <CopyToClipboard text={this.state.new_wallet} onCopy={() => this.setState({copied: true})} className="button-shine copy-btn" disabled={this.state.new_wallet === '' ? "disabled" : ""}>
+                                    ?
+                                    <CopyToClipboard text={this.state.new_wallet} onCopy={() => this.setState({ copied: true })} className="button-shine copy-btn" disabled={this.state.new_wallet === '' ? "disabled" : ""}>
                                         <button>
                                             Copied Address
                                         </button>
                                     </CopyToClipboard>
-                                :
-                                    <CopyToClipboard text={this.state.new_wallet} onCopy={() => this.setState({copied: true})} className="button-shine copy-btn" disabled={this.state.new_wallet === '' ? "disabled" : ""}>
+                                    :
+                                    <CopyToClipboard text={this.state.new_wallet} onCopy={() => this.setState({ copied: true })} className="button-shine copy-btn" disabled={this.state.new_wallet === '' ? "disabled" : ""}>
                                         <button>
                                             Copy Address
                                         </button>
@@ -423,13 +737,13 @@ export default class MiningApp extends React.Component {
 
                             {
                                 this.state.exported
-                                ?
+                                    ?
                                     <h5 className="warning green">
                                         Wallet keys have been successfuly saved.
                                         Please do not share your keys with others and keep them safe at all times.
                                         Good luck!
                                     </h5>
-                                :
+                                    :
                                     <h5 className="warning red">
                                         The following keys are to control your coins, do not share them.
                                         Keep your keys for yourself only!
@@ -445,11 +759,11 @@ export default class MiningApp extends React.Component {
 
                             {
                                 this.state.exported
-                                ?
+                                    ?
                                     <button className="save-btn green" onClick={this.exportWallet}>
                                         Wallet Keys Saved
                                     </button>
-                                :
+                                    :
                                     <button className="save-btn" onClick={this.exportWallet}>
                                         Save Wallet Keys
                                     </button>
@@ -458,62 +772,154 @@ export default class MiningApp extends React.Component {
                     </div>
                 </div>
 
+
                 <div className={this.state.instructions_modal_active ? 'modal instructions-modal active' : 'modal instructions-modal'}>
-                    <span className="close" onClick={this.closeInstructionsModal}>X</span>
+                    <span className="close" onClick={this.closeModal}>X</span>
                     <div className="lang-bts-wrap">
                         <button className={this.state.instructions_lang === 'english' ? "button-shine active" : "button-shine"} onClick={this.changeInstructionLang.bind(this, 'english')}>EN</button>
                         <button className={this.state.instructions_lang === 'serbian' ? "button-shine active" : "button-shine"} onClick={this.changeInstructionLang.bind(this, 'serbian')}>SRB</button>
                     </div>
-                        {
-                            this.state.instructions_lang === 'english'
+                    {
+                        this.state.instructions_lang === 'english'
                             ?
-                                <div>
-                                    <h3>Instructions</h3>
-                                    <p>
-                                        If you don't already have a Safex Wallet, click the <button>new wallet</button> button.
+                            <div>
+                                <h3>Instructions</h3>
+                                <p>
+                                    If you don't already have a Safex Wallet, click the <button>new wallet</button> button.
                                         In the dialog box, click <button>generate new wallet</button> which will create new Safex Wallet. Be sure to
                                         <button className="red-btn red-btn-en">save wallet keys</button> before proceeding.
                                     </p>
-                                    <p>
-                                        <strong>
-                                            Wallet keys are made to control your coins, make sure you keep them safe at all times.
-                                            If your keys get stolen it can and will result in total loss of your Safex Cash.
+                                <p>
+                                    <strong>
+                                        Wallet keys are made to control your coins, make sure you keep them safe at all times.
+                                        If your keys get stolen it can and will result in total loss of your Safex Cash.
                                         </strong>
+                                </p>
+                                <p className="warning green">
+                                    Once your wallet keys are saved, you are ready to start mining. <button className="green-btn">wallet keys saved</button>
+                                </p>
+                                <p>
+                                    Enter you wallet address in the Safex Address field, select one of the pools you want to connect to, choose how much CPU power you want to use for mining and click start to begin.
+                                    That's it, mining will start in a couple of seconds. Good luck!
                                     </p>
-                                    <p className="warning green">
-                                        Once your wallet keys are saved, you are ready to start mining. <button className="green-btn">wallet keys saved</button>
-                                    </p>
-                                    <p>
-                                        Enter you wallet address in the Safex Address field, select one of the pools you want to connect to, choose how much CPU power you want to use for mining and click start to begin.
-                                        That's it, mining will start in a couple of seconds. Good luck!
-                                    </p>
-                                </div>
+                            </div>
                             :
-                                <div>
-                                    <h3>Uputstvo</h3>
-                                    <p>
-                                        Ako nemate Safex Wallet, kliknite <button>new wallet</button> dugme.
+                            <div>
+                                <h3>Uputstvo</h3>
+                                <p>
+                                    Ako nemate Safex Wallet, kliknite <button>new wallet</button> dugme.
                                         U dialog prozoru kliknite <button className="gen-new-wallet-sr">generate new wallet</button> dugme koje će kreirati novi Safex Wallet.
                                         Obavezno sačuvajte Vaše ključeve <button className="red-btn">save wallet keys</button> pre nego što nastavite.
                                     </p>
-                                    <p>
-                                        <strong>
-                                            Ovi ključevi kontrolišu Vaše novčiće, zato ih uvek čuvajte na bezbednom.
-                                            Ako Vaši ključevi budu ukradeni sigurno ćete izgubiti sav Vaš Safex Cash.
+                                <p>
+                                    <strong>
+                                        Ovi ključevi kontrolišu Vaše novčiće, zato ih uvek čuvajte na bezbednom.
+                                        Ako Vaši ključevi budu ukradeni sigurno ćete izgubiti sav Vaš Safex Cash.
                                         </strong>
+                                </p>
+                                <p className="warning green">
+                                    Sačuvajte Vaše ključeve, i spremni ste da počnete sa rudarenjem. <button className="green-btn">wallet keys saved</button>
+                                </p>
+                                <p>
+                                    Ukucajte adresu Vašeg wallet-a u predviđeno polje, izaberite pool na koji želite da se povežete, izaberite koliku procesorku snagu želite da koristite i počnite sa rudarenjem.
+                                    To je to, rudarenje će početi za par sekundi. Srećno!
                                     </p>
-                                    <p className="warning green">
-                                        Sačuvajte Vaše ključeve, i spremni ste da počnete sa rudarenjem. <button className="green-btn">wallet keys saved</button>
-                                    </p>
-                                    <p>
-                                        Ukucajte adresu Vašeg wallet-a u predviđeno polje, izaberite pool na koji želite da se povežete, izaberite koliku procesorku snagu želite da koristite i počnite sa rudarenjem.
-                                        To je to, rudarenje će početi za par sekundi. Srećno!
-                                    </p>
-                                </div>
-                        }
+                            </div>
+                    }
                 </div>
 
-                <div className={this.state.modal_active || this.state.instructions_modal_active ? 'backdrop active' : 'backdrop'} onClick={this.state.modal_active ? this.closeModal : this.closeInstructionsModal}>
+                <div className={this.state.balance_modal_active ? 'modal balance-modal active' : 'modal balance-modal'}>
+                    <span className="close" onClick={this.closeModal}>X</span>
+
+                    {/* <button>my wallets</button>
+                    <button>enter new wallet</button> */}
+
+                    {
+                        this.state.wallet_exists
+                            ?
+                            <div className="wallet-exists">
+                                <button className="back" onClick={this.backToBalanceModal}>Go back</button>
+                                <label htmlFor="selected_balance_address">Safex Wallet Address</label>
+                                <textarea placeholder="Safex Wallet Address" name="selected_balance_address" value={this.state.balance_wallet} rows="2" readOnly />
+
+                                <div className="groups-wrap">
+                                    <div className="form-group">
+                                        <label htmlFor="balance">Balance</label>
+                                        <input type="text" placeholder="Balance" name="balance" value={this.state.balance} readOnly />
+                                        <label htmlFor="unlocked_balance">Unlocked Balance</label>
+                                        <input type="text" placeholder="Unlocked balance" name="unlocked_balance" value={this.state.unlocked_balance} readOnly />
+                                        <button onClick={this.setOpenSendCash}>Send Cash</button>
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label htmlFor="tokens">Tokens</label>
+                                        <input type="text" placeholder="Tokens" value={this.state.tokens} readOnly />
+                                        <label htmlFor="unlocked_tokens">Unlocked Tokens</label>
+                                        <input type="text" placeholder="Unlocked Tokens" name="unlocked_tokens" value={this.state.unlocked_tokens} readOnly />
+                                        <button onClick={this.setOpenSendTokens}>Send Tokens</button>
+                                    </div>
+                                </div>
+
+                                {/* <input type="text" placeholder="Wallet pass" defaultValue={this.state.wallet_password} /> */}
+                            </div>
+                            :
+
+                            // <div>
+                            //     {
+                            //         this.state.enter_balance_address
+                            //             ?
+                            //             <div className="no-wallet">
+                            //                 <form onSubmit={this.startBalanceCheck}>
+                            //                     <label htmlFor="wallet_balance_address">Safex Wallet Address</label>
+                            //                     <textarea placeholder="Enter Safex Wallet Address" name="wallet_balance_address" defaultValue={this.state.balance_wallet} rows="2" />
+                            //                     <label htmlFor="wallet_balance_private_view_key">Safex Address Private View Key</label>
+                            //                     <input type="text" placeholder="Enter Safex Address Private View Key" name="wallet_balance_private_view_key" defaultValue={this.state.balance_view_key} />
+                            //                     <label htmlFor="wallet_balance_private_spend_key">Safex Address Private Spend Key</label>
+                            //                     <input type="text" placeholder="Enter Safex Address Private Spend Key" name="wallet_balance_private_spend_key" defaultValue={this.state.balance_spend_key} />
+                            //                     <button type="submit">
+                            //                         Check balance
+                            //                     </button>
+                            //                 </form>
+                            //             </div>
+                            //             :
+                            //             <div></div>
+                            //     }
+                            // </div>
+
+                            <div className="no-wallet">
+                                <form onSubmit={this.startBalanceCheck}>
+                                    <label htmlFor="wallet_balance_address">Safex Wallet Address</label>
+                                    <textarea placeholder="Enter Safex Wallet Address" name="wallet_balance_address" defaultValue={this.state.balance_wallet} rows="2" />
+                                    <label htmlFor="wallet_balance_private_view_key">Safex Address Private View Key</label>
+                                    <input type="text" placeholder="Enter Safex Address Private View Key" name="wallet_balance_private_view_key" defaultValue={this.state.balance_view_key} />
+                                    <label htmlFor="wallet_balance_private_spend_key">Safex Address Private Spend Key</label>
+                                    <input type="text" placeholder="Enter Safex Address Private Spend Key" name="wallet_balance_private_spend_key" defaultValue={this.state.balance_spend_key} />
+                                    <button type="submit">
+                                        Check balance
+                                    </button>
+                                </form>
+                            </div>
+                    }
+
+                    <BalanceAlert
+                        balanceAlert={this.state.balance_alert}
+                        balanceAlertText={this.state.balance_alert_text}
+                        closeBalanceAlert={this.setCloseBalanceAlert}
+
+                    />
+
+                    <SendModal
+                        send_cash={this.state.send_cash}
+                        send_token={this.state.send_token}
+                        fromAddress={this.state.balance_wallet}
+                        closeSendPopup={this.setCloseSendPopup}
+                        sendCash={this.sendCash}
+                        sendToken={this.sendToken}
+                    />
+
+                </div>
+
+                <div className={this.state.modal_active || this.state.instructions_modal_active || this.state.balance_modal_active ? 'backdrop active' : 'backdrop'} onClick={this.closeModal}>
                 </div>
             </div>
         );
