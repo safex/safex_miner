@@ -325,34 +325,38 @@ export default class MiningApp extends React.Component {
 
         promise = safex.openWallet(args);
 
-        promise.then((w) => {
-            wallet = w;
+        if (sendingAddress === '' || amount === '') {
+            this.setOpenBalanceAlert('Fill out all the fields');
+        } else {
+            promise.then((w) => {
+                wallet = w;
 
-            wallet.createTransaction({
-                'address': sendingAddress,
-                'amount': amount,
-                'tx_type': 0 // cash transaction
-            }).then((tx) => {
-                console.log("Cash transaction created: " + tx.transactionsIds());
+                wallet.createTransaction({
+                    'address': sendingAddress,
+                    'amount': amount,
+                    'tx_type': 0 // cash transaction
+                }).then((tx) => {
+                    console.log("Cash transaction created: " + tx.transactionsIds());
 
-                tx.commit().then(() => {
-                    console.log("Transaction commited successfully");
-                    this.setCloseSendPopup();
-                    this.setOpenBalanceAlert('Transaction commited successfully');
+                    tx.commit().then(() => {
+                        console.log("Transaction commited successfully");
+                        this.setCloseSendPopup();
+                        this.setOpenBalanceAlert('Transaction commited successfully');
 
+                    }).catch((e) => {
+                        console.log("Error on commiting transaction: " + e);
+                        this.setOpenBalanceAlert("Error on commiting transaction: " + e);
+                    });
                 }).catch((e) => {
-                    console.log("Error on commiting transaction: " + e);
-                    this.setOpenBalanceAlert("Error on commiting transaction: " + e);
+                    console.log("Couldn't create transaction: " + e);
+                    this.setOpenBalanceAlert("Couldn't create transaction: " + e);
                 });
-            }).catch((e) => {
-                console.log("Couldn't create transaction: " + e);
-                this.setOpenBalanceAlert("Couldn't create transaction: " + e);
-            });
-        })
-            .catch((e) => {
-                console.log("Error parsing wallet file: " + e);
-                this.setOpenBalanceAlert("Error parsing wallet file: " + e);
-            });
+            })
+                .catch((e) => {
+                    console.log("Error parsing wallet file: " + e);
+                    this.setOpenBalanceAlert("Error parsing wallet file: " + e);
+                });
+        }
     }
 
     sendToken(e) {
@@ -374,34 +378,38 @@ export default class MiningApp extends React.Component {
 
         promise = safex.openWallet(args);
 
-        promise.then((w) => {
-            wallet = w;
+        if (sendingAddress === '' || amount === '') {
+            this.setOpenBalanceAlert('Fill out all the fields');
+        } else {
+            promise.then((w) => {
+                wallet = w;
 
-            wallet.createTransaction({
-                'address': sendingAddress,
-                'amount': amount,
-                'tx_type': 1 // token transaction
-            }).then((tx) => {
-                console.log("Cash transaction created: " + tx.transactionsIds());
+                wallet.createTransaction({
+                    'address': sendingAddress,
+                    'amount': amount,
+                    'tx_type': 1 // token transaction
+                }).then((tx) => {
+                    console.log("Cash transaction created: " + tx.transactionsIds());
 
-                tx.commit().then(() => {
-                    console.log("Transaction commited successfully");
-                    this.setCloseSendPopup();
-                    this.setOpenBalanceAlert('Transaction commited successfully');
+                    tx.commit().then(() => {
+                        console.log("Transaction commited successfully");
+                        this.setCloseSendPopup();
+                        this.setOpenBalanceAlert('Transaction commited successfully');
 
+                    }).catch((e) => {
+                        console.log("Error on commiting transaction: " + e);
+                        this.setOpenBalanceAlert("Error on commiting transaction: " + e);
+                    });
                 }).catch((e) => {
-                    console.log("Error on commiting transaction: " + e);
-                    this.setOpenBalanceAlert("Error on commiting transaction: " + e);
+                    console.log("Couldn't create transaction: " + e);
+                    this.setOpenBalanceAlert("Couldn't create transaction: " + e);
                 });
-            }).catch((e) => {
-                console.log("Couldn't create transaction: " + e);
-                this.setOpenBalanceAlert("Couldn't create transaction: " + e);
-            });
-        })
-            .catch((e) => {
-                console.log("Error parsing wallet file: " + e);
-                this.setOpenBalanceAlert("Error parsing wallet file: " + e);
-            });
+            })
+                .catch((e) => {
+                    console.log("Error parsing wallet file: " + e);
+                    this.setOpenBalanceAlert("Error parsing wallet file: " + e);
+                });
+        }
     }
 
     closeModal() {
