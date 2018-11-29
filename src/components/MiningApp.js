@@ -421,7 +421,10 @@ export default class MiningApp extends React.Component {
             modal_active: false,
             instructions_modal_active: false,
             balance_modal_active: false,
-            balance_alert: false
+            balance_alert: false,
+            balance_alert: false,
+            send_cash: false,
+            send_token: false
         }));
     }
 

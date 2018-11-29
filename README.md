@@ -8,7 +8,7 @@ You can download the latest release from (https://github.com/safex/safex_miner/r
 
 ## Development
 
-#### Backend:
+### Backend:
 
 To start project backend
 
