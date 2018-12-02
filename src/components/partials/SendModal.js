@@ -22,7 +22,7 @@ export default class SendModal extends React.Component {
                                         <textarea name="send_to" placeholder="Enter Safex Wallet Address" rows="2" />
 
                                         <label htmlFor="amount">Amount</label>
-                                        <input name="amount" placeholder="Enter Amount"></input>
+                                        <input name="amount" placeholder="Enter Amount" />
                                         <button type="submit">Send</button>
                                     </form>
                                 </div>
@@ -41,7 +41,7 @@ export default class SendModal extends React.Component {
                                                     <textarea name="send_to" placeholder="Enter Safex Wallet Address" rows="2" />
 
                                                     <label htmlFor="amount">Amount</label>
-                                                    <input name="amount" placeholder="Enter Amount"></input>
+                                                    <input name="amount" placeholder="Enter Amount" />
                                                     <button type="submit">Send</button>
                                                 </form>
                                             </div>
