@@ -62,8 +62,8 @@ export default class MiningApp extends React.Component {
             mining_address: '',
             wallet_password: '',
             wallet_path: '',
-            spendkey_sec: '',
-            viewkey_sec: '',
+            spend_key: '',
+            view_key: '',
 
             jsonConfig: {
                 "algo": "cryptonight/2",
@@ -148,9 +148,6 @@ export default class MiningApp extends React.Component {
 
 
     create_new_wallet(e) {
-
-
-
         e.preventDefault();
 
         const pass1 = e.target.pass1.value;
@@ -173,25 +170,35 @@ export default class MiningApp extends React.Component {
                         'daemonAddress': 'rpc.safex.io:17402',
                     }
 
-                    var promise = null;
-
                     if (!safex.walletExists(filepath)) {
                         this.setState(() => ({
                             wallet_exists: false
                         }));
                         console.log("wallet doesn't exist. creating new one: " + this.state.wallet_path);
 
-                        promise = safex.createWallet(args);
+                        safex.createWallet(args)
+                            .then((wallet) => {
+                                this.setState({
+                                    mining_address: wallet.address(),
+                                    spend_key: wallet.secretSpendKey(),
+                                    view_key: wallet.secretViewKey(),
+                                });
+                                console.log('wallet address  ' + wallet.address());
+                                console.log('wallet view private key  ' + wallet.secretViewKey());
+                                console.log('wallet spend private key  ' + wallet.secretSpendKey());
+                            })
+                            .catch((err) => {
+                                alert('error with the creation of the wallet ' + err)
+                            });
 
                     } else {
                         this.setState(() => ({
                             wallet_exists: true
                         }));
-                        console.log("wallet already exists. Please choose a different file name  " +
+                        alert("wallet already exists. Please choose a different file name  " +
                             "this application does not enable overwriting an existing wallet file" +
                             "OR you can open it using the Load Existing Wallet");
                     }
-
 
                 } else {
 
@@ -199,8 +206,6 @@ export default class MiningApp extends React.Component {
 
 
                 }
-
-
 
             }
         });
@@ -784,7 +789,7 @@ export default class MiningApp extends React.Component {
                     <form onSubmit={this.handleSubmit}>
                         <div className="address-wrap">
                             <img src="images/line-left.png" alt="Line Left" />
-                            <input type="text" placeholder="Safex address" name="user_wallet" id="user_wallet"
+                            <input type="text" value={this.state.mining_address} placeholder="Safex address" name="user_wallet" id="user_wallet"
                                 disabled={this.state.active ? "disabled" : ""} />
                             <img src="images/line-right.png" alt="Line Right" />
                         </div>
