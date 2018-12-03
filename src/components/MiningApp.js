@@ -59,7 +59,7 @@ export default class MiningApp extends React.Component {
 
             //wallet state settings
 
-
+            wallet: {},
             wallet_exists: false,
             mining_address: '',
             wallet_password: '',
@@ -167,6 +167,7 @@ export default class MiningApp extends React.Component {
                 safex.openWallet(args)
                     .then((wallet) => {
                         this.setState({
+                            wallet: wallet,
                             mining_address: wallet.address(),
                             spend_key: wallet.secretSpendKey(),
                             view_key: wallet.secretViewKey(),
@@ -175,7 +176,6 @@ export default class MiningApp extends React.Component {
                     .catch((err) => {
                         alert('error opening the wallet ' + err)
                     })
-
             }
         });
     }
@@ -256,20 +256,65 @@ export default class MiningApp extends React.Component {
         var safex_address = e.target.address.value;
         var view_key = e.target.viewkey.value;
         var spend_key = e.target.spendkey.value;
+        var pass1 = e.target.pass1.value;
+        var pass2 = e.target.pass2.value;
 
-        if (verify_safex_address(spend_key, view_key, safex_address)) {
-            dialog.showSaveDialog((filepath) => {
-                if (filepath !== undefined) {
+        if (pass1 === pass2) {
+            if (verify_safex_address(spend_key, view_key, safex_address)) {
+                dialog.showSaveDialog((filepath) => {
+                    if (filepath !== undefined) {
 
-                    this.setState({wallet_path: filepath});
+                        this.setState({wallet_path: filepath});
+                        var args = {
+                            'path': this.state.wallet_path,
+                            'password': '123',
+                            'network': 'mainnet',
+                            'daemonAddress': 'rpc.safex.io:17402',
+                            'restoreHeight': 0,
+                            'addressString': safex_address,
+                            'viewKeyString': view_key,
+                            'spendKeyString': spend_key
+                        }
+                        if (!safex.walletExists(filepath)) {
+                            this.setState(() => ({
+                                wallet_exists: false
+                            }));
+                            console.log("wallet doesn't exist. creating new one: " + this.state.wallet_path);
+
+                            safex.createWallet(args)
+                                .then((wallet) => {
+                                    this.setState({
+                                        mining_address: wallet.address(),
+                                        spend_key: wallet.secretSpendKey(),
+                                        view_key: wallet.secretViewKey(),
+                                    });
+                                    console.log('wallet address  ' + wallet.address());
+                                    console.log('wallet view private key  ' + wallet.secretViewKey());
+                                    console.log('wallet spend private key  ' + wallet.secretSpendKey());
+                                })
+                                .catch((err) => {
+                                    alert('error with the creation of the wallet ' + err)
+                                });
+
+                        } else {
+                            this.setState(() => ({
+                                wallet_exists: true
+                            }));
+                            alert("wallet already exists. Please choose a different file name  " +
+                                "this application does not enable overwriting an existing wallet file" +
+                                "OR you can open it using the Load Existing Wallet");
+                        }
 
 
-                }
-            });
+                    }
+                });
 
+            } else {
+                console.log('Incorrect keys');
+                this.setOpenBalanceAlert('Incorrect keys');
+            }
         } else {
-            console.log('Incorrect keys');
-            this.setOpenBalanceAlert('Incorrect keys');
+            alert('passwords dont match')
         }
 
 
