@@ -241,7 +241,7 @@ export default class MiningApp extends React.Component {
                                 wallet_exists: true
                             }));
                             this.setOpenBalanceAlert("Wallet already exists. Please choose a different file name  " +
-                                "this application does not enable overwriting an existing wallet file" +
+                                "this application does not enable overwriting an existing wallet file " +
                                 "OR you can open it using the Load Existing Wallet");
                         }
                     }
@@ -277,7 +277,7 @@ export default class MiningApp extends React.Component {
                             this.setState({ wallet_path: filepath });
                             var args = {
                                 'path': this.state.wallet_path,
-                                'password': '123',
+                                'password': pass1,
                                 'network': 'mainnet',
                                 'daemonAddress': 'rpc.safex.io:17402',
                                 'restoreHeight': 0,
@@ -311,7 +311,7 @@ export default class MiningApp extends React.Component {
                                     wallet_exists: true
                                 }));
                                 this.setOpenBalanceAlert("Wallet already exists. Please choose a different file name  " +
-                                    "this application does not enable overwriting an existing wallet file" +
+                                    "this application does not enable overwriting an existing wallet file " +
                                     "OR you can open it using the Load Existing Wallet");
                             }
                         }
@@ -427,7 +427,7 @@ export default class MiningApp extends React.Component {
                     wallet.on('newBlock', (height) => {
                         if (height - lastHeight > 60) {
                             console.log("blockchain updated, height: " + height);
-                            this.setOpenBalanceAlert('Please wait while blockchain is being updated');
+                            this.setOpenBalanceAlert('Please wait while blockchain is being updated, height ' + height);
                             lastHeight = height;
                         }
                     });
