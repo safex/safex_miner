@@ -19,6 +19,7 @@ import {
     openSendTokenPopup,
     closeSendPopup
 } from '../utils/balance';
+
 import BalanceAlert from './partials/BalanceAlert';
 import SendModal from './partials/SendModal';
 import CreateNewWalletModal from './partials/CreateNewWalletModal';
@@ -181,6 +182,7 @@ export default class MiningApp extends React.Component {
                             spend_key: wallet.secretSpendKey(),
                             view_key: wallet.secretViewKey(),
                         });
+                        this.closeModal();
                     })
                     .catch((err) => {
                         alert('error opening the wallet ' + err)
@@ -222,6 +224,7 @@ export default class MiningApp extends React.Component {
                                 console.log('wallet address  ' + wallet.address());
                                 console.log('wallet view private key  ' + wallet.secretViewKey());
                                 console.log('wallet spend private key  ' + wallet.secretSpendKey());
+                                this.closeModal();
                             })
                             .catch((err) => {
                                 alert('error with the creation of the wallet ' + err)
@@ -287,6 +290,7 @@ export default class MiningApp extends React.Component {
                                     console.log('wallet address  ' + wallet.address());
                                     console.log('wallet view private key  ' + wallet.secretViewKey());
                                     console.log('wallet spend private key  ' + wallet.secretSpendKey());
+                                    this.closeModal();
                                 })
                                 .catch((err) => {
                                     alert('error with the creation of the wallet ' + err)
@@ -842,8 +846,9 @@ export default class MiningApp extends React.Component {
                 </header>
 
                 <div className="main animated fadeIn">
-                    <button className="button-shine new-wallet-btn" onClick={this.openModal}>
-                        New wallet
+                    <button className="button-shine modal-btn" onClick={this.openModal}
+                        title="Generate New Wallet">
+                        <img src="images/new.png" alt="open-logo" />
                     </button>
                     <button className="button-shine modal-btn" onClick={this.openCreateWalletModal}
                         title="Create New Wallet File">
@@ -1146,7 +1151,6 @@ export default class MiningApp extends React.Component {
                         balanceAlert={this.state.balance_alert}
                         balanceAlertText={this.state.balance_alert_text}
                         closeBalanceAlert={this.setCloseBalanceAlert}
-
                     />
 
                     <SendModal

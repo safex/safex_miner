@@ -15,24 +15,24 @@ export default class CreateFromKeysModal extends React.Component {
                             <div className="form-wrap">
                                 <div className="form-group">
                                     <label htmlFor="path">Wallet Path</label>
-                                    <input name="path" value={this.props.walletPath} />
+                                    <input name="path" value={this.props.walletPath} placeholder="Wallet Path" />
 
                                     <label htmlFor="address">Safex Address</label>
-                                    <input name="address" />
+                                    <input name="address" placeholder="Address" />
                                 </div>
 
                                 <div className="form-group">
                                     <label htmlFor="spendkey">Safex Address Private Spendkey</label>
-                                    <input name="spendkey" />
+                                    <input name="spendkey" placeholder="Private Spendkey" />
 
                                     <label htmlFor="viewkey">Safex Address Private Viewkey</label>
-                                    <input name="viewkey" />
+                                    <input name="viewkey" placeholder="Private Viewkey" />
 
                                     <label htmlFor="pass1">Password</label>
-                                    <input name="pass1" />
+                                    <input name="pass1" placeholder="Password" />
 
                                     <label htmlFor="pass1">Repeat Password</label>
-                                    <input name="pass2" />
+                                    <input name="pass2" placeholder="Repeat Password" />
                                 </div>
                             </div>
 

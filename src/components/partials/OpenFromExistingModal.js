@@ -15,7 +15,7 @@ export default class OpenFromExistingModal extends React.Component {
                             <label htmlFor="path">Wallet Path</label>
                             <input name="path" value={this.props.walletPath} placeholder="Wallet Path" />
 
-                            <label htmlFor="path">Wallet Passwordd</label>
+                            <label htmlFor="path">Wallet Password</label>
                             <input name="pass" placeholder="Wallet Password" />
 
                             <button type="submit" className="button-shine new-wallet-btn">
