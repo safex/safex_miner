@@ -911,7 +911,7 @@ export default class MiningApp extends React.Component {
                         <div className="address-wrap">
                             <img src="images/line-left.png" alt="Line Left" />
                             <input type="text" value={this.state.mining_address} placeholder="Safex address"
-                                name="user_wallet" id="user_wallet"
+                                name="user_wallet" id="user_wallet" readOnly
                                 disabled={this.state.active ? "disabled" : ""} />
                             <img src="images/line-right.png" alt="Line Right" />
                         </div>
