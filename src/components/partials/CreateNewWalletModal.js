@@ -1,4 +1,5 @@
 import React from "react";
+import BalanceAlert from './BalanceAlert';
 
 export default class CreateNewWalletModal extends React.Component {
     render() {
@@ -26,6 +27,12 @@ export default class CreateNewWalletModal extends React.Component {
                             </button>
                         </form>
                     </div>
+
+                    <BalanceAlert
+                        balanceAlert={this.props.balanceAlert}
+                        balanceAlertText={this.props.balanceAlertText}
+                        closeBalanceAlert={this.props.closeBalanceAlert}
+                    />
                 </div>
 
                 <div className={this.props.createNewWalletModal

@@ -24,7 +24,7 @@ header {
   text-align: center;
   width: 100%;
   z-index: 1;
-  margin: -30px 0 35px;
+  margin: -30px 0 25px;
   position: relative;
   animation-delay: .3s;
 }
@@ -45,29 +45,9 @@ header p {
   text-align: center;
   animation-delay: .3s;
 }
-.new-wallet-btn {
-  border-radius: 7px;
-  background-color: rgba(18, 190, 221, 0.45);
-  color: #fff;
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1.26px;
-  line-height: 1.2;
-  position: relative;
-  border: 2px solid #60c9e6;
-  margin: 0px 0 5px 155px;
-  padding: 6px 12px 5px;
-  -webkit-transition: all 0.2s ease-in;
-  -moz-transition: all 0.2s ease-in;
-  transition: all 0.2s ease-in;
-}
-.new-wallet-btn:hover {
-  box-shadow: 0 0 30px 0 rgba(0, 199, 236, 0.5) !important;
-  cursor: pointer;
-}
-.new-wallet-btn:active {
-  box-shadow: none !important;
+.btns-wrap {
+  margin-bottom: 8px;
+  text-align: center;
 }
 .instructions-btn {
   background: transparent;
@@ -182,7 +162,7 @@ header p {
   text-transform: uppercase;
 }
 .main form .pool-url {
-  background: rgba(10, 26, 45, .3);
+  background: rgba(10, 26, 45, .2);
   padding: 7px 10px 6px;
   color: #fff;
   border-radius: 8px;
@@ -419,7 +399,7 @@ footer img {
   text-transform: uppercase;
   font-size: 17px;
   padding: 15px;
-  width: 560px;
+  width: 650px;
   visibility: hidden;
   opacity: 0;
   transition: all ease 0.3s;

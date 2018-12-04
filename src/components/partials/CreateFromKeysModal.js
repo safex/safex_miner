@@ -1,4 +1,5 @@
 import React from "react";
+import BalanceAlert from './BalanceAlert';
 
 export default class CreateFromKeysModal extends React.Component {
     render() {
@@ -18,7 +19,8 @@ export default class CreateFromKeysModal extends React.Component {
                                     <input name="path" value={this.props.walletPath} placeholder="Wallet Path" />
 
                                     <label htmlFor="address">Safex Address</label>
-                                    <input name="address" placeholder="Address" />
+                                    <textarea name="address" placeholder="Address" rows="5">
+                                    </textarea>
                                 </div>
 
                                 <div className="form-group">
@@ -41,6 +43,12 @@ export default class CreateFromKeysModal extends React.Component {
                             </button>
                         </form>
                     </div>
+
+                    <BalanceAlert
+                        balanceAlert={this.props.balanceAlert}
+                        balanceAlertText={this.props.balanceAlertText}
+                        closeBalanceAlert={this.props.closeBalanceAlert}
+                    />
                 </div>
 
                 <div className={this.props.openCreateFromKeysModal

@@ -164,31 +164,35 @@ export default class MiningApp extends React.Component {
         e.preventDefault();
         const pass = e.target.pass.value;
 
-        dialog.showOpenDialog((filepath) => {
-            if (filepath !== undefined) {
-                this.setState({ wallet_path: filepath });
-                var args = {
-                    'path': filepath,
-                    'password': pass,
-                    'network': 'mainnet',
-                    'daemonAddress': 'rpc.safex.io:17402',
-                }
+        if (pass !== '') {
+            dialog.showOpenDialog((filepath) => {
+                if (filepath !== undefined) {
+                    this.setState({ wallet_path: filepath });
+                    var args = {
+                        'path': filepath,
+                        'password': pass,
+                        'network': 'mainnet',
+                        'daemonAddress': 'rpc.safex.io:17402',
+                    }
 
-                safex.openWallet(args)
-                    .then((wallet) => {
-                        this.setState({
-                            wallet: wallet,
-                            mining_address: wallet.address(),
-                            spend_key: wallet.secretSpendKey(),
-                            view_key: wallet.secretViewKey(),
-                        });
-                        this.closeModal();
-                    })
-                    .catch((err) => {
-                        alert('error opening the wallet ' + err)
-                    })
-            }
-        });
+                    safex.openWallet(args)
+                        .then((wallet) => {
+                            this.setState({
+                                wallet: wallet,
+                                mining_address: wallet.address(),
+                                spend_key: wallet.secretSpendKey(),
+                                view_key: wallet.secretViewKey(),
+                            });
+                            this.closeModal();
+                        })
+                        .catch((err) => {
+                            this.setOpenBalanceAlert('Error opening the wallet: ' + err);
+                        })
+                }
+            });
+        } else {
+            this.setOpenBalanceAlert("Enter password for your wallet file");
+        }
     }
 
     create_new_wallet(e) {
@@ -197,82 +201,19 @@ export default class MiningApp extends React.Component {
         const pass1 = e.target.pass1.value;
         const pass2 = e.target.pass2.value;
         console.log(e.target.pass1.value);
-        dialog.showSaveDialog((filepath) => {
-            if (filepath !== undefined) {
-                this.setState({ wallet_path: filepath });
-                //TODO needs additional sanitation on the passwords, length and type of data
-                if (pass1 === pass2) {
-                    var args = {
-                        'path': filepath,
-                        'password': pass1,
-                        'network': 'mainnet',
-                        'daemonAddress': 'rpc.safex.io:17402',
-                    }
-                    if (!safex.walletExists(filepath)) {
-                        this.setState(() => ({
-                            wallet_exists: false
-                        }));
-                        console.log("wallet doesn't exist. creating new one: " + this.state.wallet_path);
 
-                        safex.createWallet(args)
-                            .then((wallet) => {
-                                this.setState({
-                                    mining_address: wallet.address(),
-                                    spend_key: wallet.secretSpendKey(),
-                                    view_key: wallet.secretViewKey(),
-                                });
-                                console.log('wallet address  ' + wallet.address());
-                                console.log('wallet view private key  ' + wallet.secretViewKey());
-                                console.log('wallet spend private key  ' + wallet.secretSpendKey());
-                                this.closeModal();
-                            })
-                            .catch((err) => {
-                                alert('error with the creation of the wallet ' + err)
-                            });
-                    } else {
-                        this.setState(() => ({
-                            wallet_exists: true
-                        }));
-                        alert("wallet already exists. Please choose a different file name  " +
-                            "this application does not enable overwriting an existing wallet file" +
-                            "OR you can open it using the Load Existing Wallet");
-                    }
-                } else {
-                    alert("password 1 and 2 do not match");
-                }
-            }
-        });
-        //pass dialog box
-        //pass password
-        //confirm password
-    }
-
-    create_new_wallet_from_keys(e) {
-        e.preventDefault();
-
-        //here we need the key set
-        //the wallet path desired
-        //the password
-        var safex_address = e.target.address.value;
-        var view_key = e.target.viewkey.value;
-        var spend_key = e.target.spendkey.value;
-        var pass1 = e.target.pass1.value;
-        var pass2 = e.target.pass2.value;
-
-        if (pass1 === pass2) {
-            if (verify_safex_address(spend_key, view_key, safex_address)) {
+        if (pass1 !== '' || pass2 !== '') {
+            if (pass1 === pass2) {
                 dialog.showSaveDialog((filepath) => {
                     if (filepath !== undefined) {
                         this.setState({ wallet_path: filepath });
+                        //TODO needs additional sanitation on the passwords, length and type of data
+
                         var args = {
-                            'path': this.state.wallet_path,
-                            'password': '123',
+                            'path': filepath,
+                            'password': pass1,
                             'network': 'mainnet',
                             'daemonAddress': 'rpc.safex.io:17402',
-                            'restoreHeight': 0,
-                            'addressString': safex_address,
-                            'viewKeyString': view_key,
-                            'spendKeyString': spend_key
                         }
                         if (!safex.walletExists(filepath)) {
                             this.setState(() => ({
@@ -293,25 +234,97 @@ export default class MiningApp extends React.Component {
                                     this.closeModal();
                                 })
                                 .catch((err) => {
-                                    alert('error with the creation of the wallet ' + err)
+                                    this.setOpenBalanceAlert('error with the creation of the wallet ' + err);
                                 });
-
                         } else {
                             this.setState(() => ({
                                 wallet_exists: true
                             }));
-                            alert("wallet already exists. Please choose a different file name  " +
+                            this.setOpenBalanceAlert("Wallet already exists. Please choose a different file name  " +
                                 "this application does not enable overwriting an existing wallet file" +
                                 "OR you can open it using the Load Existing Wallet");
                         }
                     }
                 });
             } else {
-                console.log('Incorrect keys');
-                this.setOpenBalanceAlert('Incorrect keys');
+                this.setOpenBalanceAlert('Repeated password does not match');
+            }
+            //pass dialog box
+            //pass password
+            //confirm password
+        } else {
+            this.setOpenBalanceAlert("Fill out all the fields");
+        }
+    }
+
+    create_new_wallet_from_keys(e) {
+        e.preventDefault();
+
+        //here we need the key set
+        //the wallet path desired
+        //the password
+        var safex_address = e.target.address.value;
+        var view_key = e.target.viewkey.value;
+        var spend_key = e.target.spendkey.value;
+        var pass1 = e.target.pass1.value;
+        var pass2 = e.target.pass2.value;
+
+        if (safex_address !== '' || view_key !== '' || spend_key !== '' || pass1 !== '' || pass2 !== '') {
+            if (pass1 !== '' && pass2 !== '' && pass1 === pass2) {
+                if (verify_safex_address(spend_key, view_key, safex_address)) {
+                    dialog.showSaveDialog((filepath) => {
+                        if (filepath !== undefined) {
+                            this.setState({ wallet_path: filepath });
+                            var args = {
+                                'path': this.state.wallet_path,
+                                'password': '123',
+                                'network': 'mainnet',
+                                'daemonAddress': 'rpc.safex.io:17402',
+                                'restoreHeight': 0,
+                                'addressString': safex_address,
+                                'viewKeyString': view_key,
+                                'spendKeyString': spend_key
+                            }
+                            if (!safex.walletExists(filepath)) {
+                                this.setState(() => ({
+                                    wallet_exists: false
+                                }));
+                                console.log("wallet doesn't exist. creating new one: " + this.state.wallet_path);
+
+                                safex.createWalletFromKeys(args)
+                                    .then((wallet) => {
+                                        this.setState({
+                                            mining_address: wallet.address(),
+                                            spend_key: wallet.secretSpendKey(),
+                                            view_key: wallet.secretViewKey(),
+                                        });
+                                        console.log('wallet address  ' + wallet.address());
+                                        console.log('wallet view private key  ' + wallet.secretViewKey());
+                                        console.log('wallet spend private key  ' + wallet.secretSpendKey());
+                                        this.closeModal();
+                                    })
+                                    .catch((err) => {
+                                        this.setOpenBalanceAlert('Error with the creation of the wallet ' + err);
+                                    });
+                            } else {
+                                this.setState(() => ({
+                                    wallet_exists: true
+                                }));
+                                this.setOpenBalanceAlert("Wallet already exists. Please choose a different file name  " +
+                                    "this application does not enable overwriting an existing wallet file" +
+                                    "OR you can open it using the Load Existing Wallet");
+                            }
+                        }
+                    });
+                } else {
+                    console.log('Incorrect keys');
+                    this.setOpenBalanceAlert('Incorrect keys');
+                }
+            } else {
+                this.setOpenBalanceAlert("Passwords do not match");
             }
         } else {
-            alert('passwords dont match')
+            this.setOpenBalanceAlert("Fill out all the fields");
         }
     }
 
@@ -414,6 +427,7 @@ export default class MiningApp extends React.Component {
                     wallet.on('newBlock', (height) => {
                         if (height - lastHeight > 60) {
                             console.log("blockchain updated, height: " + height);
+                            this.setOpenBalanceAlert('Please wait while blockchain is being updated');
                             lastHeight = height;
                         }
                     });
@@ -423,10 +437,12 @@ export default class MiningApp extends React.Component {
 
                         wallet.store()
                             .then(() => {
-                                console.log("wallet stored")
+                                this.setOpenBalanceAlert('Wallet stored');
+                                console.log("Wallet stored")
                             })
                             .catch((e) => {
-                                console.log("unable to store wallet: " + e)
+                                this.setOpenBalanceAlert("Unable to store wallet: " + e);
+                                console.log("Unable to store wallet: " + e)
                             })
                     });
 
@@ -846,30 +862,33 @@ export default class MiningApp extends React.Component {
                 </header>
 
                 <div className="main animated fadeIn">
-                    <button className="button-shine modal-btn" onClick={this.openModal}
-                        title="Generate New Wallet">
-                        <img src="images/new.png" alt="open-logo" />
-                    </button>
-                    <button className="button-shine modal-btn" onClick={this.openCreateWalletModal}
-                        title="Create New Wallet File">
-                        <img src="images/new-wallet.png" alt="new-wallet" />
-                    </button>
-                    <button className="button-shine modal-btn" onClick={this.openFromExistingModal}
-                        title="Open From Existing Wallet File">
-                        <img src="images/open-logo.png" alt="open-logo" />
-                    </button>
-                    <button className="button-shine modal-btn" onClick={this.openCreateFromKeysModal}
-                        title="Create New Wallet From Keys">
-                        <img src="images/create-from-keys.png" alt="open-logo" />
-                    </button>
-                    <button className="button-shine balance-wallet-btn modal-btn" onClick={this.openBalanceModal}
-                        title="Check Balance">
-                        <img src="images/key.png" alt="key" />
-                    </button>
-                    <button className="button-shine instructions-btn modal-btn" onClick={this.openInstructionsModal}
-                        title="Instructions">
-                        ?
-                    </button>
+                    <div className="btns-wrap">
+                        <button className="button-shine modal-btn" onClick={this.openModal}
+                            title="Generate New Wallet">
+                            <img src="images/new.png" alt="open-logo" />
+                        </button>
+                        <button className="button-shine modal-btn" onClick={this.openCreateWalletModal}
+                            title="Create New Wallet File">
+                            <img src="images/new-wallet.png" alt="new-wallet" />
+                        </button>
+                        <button className="button-shine modal-btn" onClick={this.openFromExistingModal}
+                            title="Open From Existing Wallet File">
+                            <img src="images/open-logo.png" alt="open-logo" />
+                        </button>
+                        <button className="button-shine modal-btn" onClick={this.openCreateFromKeysModal}
+                            title="Create New Wallet From Keys">
+                            <img src="images/create-from-keys.png" alt="open-logo" />
+                        </button>
+                        <button className="button-shine balance-wallet-btn modal-btn" onClick={this.openBalanceModal}
+                            title="Check Balance">
+                            <img src="images/key.png" alt="key" />
+                        </button>
+                        <button className="button-shine instructions-btn modal-btn" onClick={this.openInstructionsModal}
+                            title="Instructions">
+                            ?
+                        </button>
+                    </div>
+
                     <form onSubmit={this.handleSubmit}>
                         <div className="address-wrap">
                             <img src="images/line-left.png" alt="Line Left" />
@@ -1039,7 +1058,7 @@ export default class MiningApp extends React.Component {
                                     If you don't already have a Safex Wallet, click the <button>new
                                     wallet</button> button.
                                     In the dialog box, click <button>generate new wallet</button> which will create new
-                                    Safex Wallet. Be sure to
+                                Safex Wallet. Be sure to
                                     <button className="red-btn red-btn-en">save wallet keys</button> before proceeding.
                                 </p>
                                 <p>
@@ -1168,6 +1187,9 @@ export default class MiningApp extends React.Component {
                     closeNewWalletModal={this.closeModal}
                     createNewWallet={this.create_new_wallet}
                     walletPath={this.state.wallet_path}
+                    balanceAlert={this.state.balance_alert}
+                    balanceAlertText={this.state.balance_alert_text}
+                    closeBalanceAlert={this.setCloseBalanceAlert}
                 />
 
                 <OpenFromExistingModal
@@ -1175,6 +1197,9 @@ export default class MiningApp extends React.Component {
                     closeFromExistingModal={this.closeModal}
                     openFromWalletFile={this.open_from_wallet_file}
                     walletPath={this.state.wallet_path}
+                    balanceAlert={this.state.balance_alert}
+                    balanceAlertText={this.state.balance_alert_text}
+                    closeBalanceAlert={this.setCloseBalanceAlert}
                 />
 
                 <CreateFromKeysModal
@@ -1182,6 +1207,9 @@ export default class MiningApp extends React.Component {
                     closeCreateFromKeysModal={this.closeModal}
                     createNewWalletFromKeys={this.create_new_wallet_from_keys}
                     walletPath={this.state.wallet_path}
+                    balanceAlert={this.state.balance_alert}
+                    balanceAlertText={this.state.balance_alert_text}
+                    closeBalanceAlert={this.setCloseBalanceAlert}
                 />
 
                 <div
