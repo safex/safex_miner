@@ -17,10 +17,10 @@ export default class CreateNewWalletModal extends React.Component {
                             <input name="path" value={this.props.walletPath} placeholder="Your Wallet Path" />
 
                             <label htmlFor="pass1">Enter New Password</label>
-                            <input name="pass1" placeholder="New Password" />
+                            <input type="password" name="pass1" placeholder="New Password" />
 
                             <label htmlFor="pass1">Repeat Password</label>
-                            <input name="pass2" placeholder="Repeat Password" />
+                            <input type="password" name="pass2" placeholder="Repeat Password" />
 
                             <button type="submit" className="button-shine new-wallet-btn">
                                 Create New Wallet

@@ -1,5 +1,5 @@
 .mining-app-wrap {
-  padding: 15px 0 0;
+  padding: 0;
   z-index: 2;
   width: 100%;
   display: flex;
@@ -68,6 +68,9 @@ header p {
   z-index: 3;
   background-color: transparent;
   border: 0px;
+}
+.modal-btn:first-of-type {
+  padding: 0;
 }
 .modal-btn:hover {
   cursor: pointer;
@@ -266,6 +269,7 @@ header p {
 }
 .submit:hover {
   box-shadow: 0 0 30px 0 rgba(0, 199, 236, 0.5) !important;
+  cursor: pointer;
 }
 .submit:active {
   box-shadow: none !important;

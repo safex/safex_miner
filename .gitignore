@@ -69,3 +69,4 @@ temp/
 /build
 package-lock.json
 release-builds/
+.new

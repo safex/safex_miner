@@ -31,10 +31,10 @@ export default class CreateFromKeysModal extends React.Component {
                                     <input name="viewkey" placeholder="Private Viewkey" />
 
                                     <label htmlFor="pass1">Password</label>
-                                    <input name="pass1" placeholder="Password" />
+                                    <input type="password" name="pass1" placeholder="Password" />
 
                                     <label htmlFor="pass1">Repeat Password</label>
-                                    <input name="pass2" placeholder="Repeat Password" />
+                                    <input type="password" name="pass2" placeholder="Repeat Password" />
                                 </div>
                             </div>
 
