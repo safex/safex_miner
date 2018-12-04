@@ -1,18 +1,14 @@
 import React from 'react';
 import packageJson from "../../package";
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
-const {shell} = window.require('electron')
+const { shell } = window.require('electron')
 const xmrigCpu = window.require('node-xmrig-cpu');
 const sa = window.require('safex-addressjs');
-import {CopyToClipboard} from 'react-copy-to-clipboard';
-
 const fileDownload = window.require('js-file-download');
 const safex = window.require('safex-nodejs-libwallet');
-
-const {dialog} = window.require('electron').remote;
-
+const { dialog } = window.require('electron').remote;
 const path = window.require('path');
-
 
 import {
     verify_safex_address,
@@ -25,6 +21,9 @@ import {
 } from '../utils/balance';
 import BalanceAlert from './partials/BalanceAlert';
 import SendModal from './partials/SendModal';
+import CreateNewWalletModal from './partials/CreateNewWalletModal';
+import OpenFromExistingModal from './partials/OpenFromExistingModal';
+import CreateFromKeysModal from './partials/CreateFromKeysModal';
 
 export default class MiningApp extends React.Component {
     constructor(props) {
@@ -44,6 +43,15 @@ export default class MiningApp extends React.Component {
             instructions_modal_active: false,
             balance_modal_active: false,
             instructions_lang: 'english',
+            pools_list: [
+                'pool.safexnews.net:1111',
+                'safex.cool-pool.net:3333',
+                'safex.cnpools.space:3333',
+                'safex.cnpools.space:1111',
+                'safex.cryptominingpools.net:3333',
+                'safex.luckypool.io:3366',
+                'safex.xmining.pro:3333'
+            ],
             balance: 0,
             unlocked_balance: 0,
             tokens: 0,
@@ -58,7 +66,9 @@ export default class MiningApp extends React.Component {
             send_token: false,
 
             //wallet state settings
-
+            create_new_wallet_modal: false,
+            open_from_existing_modal: false,
+            create_from_keys_modal: false,
             wallet: {},
             wallet_exists: false,
             mining_address: '',
@@ -131,6 +141,9 @@ export default class MiningApp extends React.Component {
         this.setCloseSendPopup = this.setCloseSendPopup.bind(this);
         this.sendCash = this.sendCash.bind(this);
         this.sendToken = this.sendToken.bind(this);
+        this.openCreateWalletModal = this.openCreateWalletModal.bind(this);
+        this.openFromExistingModal = this.openFromExistingModal.bind(this);
+        this.openCreateFromKeysModal = this.openCreateFromKeysModal.bind(this);
 
         //wallet functions
         this.create_new_wallet = this.create_new_wallet.bind(this);
@@ -139,24 +152,20 @@ export default class MiningApp extends React.Component {
         this.create_new_wallet_from_keys = this.create_new_wallet_from_keys.bind(this);
     }
 
-
     //first step select wallet path, if exists, set password
     //second step set password
-
 
     //paste in address start mining
     //create new
     //import -> keys/file
 
-
     open_from_wallet_file(e) {
         e.preventDefault();
-
         const pass = e.target.pass.value;
 
         dialog.showOpenDialog((filepath) => {
             if (filepath !== undefined) {
-                this.setState({wallet_path: filepath});
+                this.setState({ wallet_path: filepath });
                 var args = {
                     'path': filepath,
                     'password': pass,
@@ -180,30 +189,23 @@ export default class MiningApp extends React.Component {
         });
     }
 
-
     create_new_wallet(e) {
         e.preventDefault();
 
         const pass1 = e.target.pass1.value;
         const pass2 = e.target.pass2.value;
-
         console.log(e.target.pass1.value);
         dialog.showSaveDialog((filepath) => {
             if (filepath !== undefined) {
-
-                this.setState({wallet_path: filepath});
-
-
+                this.setState({ wallet_path: filepath });
                 //TODO needs additional sanitation on the passwords, length and type of data
                 if (pass1 === pass2) {
-
                     var args = {
                         'path': filepath,
                         'password': pass1,
                         'network': 'mainnet',
                         'daemonAddress': 'rpc.safex.io:17402',
                     }
-
                     if (!safex.walletExists(filepath)) {
                         this.setState(() => ({
                             wallet_exists: false
@@ -224,7 +226,6 @@ export default class MiningApp extends React.Component {
                             .catch((err) => {
                                 alert('error with the creation of the wallet ' + err)
                             });
-
                     } else {
                         this.setState(() => ({
                             wallet_exists: true
@@ -233,18 +234,14 @@ export default class MiningApp extends React.Component {
                             "this application does not enable overwriting an existing wallet file" +
                             "OR you can open it using the Load Existing Wallet");
                     }
-
                 } else {
                     alert("password 1 and 2 do not match");
-
                 }
-
             }
         });
         //pass dialog box
         //pass password
         //confirm password
-
     }
 
     create_new_wallet_from_keys(e) {
@@ -263,8 +260,7 @@ export default class MiningApp extends React.Component {
             if (verify_safex_address(spend_key, view_key, safex_address)) {
                 dialog.showSaveDialog((filepath) => {
                     if (filepath !== undefined) {
-
-                        this.setState({wallet_path: filepath});
+                        this.setState({ wallet_path: filepath });
                         var args = {
                             'path': this.state.wallet_path,
                             'password': '123',
@@ -304,11 +300,8 @@ export default class MiningApp extends React.Component {
                                 "this application does not enable overwriting an existing wallet file" +
                                 "OR you can open it using the Load Existing Wallet");
                         }
-
-
                     }
                 });
-
             } else {
                 console.log('Incorrect keys');
                 this.setOpenBalanceAlert('Incorrect keys');
@@ -316,10 +309,7 @@ export default class MiningApp extends React.Component {
         } else {
             alert('passwords dont match')
         }
-
-
     }
-
 
     openInfoPopup(message) {
         this.setState({
@@ -476,6 +466,24 @@ export default class MiningApp extends React.Component {
         }
     }
 
+    openCreateWalletModal() {
+        this.setState(() => ({
+            create_new_wallet_modal: true
+        }));
+    }
+
+    openFromExistingModal() {
+        this.setState(() => ({
+            open_from_existing_modal: true
+        }));
+    }
+
+    openCreateFromKeysModal() {
+        this.setState(() => ({
+            create_from_keys_modal: true
+        }));
+    }
+
     openBalanceModal() {
         this.setState(() => ({
             balance_modal_active: true
@@ -622,7 +630,10 @@ export default class MiningApp extends React.Component {
             balance_alert: false,
             balance_alert: false,
             send_cash: false,
-            send_token: false
+            send_token: false,
+            create_new_wallet_modal: false,
+            open_from_existing_modal: false,
+            create_from_keys_modal: false
         }));
     }
 
@@ -807,96 +818,71 @@ export default class MiningApp extends React.Component {
         shell.openExternal('https://www.safex.io/')
     }
 
-
     render() {
         var cores_options = [];
         for (var i = 25; i <= 100; i += 25) {
             cores_options.push(<option key={i} value={i}>{i}%</option>);
         }
+        cores_options.reverse();
+
+        const pools_list = this.state.pools_list.map((pool, index) => (
+            <option key={index} id={index}>
+                {pool}
+            </option>
+        ));
 
         return (
             <div className="mining-app-wrap">
                 <div className="mining-bg-wrap">
-                    <img className={this.state.active || this.state.stopping ? "rotating" : ""} src="images/circles.png"
-                         alt="Circles"/>
+                    <img className={this.state.active || this.state.stopping ? "rotating" : ""} src="images/circles.png" alt="Circles" />
                 </div>
                 <header className="animated fadeIn">
-                    <img src="images/logo.png" alt="Logo"/>
+                    <img src="images/logo.png" alt="Logo" />
                     <p className="animated fadeIn">{packageJson.version}</p>
                 </header>
 
                 <div className="main animated fadeIn">
-
-                    <form onSubmit={this.create_new_wallet}>
-                        <input name="path" value={this.state.wallet_path}/>
-                        <input name="pass1"/>
-                        <input name="pass2"/>
-
-                        <button type="submit" className="button-shine new-wallet-btn">
-                            Create New Wallet
-                        </button>
-                    </form>
-
-                    <form onSubmit={this.open_from_wallet_file}>
-                        <input name="path" value={this.state.wallet_path}/>
-                        <input name="pass"/>
-
-                        <button type="submit" className="button-shine new-wallet-btn">
-                            Open From Existing Wallet File
-                        </button>
-                    </form>
-
-                    <form onSubmit={this.create_new_wallet_from_keys}>
-                        <input name="path" value={this.state.wallet_path}/>
-                        <input name="address"/>
-                        <input name="spendkey"/>
-                        <input name="viewkey"/>
-                        <input name="pass1"/>
-                        <input name="pass2"/>
-
-
-                        <button type="submit" className="button-shine new-wallet-btn">
-                            Create New Wallet From Keys
-                        </button>
-                    </form>
-
-
                     <button className="button-shine new-wallet-btn" onClick={this.openModal}>
                         New wallet
                     </button>
-                    <button className="button-shine balance-wallet-btn" onClick={this.openBalanceModal}
-                            title="Check Balance">
-                        <img src="images/key.png" alt="key"/>
+                    <button className="button-shine modal-btn" onClick={this.openCreateWalletModal}
+                        title="Create New Wallet File">
+                        <img src="images/new-wallet.png" alt="new-wallet" />
                     </button>
-                    <button className="button-shine instructions-btn" onClick={this.openInstructionsModal}
-                            title="Instructions">
+                    <button className="button-shine modal-btn" onClick={this.openFromExistingModal}
+                        title="Open From Existing Wallet File">
+                        <img src="images/open-logo.png" alt="open-logo" />
+                    </button>
+                    <button className="button-shine modal-btn" onClick={this.openCreateFromKeysModal}
+                        title="Create New Wallet From Keys">
+                        <img src="images/create-from-keys.png" alt="open-logo" />
+                    </button>
+                    <button className="button-shine balance-wallet-btn modal-btn" onClick={this.openBalanceModal}
+                        title="Check Balance">
+                        <img src="images/key.png" alt="key" />
+                    </button>
+                    <button className="button-shine instructions-btn modal-btn" onClick={this.openInstructionsModal}
+                        title="Instructions">
                         ?
                     </button>
                     <form onSubmit={this.handleSubmit}>
                         <div className="address-wrap">
-                            <img src="images/line-left.png" alt="Line Left"/>
+                            <img src="images/line-left.png" alt="Line Left" />
                             <input type="text" value={this.state.mining_address} placeholder="Safex address"
-                                   name="user_wallet" id="user_wallet"
-                                   disabled={this.state.active ? "disabled" : ""}/>
-                            <img src="images/line-right.png" alt="Line Right"/>
+                                name="user_wallet" id="user_wallet"
+                                disabled={this.state.active ? "disabled" : ""} />
+                            <img src="images/line-right.png" alt="Line Right" />
                         </div>
 
-                        <select className="pool-url" name="pool" id="pool"
-                                disabled={this.state.active ? "disabled" : ""}>
-                            <option>pool.safexnews.net:1111</option>
-                            <option>safex.cool-pool.net:3333</option>
-                            <option>safex.cnpools.space:3333</option>
-                            <option>safex.cnpools.space:1111</option>
-                            <option>safex.cryptominingpools.net:3333</option>
-                            <option>safex.luckypool.io:3366</option>
-                            <option>safex.xmining.pro:3333</option>
+                        <select className="pool-url" name="pool" id="pool" disabled={this.state.active ? "disabled" : ""}>
+                            {pools_list}
                         </select>
 
                         <div className="options">
                             <div className="input-group">
                                 <p># CPU</p>
                                 <select className="form-control" name="cores" id="cpuUsage"
-                                        disabled={this.state.active ? "disabled" : ""}>
+                                    disabled={this.state.active ? "disabled" : ""}>
                                     {cores_options}
                                 </select>
                             </div>
@@ -924,12 +910,12 @@ export default class MiningApp extends React.Component {
                                         this.state.stopping
                                             ?
                                             <button type="submit" className="submit button-shine active"
-                                                    disabled={this.state.active || this.state.stopping ? "disabled" : ""}>
+                                                disabled={this.state.active || this.state.stopping ? "disabled" : ""}>
                                                 <span>Stopping</span>
                                             </button>
                                             :
                                             <button type="submit" className="submit button-shine"
-                                                    disabled={this.state.active || this.state.stopping ? "disabled" : ""}>
+                                                disabled={this.state.active || this.state.stopping ? "disabled" : ""}>
                                                 <span>Start</span>
                                             </button>
                                     }
@@ -947,9 +933,8 @@ export default class MiningApp extends React.Component {
                 </div>
 
                 <footer className="animated fadeIn">
-                    <p>powered by</p>
                     <a onClick={this.footerLink} title="Visit our site">
-                        <img src="images/balkaneum.png" alt="Balkaneum"/>
+                        <img src="images/powered.png" alt="Balkaneum" />
                     </a>
                 </footer>
 
@@ -963,7 +948,7 @@ export default class MiningApp extends React.Component {
                     <div className="form-group">
                         <label htmlFor="new-address">Your new wallet address:</label>
                         <textarea placeholder="New Wallet Address" value={this.state.new_wallet} rows="2"
-                                  onChange={({target: {value}}) => this.setState({value, copied: false})} readOnly>
+                            onChange={({ target: { value } }) => this.setState({ value, copied: false })} readOnly>
 
                         </textarea>
                         <div className={this.state.new_wallet_generated ? "spendview active" : "spendview"}>
@@ -971,18 +956,18 @@ export default class MiningApp extends React.Component {
                                 this.state.copied
                                     ?
                                     <CopyToClipboard text={this.state.new_wallet}
-                                                     onCopy={() => this.setState({copied: true})}
-                                                     className="button-shine copy-btn"
-                                                     disabled={this.state.new_wallet === '' ? "disabled" : ""}>
+                                        onCopy={() => this.setState({ copied: true })}
+                                        className="button-shine copy-btn"
+                                        disabled={this.state.new_wallet === '' ? "disabled" : ""}>
                                         <button>
                                             Copied Address
                                         </button>
                                     </CopyToClipboard>
                                     :
                                     <CopyToClipboard text={this.state.new_wallet}
-                                                     onCopy={() => this.setState({copied: true})}
-                                                     className="button-shine copy-btn"
-                                                     disabled={this.state.new_wallet === '' ? "disabled" : ""}>
+                                        onCopy={() => this.setState({ copied: true })}
+                                        className="button-shine copy-btn"
+                                        disabled={this.state.new_wallet === '' ? "disabled" : ""}>
                                         <button>
                                             Copy Address
                                         </button>
@@ -1061,7 +1046,7 @@ export default class MiningApp extends React.Component {
                                 </p>
                                 <p className="warning green">
                                     Once your wallet keys are saved, you are ready to start mining. <button
-                                    className="green-btn">wallet keys saved</button>
+                                        className="green-btn">wallet keys saved</button>
                                 </p>
                                 <p>
                                     Enter you wallet address in the Safex Address field, select one of the pools you
@@ -1088,7 +1073,7 @@ export default class MiningApp extends React.Component {
                                 </p>
                                 <p className="warning green">
                                     Sačuvajte Vaše ključeve, i spremni ste da počnete sa rudarenjem. <button
-                                    className="green-btn">wallet keys saved</button>
+                                        className="green-btn">wallet keys saved</button>
                                 </p>
                                 <p>
                                     Ukucajte adresu Vašeg wallet-a u predviđeno polje, izaberite pool na koji želite da
@@ -1111,25 +1096,25 @@ export default class MiningApp extends React.Component {
                                 <button className="back" onClick={this.backToBalanceModal}>Go back</button>
                                 <label htmlFor="selected_balance_address">Safex Wallet Address</label>
                                 <textarea placeholder="Safex Wallet Address" name="selected_balance_address"
-                                          value={this.state.balance_wallet} rows="2" readOnly/>
+                                    value={this.state.balance_wallet} rows="2" readOnly />
 
                                 <div className="groups-wrap">
                                     <div className="form-group">
                                         <label htmlFor="balance">Balance</label>
                                         <input type="text" placeholder="Balance" name="balance"
-                                               value={this.state.balance} readOnly/>
+                                            value={this.state.balance} readOnly />
                                         <label htmlFor="unlocked_balance">Unlocked Balance</label>
                                         <input type="text" placeholder="Unlocked balance" name="unlocked_balance"
-                                               value={this.state.unlocked_balance} readOnly/>
+                                            value={this.state.unlocked_balance} readOnly />
                                         <button onClick={this.setOpenSendCash}>Send Cash</button>
                                     </div>
 
                                     <div className="form-group">
                                         <label htmlFor="tokens">Tokens</label>
-                                        <input type="text" placeholder="Tokens" value={this.state.tokens} readOnly/>
+                                        <input type="text" placeholder="Tokens" value={this.state.tokens} readOnly />
                                         <label htmlFor="unlocked_tokens">Unlocked Tokens</label>
                                         <input type="text" placeholder="Unlocked Tokens" name="unlocked_tokens"
-                                               value={this.state.unlocked_tokens} readOnly/>
+                                            value={this.state.unlocked_tokens} readOnly />
                                         <button onClick={this.setOpenSendTokens}>Send Tokens</button>
                                     </div>
                                 </div>
@@ -1139,17 +1124,17 @@ export default class MiningApp extends React.Component {
                                 <form onSubmit={this.startBalanceCheck}>
                                     <label htmlFor="wallet_balance_address">Safex Wallet Address</label>
                                     <textarea placeholder="Enter Safex Wallet Address" name="wallet_balance_address"
-                                              defaultValue={this.state.balance_wallet} rows="2"/>
+                                        defaultValue={this.state.balance_wallet} rows="2" />
                                     <label htmlFor="wallet_balance_private_view_key">Safex Address Private View
                                         Key</label>
                                     <input type="text" placeholder="Enter Safex Address Private View Key"
-                                           name="wallet_balance_private_view_key"
-                                           defaultValue={this.state.balance_view_key}/>
+                                        name="wallet_balance_private_view_key"
+                                        defaultValue={this.state.balance_view_key} />
                                     <label htmlFor="wallet_balance_private_spend_key">Safex Address Private Spend
                                         Key</label>
                                     <input type="text" placeholder="Enter Safex Address Private Spend Key"
-                                           name="wallet_balance_private_spend_key"
-                                           defaultValue={this.state.balance_spend_key}/>
+                                        name="wallet_balance_private_spend_key"
+                                        defaultValue={this.state.balance_spend_key} />
                                     <button type="submit">
                                         Check balance
                                     </button>
@@ -1172,8 +1157,28 @@ export default class MiningApp extends React.Component {
                         sendCash={this.sendCash}
                         sendToken={this.sendToken}
                     />
-
                 </div>
+
+                <CreateNewWalletModal
+                    createNewWalletModal={this.state.create_new_wallet_modal}
+                    closeNewWalletModal={this.closeModal}
+                    createNewWallet={this.create_new_wallet}
+                    walletPath={this.state.wallet_path}
+                />
+
+                <OpenFromExistingModal
+                    openFromExistingModal={this.state.open_from_existing_modal}
+                    closeFromExistingModal={this.closeModal}
+                    openFromWalletFile={this.open_from_wallet_file}
+                    walletPath={this.state.wallet_path}
+                />
+
+                <CreateFromKeysModal
+                    openCreateFromKeysModal={this.state.create_from_keys_modal}
+                    closeCreateFromKeysModal={this.closeModal}
+                    createNewWalletFromKeys={this.create_new_wallet_from_keys}
+                    walletPath={this.state.wallet_path}
+                />
 
                 <div
                     className={this.state.modal_active || this.state.instructions_modal_active || this.state.balance_modal_active ? 'backdrop active' : 'backdrop'}
