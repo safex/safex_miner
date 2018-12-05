@@ -26,7 +26,6 @@ import CreateNewWalletModal from './partials/CreateNewWalletModal';
 import OpenFromExistingModal from './partials/OpenFromExistingModal';
 import CreateFromKeysModal from './partials/CreateFromKeysModal';
 import InstructionsModal from './partials/InstructionsModal';
-import { throws } from 'assert';
 
 export default class MiningApp extends React.Component {
     constructor(props) {
@@ -360,149 +359,146 @@ export default class MiningApp extends React.Component {
         if (balance_wallet === '' || balance_view_key === '' || balance_spend_key === '' || balance_password === '') {
             this.setOpenBalanceAlert('Fill out all the fields');
         } else {
-            if (verify_safex_address(balance_spend_key, balance_view_key, balance_wallet)) {
-                const safex_keys = structureSafexKeys(balance_spend_key, balance_view_key);
+            // if (verify_safex_address(balance_spend_key, balance_view_key, balance_wallet)) {
+            //     const safex_keys = structureSafexKeys(balance_spend_key, balance_view_key);
 
-                dialog.showOpenDialog((filepath) => {
-                    if (filepath !== undefined) {
-                        this.setState({ wallet_path: filepath });
-                        this.setState(() => ({
-                            balance_check: true,
-                            balance_wallet: balance_wallet,
-                            balance_view_key: balance_view_key,
-                            balance_spend_key: balance_spend_key,
-                        }));
+            dialog.showSaveDialog((filepath) => {
+                if (filepath !== undefined) {
+                    this.setState({ wallet_path: filepath });
+                    this.setState(() => ({
+                        balance_check: true,
+                        balance_wallet: balance_wallet,
+                        balance_view_key: balance_view_key,
+                        balance_spend_key: balance_spend_key,
+                    }));
 
-                        var promise = null;
+                    var promise = null;
 
-                        var args = {
-                            'path': filepath,
-                            'password': balance_password,
-                            'network': 'mainnet',
-                            'daemonAddress': 'rpc.safex.io:17402',
-                            'restoreHeight': 0,
-                            'addressString': this.state.balance_wallet,
-                            'viewKeyString': this.state.balance_view_key,
-                            'spendKeyString': this.state.balance_spend_key
-                        }
-
-                        promise = safex.openWallet(args)
-                            .then(() => {
-                                this.setState({
-                                    wallet_exists: true
-                                });
-                            })
-                            .catch((err) => {
-                                this.setOpenBalanceAlert('Error opening the wallet: ' + err);
-                            })
-
-                        // if (!safex.walletExists(this.state.wallet_path)) {
-                        //     this.setState(() => ({
-                        //         wallet_exists: false
-                        //     }));
-                        //     console.log("wallet doesn't exist. creating new one: " + this.state.wallet_path);
-                        //     if (args.mnemonic)
-                        //         promise = safex.recoveryWallet(args);
-                        //     else if (args.addressString)
-                        //         promise = safex.createWalletFromKeys(args);
-                        //     else
-                        //         promise = safex.createWallet(args);
-                        // } else {
-                        //     this.setState(() => ({
-                        //         wallet_exists: true
-                        //     }));
-                        //     console.log("wallet already exists. opening: " + this.state.wallet_path);
-                        //     promise = safex.openWallet(args);
-                        // }
-
-                        var wallet = null;
-
-                        const nextTick = () => {
-                            if (wallet) {
-                                this.setState(() => ({
-                                    balance: parseInt(wallet.balance() / 10000000000).toFixed(2),
-                                    unlocked_balance: parseInt(wallet.unlockedBalance() / 10000000000).toFixed(2),
-                                    tokens: parseInt(wallet.tokenBalance() / 10000000000).toFixed(2),
-                                    unlocked_tokens: parseInt(wallet.unlockedTokenBalance() / 10000000000).toFixed(2),
-                                }));
-                                console.log("balance: " + wallet.balance());
-                                console.log("unlocked balance: " + wallet.unlockedBalance());
-                                console.log("token balance: " + wallet.tokenBalance());
-                                console.log("unlocked token balance: " + wallet.unlockedTokenBalance());
-                            }
-
-                            setTimeout(nextTick, 10000);
-                        }
-
-                        var lastHeight = 0;
-                        promise.then((w) => {
-                            console.log("balance address: " + w.address());
-                            console.log("seed: " + w.seed());
-
-                            wallet = w;
-                            wallet.on('newBlock', (height) => {
-                                if (height - lastHeight > 60) {
-                                    console.log("blockchain updated, height: " + height);
-                                    this.setOpenBalanceAlert('Please wait while blockchain is being updated, height ' + height);
-                                    lastHeight = height;
-                                }
-                            });
-
-                            wallet.on('refreshed', () => {
-                                console.log("wallet refreshed");
-
-                                wallet.store()
-                                    .then(() => {
-                                        // this.setOpenBalanceAlert('Wallet stored');
-                                        console.log("Wallet stored");
-                                    })
-                                    .catch((e) => {
-                                        // this.setOpenBalanceAlert("Unable to store wallet: " + e);
-                                        console.log("Unable to store wallet: " + e)
-                                    })
-                            });
-
-                            wallet.on('updated', function () {
-                                console.log("updated");
-                            });
-
-                            wallet.on('unconfirmedMoneyReceived', function (tx, amount) {
-                                console.log("unconfirmed money received. tx: " + tx + ", amount: " + amount);
-                            });
-
-                            wallet.on('moneyReceived', function (tx, amount) {
-                                console.log("money received. tx: " + tx + ", amount: " + amount);
-                            });
-
-                            wallet.on('moneySpent', function (tx, amount) {
-                                console.log("money spent. tx: " + tx + ", amount: " + amount);
-                            });
-
-                            wallet.on('unconfirmedTokensReceived', function (tx, token_amount) {
-                                console.log("unconfirmed tokens received. tx: " + tx + ", token amount: " + token_amount);
-                            });
-
-                            wallet.on('tokensReceived', function (tx, token_amount) {
-                                console.log("tokens received. tx: " + tx + ", token amount: " + token_amount);
-                            });
-
-                            wallet.on('tokensSpent', function (tx, token_amount) {
-                                console.log("tokens spent. tx: " + tx + ", token amount: " + token_amount);
-                            });
-
-                            nextTick();
-                        })
-                            .catch((e) => {
-                                console.log("No luck tonight: " + e);
-                            });
+                    var args = {
+                        'path': filepath,
+                        'password': balance_password,
+                        'network': 'mainnet',
+                        'daemonAddress': 'rpc.safex.io:17402',
+                        'restoreHeight': 0,
+                        'addressString': this.state.balance_wallet,
+                        'viewKeyString': this.state.balance_view_key,
+                        'spendKeyString': this.state.balance_spend_key
                     }
-                });
+
+                    promise = safex.createWalletFromKeys(args);
+
+                    // if (!safex.walletExists(this.state.wallet_path)) {
+                    //     this.setState(() => ({
+                    //         wallet_exists: false
+                    //     }));
+                    //     console.log("wallet doesn't exist. creating new one: " + this.state.wallet_path);
+                    //     if (args.mnemonic)
+                    //         promise = safex.recoveryWallet(args);
+                    //     else if (args.addressString)
+                    //         promise = safex.createWalletFromKeys(args);
+                    //     else
+                    //         promise = safex.createWallet(args);
+                    // } else {
+                    //     this.setState(() => ({
+                    //         wallet_exists: true
+                    //     }));
+                    //     console.log("wallet already exists. opening: " + this.state.wallet_path);
+                    //     promise = safex.openWallet(args);
+                    // }
+
+                    var wallet = null;
+
+                    const nextTick = () => {
+                        if (wallet) {
+                            this.setState(() => ({
+                                balance: parseInt(wallet.balance() / 10000000000).toFixed(2),
+                                unlocked_balance: parseInt(wallet.unlockedBalance() / 10000000000).toFixed(2),
+                                tokens: parseInt(wallet.tokenBalance() / 10000000000).toFixed(2),
+                                unlocked_tokens: parseInt(wallet.unlockedTokenBalance() / 10000000000).toFixed(2),
+                            }));
+                            console.log("balance: " + wallet.balance());
+                            console.log("unlocked balance: " + wallet.unlockedBalance());
+                            console.log("token balance: " + wallet.tokenBalance());
+                            console.log("unlocked token balance: " + wallet.unlockedTokenBalance());
+                            console.log("blockchain height" + wallet.blockchainHeight());
+                            console.log('connected: ' + wallet.connected());
+                        }
+
+                        setTimeout(nextTick, 10000);
+                    }
+
+                    var lastHeight = 0;
+                    promise.then((w) => {
+                        this.setState({
+                            wallet_exists: true
+                        });
+                        console.log("balance address: " + w.address());
+                        console.log("seed: " + w.seed());
+
+                        wallet = w;
+                        wallet.on('newBlock', (height) => {
+                            if (height - lastHeight > 60) {
+                                console.log("blockchain updated, height: " + height);
+                                this.setOpenBalanceAlert('Please wait while blockchain is being updated, height ' + height);
+                                lastHeight = height;
+                            }
+                        });
+
+                        wallet.on('refreshed', () => {
+                            console.log("wallet refreshed");
+
+                            wallet.store()
+                                .then(() => {
+                                    this.setCloseBalanceAlert();
+                                    console.log("Wallet stored");
+                                })
+                                .catch((e) => {
+                                    this.setOpenBalanceAlert("Unable to store wallet: " + e);
+                                    console.log("Unable to store wallet: " + e)
+                                })
+                        });
+
+                        wallet.on('updated', function () {
+                            console.log("updated");
+                        });
+
+                        wallet.on('unconfirmedMoneyReceived', function (tx, amount) {
+                            console.log("unconfirmed money received. tx: " + tx + ", amount: " + amount);
+                        });
+
+                        wallet.on('moneyReceived', function (tx, amount) {
+                            console.log("money received. tx: " + tx + ", amount: " + amount);
+                        });
+
+                        wallet.on('moneySpent', function (tx, amount) {
+                            console.log("money spent. tx: " + tx + ", amount: " + amount);
+                        });
+
+                        wallet.on('unconfirmedTokensReceived', function (tx, token_amount) {
+                            console.log("unconfirmed tokens received. tx: " + tx + ", token amount: " + token_amount);
+                        });
+
+                        wallet.on('tokensReceived', function (tx, token_amount) {
+                            console.log("tokens received. tx: " + tx + ", token amount: " + token_amount);
+                        });
+
+                        wallet.on('tokensSpent', function (tx, token_amount) {
+                            console.log("tokens spent. tx: " + tx + ", token amount: " + token_amount);
+                        });
+
+                        nextTick();
+                    })
+                        .catch((e) => {
+                            console.log("No luck tonight: " + e);
+                        });
+                }
+            });
 
 
-            } else {
-                console.log('Incorrect or duplicate keys');
-                this.setOpenBalanceAlert('Incorrect or duplicate keys');
-            }
+            // } else {
+            //     console.log('Incorrect or duplicate keys');
+            //     this.setOpenBalanceAlert('Incorrect or duplicate keys');
+            // }
         }
     }
 
@@ -559,12 +555,12 @@ export default class MiningApp extends React.Component {
     sendCash(e) {
         e.preventDefault();
         let sendingAddress = e.target.send_to.value;
-        let amount = parseInt(e.target.amount.value) * 10000000000;
+        let amount = e.target.amount.value;
         let promise = null;
         let wallet = null;
         let args = {
             'path': this.state.wallet_path,
-            'password': '123',
+            'password': '1',
             'network': 'mainnet',
             'daemonAddress': 'rpc.safex.io:17402',
             'restoreHeight': 0,
@@ -612,14 +608,14 @@ export default class MiningApp extends React.Component {
     sendToken(e) {
         e.preventDefault();
         let sendingAddress = e.target.send_to.value;
-        let amount = parseInt(e.target.amount.value) * 10000000000;
+        let amount = e.target.amount.value;
         let promise = null;
         let wallet = null;
         let args = {
             'path': this.state.wallet_path,
-            'password': '123',
-            'network': 'testnet',
-            'daemonAddress': '192.168.1.194:29393',
+            'password': '1',
+            'network': 'mainnet',
+            'daemonAddress': 'rpc.safex.io:17402',
             'restoreHeight': 0,
             'addressString': this.state.balance_wallet,
             'viewKeyString': this.state.balance_view_key,
@@ -898,7 +894,7 @@ export default class MiningApp extends React.Component {
                             title="Create New Wallet From Keys">
                             <img src="images/create-from-keys.png" alt="open-logo" />
                         </button>
-                        <button className="button-shine balance-wallet-btn modal-btn hidden" onClick={this.openBalanceModal}
+                        <button className="button-shine balance-wallet-btn modal-btn" onClick={this.openBalanceModal}
                             title="Check Balance">
                             <img src="images/key.png" alt="key" />
                         </button>

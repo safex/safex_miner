@@ -21,12 +21,6 @@ export default class CreateFromKeysModal extends React.Component {
                                 </div>
 
                                 <div className="form-group">
-                                    <label htmlFor="spendkey">Safex Address Private Spendkey</label>
-                                    <input name="spendkey" placeholder="Private Spendkey" />
-
-                                    <label htmlFor="viewkey">Safex Address Private Viewkey</label>
-                                    <input name="viewkey" placeholder="Private Viewkey" />
-
                                     <label htmlFor="pass1">Password</label>
                                     <input type="password" name="pass1" placeholder="Password" />
 
@@ -34,6 +28,12 @@ export default class CreateFromKeysModal extends React.Component {
                                     <input type="password" name="pass2" placeholder="Repeat Password" />
                                 </div>
                             </div>
+
+                            <label htmlFor="spendkey">Safex Address Private Spendkey</label>
+                            <input name="spendkey" placeholder="Private Spendkey" />
+
+                            <label htmlFor="viewkey">Safex Address Private Viewkey</label>
+                            <input name="viewkey" placeholder="Private Viewkey" />
 
                             <button type="submit" className="button-shine new-wallet-btn">
                                 Create Wallet From Keys
