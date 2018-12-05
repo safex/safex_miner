@@ -13,9 +13,6 @@ export default class CreateNewWalletModal extends React.Component {
                         <h3>Create New Wallet File</h3>
 
                         <form onSubmit={this.props.createNewWallet}>
-                            <label htmlFor="path">Wallet Path</label>
-                            <input name="path" value={this.props.walletPath} placeholder="Your Wallet Path" />
-
                             <label htmlFor="pass1">Enter New Password</label>
                             <input type="password" name="pass1" placeholder="New Password" />
 

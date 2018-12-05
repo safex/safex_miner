@@ -25,6 +25,8 @@ import SendModal from './partials/SendModal';
 import CreateNewWalletModal from './partials/CreateNewWalletModal';
 import OpenFromExistingModal from './partials/OpenFromExistingModal';
 import CreateFromKeysModal from './partials/CreateFromKeysModal';
+import InstructionsModal from './partials/InstructionsModal';
+import { throws } from 'assert';
 
 export default class MiningApp extends React.Component {
     constructor(props) {
@@ -889,7 +891,7 @@ export default class MiningApp extends React.Component {
                             <img src="images/new-wallet.png" alt="new-wallet" />
                         </button>
                         <button className="button-shine modal-btn" onClick={this.openFromExistingModal}
-                            title="Open From Existing Wallet File">
+                            title="Open Wallet File">
                             <img src="images/open-logo.png" alt="open-logo" />
                         </button>
                         <button className="button-shine modal-btn" onClick={this.openCreateFromKeysModal}
@@ -1051,79 +1053,6 @@ export default class MiningApp extends React.Component {
                     </div>
                 </div>
 
-                <div
-                    className={this.state.instructions_modal_active ? 'modal instructions-modal active' : 'modal instructions-modal'}>
-                    <span className="close" onClick={this.closeModal}>X</span>
-                    <div className="lang-bts-wrap">
-                        <button
-                            className={this.state.instructions_lang === 'english' ? "button-shine active" : "button-shine"}
-                            onClick={this.changeInstructionLang.bind(this, 'english')}>EN
-                        </button>
-                        <button
-                            className={this.state.instructions_lang === 'serbian' ? "button-shine active" : "button-shine"}
-                            onClick={this.changeInstructionLang.bind(this, 'serbian')}>SRB
-                        </button>
-                    </div>
-                    {
-                        this.state.instructions_lang === 'english'
-                            ?
-                            <div>
-                                <h3>Instructions</h3>
-                                <p>
-                                    If you don't already have a Safex Wallet, click the <button>new
-                                    wallet</button> button.
-                                    In the dialog box, click <button>generate new wallet</button> which will create new
-                                Safex Wallet. Be sure to
-                                    <button className="red-btn red-btn-en">save wallet keys</button> before proceeding.
-                                </p>
-                                <p>
-                                    <strong>
-                                        Wallet keys are made to control your coins, make sure you keep them safe at all
-                                        times.
-                                        If your keys get stolen it can and will result in total loss of your Safex Cash.
-                                    </strong>
-                                </p>
-                                <p className="warning green">
-                                    Once your wallet keys are saved, you are ready to start mining. <button
-                                        className="green-btn">wallet keys saved</button>
-                                </p>
-                                <p>
-                                    Enter you wallet address in the Safex Address field, select one of the pools you
-                                    want to connect to, choose how much CPU power you want to use for mining and click
-                                    start to begin.
-                                    That's it, mining will start in a couple of seconds. Good luck!
-                                </p>
-                            </div>
-                            :
-                            <div>
-                                <h3>Uputstvo</h3>
-                                <p>
-                                    Ako nemate Safex Wallet, kliknite <button>new wallet</button> dugme.
-                                    U dialog prozoru kliknite <button className="gen-new-wallet-sr">generate new
-                                    wallet</button> dugme koje će kreirati novi Safex Wallet.
-                                    Obavezno sačuvajte Vaše ključeve <button className="red-btn">save wallet
-                                    keys</button> pre nego što nastavite.
-                                </p>
-                                <p>
-                                    <strong>
-                                        Ovi ključevi kontrolišu Vaše novčiće, zato ih uvek čuvajte na bezbednom.
-                                        Ako Vaši ključevi budu ukradeni sigurno ćete izgubiti sav Vaš Safex Cash.
-                                    </strong>
-                                </p>
-                                <p className="warning green">
-                                    Sačuvajte Vaše ključeve, i spremni ste da počnete sa rudarenjem. <button
-                                        className="green-btn">wallet keys saved</button>
-                                </p>
-                                <p>
-                                    Ukucajte adresu Vašeg wallet-a u predviđeno polje, izaberite pool na koji želite da
-                                    se povežete, izaberite koliku procesorku snagu želite da koristite i počnite sa
-                                    rudarenjem.
-                                    To je to, rudarenje će početi za par sekundi. Srećno!
-                                </p>
-                            </div>
-                    }
-                </div>
-
                 <div className={this.state.balance_modal_active ? 'modal balance-modal active' : 'modal balance-modal'}>
                     <span className="close" onClick={this.closeModal}>X</span>
                     <h3>Check Balance</h3>
@@ -1201,11 +1130,18 @@ export default class MiningApp extends React.Component {
                     />
                 </div>
 
+                <InstructionsModal
+                    instructionsModalActive={this.state.instructions_modal_active}
+                    instructionsLang={this.state.instructions_lang}
+                    changeInstructionLangEn={this.changeInstructionLang.bind(this, 'english')}
+                    changeInstructionLangSrb={this.changeInstructionLang.bind(this, 'serbian')}
+                    closeInstructionsModal={this.closeModal}
+                />
+
                 <CreateNewWalletModal
                     createNewWalletModal={this.state.create_new_wallet_modal}
                     closeNewWalletModal={this.closeModal}
                     createNewWallet={this.create_new_wallet}
-                    walletPath={this.state.wallet_path}
                     balanceAlert={this.state.balance_alert}
                     balanceAlertText={this.state.balance_alert_text}
                     closeBalanceAlert={this.setCloseBalanceAlert}
@@ -1215,7 +1151,6 @@ export default class MiningApp extends React.Component {
                     openFromExistingModal={this.state.open_from_existing_modal}
                     closeFromExistingModal={this.closeModal}
                     openFromWalletFile={this.open_from_wallet_file}
-                    walletPath={this.state.wallet_path}
                     balanceAlert={this.state.balance_alert}
                     balanceAlertText={this.state.balance_alert_text}
                     closeBalanceAlert={this.setCloseBalanceAlert}
@@ -1225,7 +1160,6 @@ export default class MiningApp extends React.Component {
                     openCreateFromKeysModal={this.state.create_from_keys_modal}
                     closeCreateFromKeysModal={this.closeModal}
                     createNewWalletFromKeys={this.create_new_wallet_from_keys}
-                    walletPath={this.state.wallet_path}
                     balanceAlert={this.state.balance_alert}
                     balanceAlertText={this.state.balance_alert_text}
                     closeBalanceAlert={this.setCloseBalanceAlert}

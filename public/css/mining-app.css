@@ -625,8 +625,8 @@ header p {
 
 .instructions-modal {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
-  width: 630px;
-  min-height: 343px;
+  width: 760px;
+  min-height: 418px;
 }
 .instructions-modal h3 {
   margin: 0 0 25px;
@@ -642,16 +642,22 @@ header p {
   border-radius: 7px;
   background-color: rgba(18, 190, 221, 0.45);
   color: #fff;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1.26px;
   line-height: 1.2;
   position: relative;
   border: 2px solid #54BCD9;
-  margin: 4px 5px;
-  padding: 6px 12px 5px;
+  margin: 1px 5px 3px;
+  padding: 5px 10px 4px;
   transition: none;
+}
+.instructions-modal p.warning {
+  margin: 10px 0 8px;
+}
+.instructions-modal p.red {
+  text-transform: uppercase;
 }
 .instructions-modal p button:hover {
   box-shadow: none !important;
@@ -668,6 +674,13 @@ header p {
 .instructions-modal p button.green-btn {
   background: #0ec8c1;
   border: 1px solid #0ec8c1;
+}
+.instructions-modal p button.icon-btn {
+  padding: 0;
+  min-width: 38px;
+}
+.instructions-modal p button.icon-btn img {
+  max-height: 23px;
 }
 .instructions-modal .lang-bts-wrap {
   display: flex;

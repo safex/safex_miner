@@ -10,14 +10,11 @@ export default class CreateFromKeysModal extends React.Component {
                     : 'modal openCreateFromKeysModal'}>
                     <div className="sendModalInner">
                         <span className="close" onClick={this.props.closeCreateFromKeysModal}>X</span>
-                        <h3>Create New Wallet From Keys</h3>
+                        <h3>Create Wallet From Keys</h3>
 
                         <form onSubmit={this.props.createNewWalletFromKeys}>
                             <div className="form-wrap">
                                 <div className="form-group">
-                                    <label htmlFor="path">Wallet Path</label>
-                                    <input name="path" value={this.props.walletPath} placeholder="Wallet Path" />
-
                                     <label htmlFor="address">Safex Address</label>
                                     <textarea name="address" placeholder="Address" rows="5">
                                     </textarea>
@@ -39,7 +36,7 @@ export default class CreateFromKeysModal extends React.Component {
                             </div>
 
                             <button type="submit" className="button-shine new-wallet-btn">
-                                Create New Wallet From Keys
+                                Create Wallet From Keys
                             </button>
                         </form>
                     </div>
