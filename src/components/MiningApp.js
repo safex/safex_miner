@@ -721,7 +721,6 @@ export default class MiningApp extends React.Component {
     handleSubmit(e) {
         e.preventDefault();
         var user_wallet = e.target.user_wallet;
-        var pool = e.target.pool;
         let inputValue = e.target.user_wallet.value;
 
         if (user_wallet.value !== '') {
@@ -972,14 +971,13 @@ export default class MiningApp extends React.Component {
                         <p className="blue-text">hashrate:</p>
                         <p className="white-text">{this.state.hashrate} H/s</p>
                     </div>
+
+                    <footer className="animated fadeIn">
+                        <a onClick={this.footerLink} title="Visit our site">
+                            <img src="images/powered.png" alt="Balkaneum" />
+                        </a>
+                    </footer>
                 </div>
-
-                <footer className="animated fadeIn">
-                    <a onClick={this.footerLink} title="Visit our site">
-                        <img src="images/powered.png" alt="Balkaneum" />
-                    </a>
-                </footer>
-
 
                 <div className={this.state.modal_active ? 'modal active' : 'modal'}>
                     <span className="close" onClick={this.closeModal}>X</span>

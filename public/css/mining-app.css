@@ -1,5 +1,5 @@
 .mining-app-wrap {
-  padding: 0;
+  padding: 15px 0 0;
   z-index: 2;
   width: 100%;
   display: flex;
@@ -31,7 +31,7 @@ header {
 header p {
   color: #fff;
   position: absolute;
-  top: -10px;
+  top: -20px;
   right: 15px;
   margin-bottom: 0;
   animation-delay: .8s;
@@ -41,9 +41,10 @@ header p {
 .main {
   z-index: 3;
   width: 100%;
-  top: 115px;
   text-align: center;
   animation-delay: .3s;
+  position: relative;
+  top: 0;
 }
 .btns-wrap {
   margin-bottom: 8px;
@@ -332,15 +333,29 @@ header p {
 }
 
 /* Footer */
-footer {
+.main footer {
   position: absolute;
   right: 15px;
-  bottom: 15px;
+  bottom: -35px;
   text-align: right;
-  animation-delay: .8s;
+  animation-delay: 0.8s;
+  z-index: 2;
 }
-footer h3 {
-  font-family: 'Rift Soft', Helvetica, Arial, sans-serif;
+.main footer a {
+  display: inline-block;
+}
+.main footer p {
+  font-family: "Rift Soft", Helvetica, Arial, sans-serif;
+  color: #1caacb;
+  text-transform: uppercase;
+  margin-bottom: 0;
+  font-size: 11px;
+  letter-spacing: 4px;
+  position: relative;
+  right: -5px;
+}
+.main footer h3 {
+  font-family: "Rift Soft", Helvetica, Arial, sans-serif;
   color: #1caacb;
   margin: 0;
   font-size: 27px;
@@ -349,16 +364,16 @@ footer h3 {
   right: -5px;
   font-weight: 600;
 }
-footer a {
+.main footer a {
   display: inline-block;
 }
-footer a:hover {
+.main footer a:hover {
   cursor: pointer;
 }
-footer a:hover img {
+.main footer a:hover img {
   opacity: .9;
 }
-footer img {
+.main footer img {
   width: 130px;
   opacity: .6;
   transition: all ease 0.3s;
@@ -463,6 +478,7 @@ footer img {
   margin-bottom: 0;
 }
 .modal textarea {
+  text-align: left;
   display: inline-block;
   border: 0px none;
   border-radius: 5px;
@@ -493,24 +509,28 @@ footer img {
   opacity: 1;
   color: #fff;
   font-size: 14px;
+  text-align: left;
 }
 .modal textarea::-moz-placeholder,
 .modal input::-moz-placeholder { /* Firefox 19+ */
   opacity: 1;
   color: #fff;
   font-size: 14px;
+  text-align: left;
 }
 .modal textarea:-moz-placeholder,
 .modal input:-moz-placeholder { /* Firefox 18- */
   opacity: 1;
   color: #fff;
   font-size: 14px;
+  text-align: left;
 }
 .modal textarea:-ms-input-placeholder,
 .modal input:-ms-input-placeholder { /* IE 10+ */
   opacity: 1;
   color: #fff;
   font-size: 14px;
+  text-align: left;
 }
 .modal input {
   display: inline-block;
@@ -712,7 +732,7 @@ footer img {
   text-transform: initial;
 }
 .balance-modal label {
-    text-align: left;
+  text-align: left;
 }
 .balance-modal form button {
   margin-top: 10px;
