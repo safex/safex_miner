@@ -153,6 +153,14 @@ export default class MiningApp extends React.Component {
         this.create_new_wallet_from_keys = this.create_new_wallet_from_keys.bind(this);
     }
 
+
+    object_is_empty(obj) {
+        for(var key in obj) {
+            if(obj.hasOwnProperty(key))
+                return false;
+        }
+        return true;
+    }
     //first step select wallet path, if exists, set password
     //second step set password
 
