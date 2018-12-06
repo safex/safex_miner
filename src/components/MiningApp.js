@@ -66,6 +66,7 @@ export default class MiningApp extends React.Component {
             balance_alert_text: '',
             send_cash: false,
             send_token: false,
+            tick_handle: null,
 
             //wallet state settings
             create_new_wallet_modal: false,
@@ -147,6 +148,8 @@ export default class MiningApp extends React.Component {
         this.openFromExistingModal = this.openFromExistingModal.bind(this);
         this.openCreateFromKeysModal = this.openCreateFromKeysModal.bind(this);
 
+        this.closeWallet = this.closeWallet.bind(this);
+
         //wallet functions
         this.create_new_wallet = this.create_new_wallet.bind(this);
         this.open_from_wallet_file = this.open_from_wallet_file.bind(this);
@@ -165,6 +168,10 @@ export default class MiningApp extends React.Component {
         const pass = e.target.pass.value;
 
         if (pass !== '') {
+            if (this.state.wallet_loaded) {
+                console.log('bla truc')
+                this.closeWallet();
+            }
             dialog.showOpenDialog((filepath) => {
                 if (filepath !== undefined) {
                     this.setState({ wallet_path: filepath });
@@ -177,10 +184,7 @@ export default class MiningApp extends React.Component {
 
                     safex.openWallet(args)
                         .then((wallet) => {
-                            if (this.state.wallet_loaded) {
-                                this.state.wallet.off();
-                                this.state.wallet.close();
-                            }
+
                             this.setState({
                                 wallet_loaded: true,
                                 wallet: wallet,
@@ -209,6 +213,9 @@ export default class MiningApp extends React.Component {
 
         if (pass1 !== '' || pass2 !== '') {
             if (pass1 === pass2) {
+                if (this.state.wallet_loaded) {
+                    this.closeWallet();
+                }
                 dialog.showSaveDialog((filepath) => {
                     if (filepath !== undefined) {
                         this.setState({ wallet_path: filepath });
@@ -228,10 +235,6 @@ export default class MiningApp extends React.Component {
 
                             safex.createWallet(args)
                                 .then((wallet) => {
-                                    if (this.state.wallet_loaded) {
-                                        this.state.wallet.off();
-                                        this.state.wallet.close();
-                                    }
                                     this.setState({
                                         wallet_loaded: true,
                                         wallet: wallet,
@@ -280,6 +283,9 @@ export default class MiningApp extends React.Component {
         if (safex_address !== '' || view_key !== '' || spend_key !== '' || pass1 !== '' || pass2 !== '') {
             if (pass1 !== '' && pass2 !== '' && pass1 === pass2) {
                 if (verify_safex_address(spend_key, view_key, safex_address)) {
+                    if (this.state.wallet_loaded) {
+                        this.closeWallet();
+                    }
                     dialog.showSaveDialog((filepath) => {
                         if (filepath !== undefined) {
                             this.setState({ wallet_path: filepath });
@@ -301,10 +307,6 @@ export default class MiningApp extends React.Component {
 
                                 safex.createWalletFromKeys(args)
                                     .then((wallet) => {
-                                        if (this.state.wallet_loaded) {
-                                            this.state.wallet.off();
-                                            this.state.wallet.close();
-                                        }
                                         this.setState({
                                             wallet_loaded: true,
                                             wallet: wallet,
@@ -339,6 +341,16 @@ export default class MiningApp extends React.Component {
         }
     }
 
+    closeWallet() {
+        this.state.wallet.pauseRefresh();
+        this.state.wallet.off();
+        this.state.wallet.close(true);
+        this.state.wallet_loaded = false;
+        clearTimeout(this.state.tick_handle);
+
+        console.log('wallet closed')
+    }
+
     openInfoPopup(message) {
         this.setState({
             mining_info: true,
@@ -347,15 +359,15 @@ export default class MiningApp extends React.Component {
     }
 
     openModal() {
-        this.setState({
+        this.setState(() => ({
             modal_active: true
-        })
+        }));
     }
 
     openInstructionsModal() {
-        this.setState({
+        this.setState(() => ({
             instructions_modal_active: true
-        })
+        }));
     }
 
     startBalanceCheck() {
@@ -368,7 +380,7 @@ export default class MiningApp extends React.Component {
             }));
 
             const nextTick = () => {
-                if (wallet) {
+                if (this.state.wallet_loaded) {
                     this.setState(() => ({
                         balance: Math.floor(parseFloat(wallet.balance()) / 100000000) / 100,
                         unlocked_balance: Math.floor(parseFloat(wallet.unlockedBalance()) / 100000000) / 100,
@@ -381,9 +393,9 @@ export default class MiningApp extends React.Component {
                     console.log("unlocked token balance: " + Math.floor(parseFloat(wallet.unlockedTokenBalance()) / 100000000) / 100);
                     console.log("blockchain height" + wallet.blockchainHeight());
                     console.log('connected: ' + wallet.connected());
-                }
 
-                setTimeout(nextTick, 10000);
+                    this.state.tick_handle = setTimeout(nextTick, 10000);
+                }
             }
 
             var lastHeight = 0;
@@ -392,6 +404,13 @@ export default class MiningApp extends React.Component {
 
             wallet.on('newBlock', (height) => {
                 if (height - lastHeight > 60) {
+                    if (wallet.synchronized()) {
+                        console.log('got here')
+                        this.setCloseBalanceAlert()
+                    } else {
+                        this.setOpenBalanceAlert('Please wait while blockchain is being updated, height ' + height);
+                    }
+                    console.log('wallet synchronized: ' + wallet.synchronized())
                     console.log("blockchain updated, height: " + height);
                     console.log('balance ' + wallet.balance());
                     lastHeight = height;
@@ -400,6 +419,7 @@ export default class MiningApp extends React.Component {
 
             wallet.on('refreshed', () => {
                 console.log("wallet refreshed");
+                console.log('wallet synchronized: ' + wallet.synchronized())
 
                 wallet.store()
                     .then(() => {
@@ -410,33 +430,33 @@ export default class MiningApp extends React.Component {
                     })
             });
 
-            wallet.on('updated', function () {
-                console.log("updated");
-            });
+            // wallet.on('updated', function () {
+            //     console.log("updated");
+            // });
 
-            wallet.on('unconfirmedMoneyReceived', function (tx, amount) {
-                console.log("unconfirmed money received. tx: " + tx + ", amount: " + amount);
-            });
+            // wallet.on('unconfirmedMoneyReceived', function (tx, amount) {
+            //     console.log("unconfirmed money received. tx: " + tx + ", amount: " + amount);
+            // });
 
-            wallet.on('moneyReceived', function (tx, amount) {
-                console.log("money received. tx: " + tx + ", amount: " + amount);
-            });
+            // wallet.on('moneyReceived', function (tx, amount) {
+            //     console.log("money received. tx: " + tx + ", amount: " + amount);
+            // });
 
-            wallet.on('moneySpent', function (tx, amount) {
-                console.log("money spent. tx: " + tx + ", amount: " + amount);
-            });
+            // wallet.on('moneySpent', function (tx, amount) {
+            //     console.log("money spent. tx: " + tx + ", amount: " + amount);
+            // });
 
-            wallet.on('unconfirmedTokensReceived', function (tx, token_amount) {
-                console.log("unconfirmed tokens received. tx: " + tx + ", token amount: " + token_amount);
-            });
+            // wallet.on('unconfirmedTokensReceived', function (tx, token_amount) {
+            //     console.log("unconfirmed tokens received. tx: " + tx + ", token amount: " + token_amount);
+            // });
 
-            wallet.on('tokensReceived', function (tx, token_amount) {
-                console.log("tokens received. tx: " + tx + ", token amount: " + token_amount);
-            });
+            // wallet.on('tokensReceived', function (tx, token_amount) {
+            //     console.log("tokens received. tx: " + tx + ", token amount: " + token_amount);
+            // });
 
-            wallet.on('tokensSpent', function (tx, token_amount) {
-                console.log("tokens spent. tx: " + tx + ", token amount: " + token_amount);
-            });
+            // wallet.on('tokensSpent', function (tx, token_amount) {
+            //     console.log("tokens spent. tx: " + tx + ", token amount: " + token_amount);
+            // });
 
             nextTick();
         }
@@ -981,7 +1001,7 @@ export default class MiningApp extends React.Component {
                             </div>
                             :
                             <div className="no-wallet">
-                                <h3>Please load the wallet file</h3>
+                                <h4>Please load the wallet file</h4>
                             </div>
                     }
 

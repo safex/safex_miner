@@ -727,6 +727,9 @@ header p {
   font-size: 20px;
   text-transform: initial;
 }
+.balance-modal h4 {
+  text-transform: initial;
+}
 .balance-modal textarea::-webkit-input-placeholder,
 .balance-modal input::-webkit-input-placeholder { /* Chrome/Opera/Safari */
   text-transform: initial;
