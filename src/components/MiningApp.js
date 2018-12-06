@@ -136,10 +136,8 @@ export default class MiningApp extends React.Component {
         this.newWallet = this.newWallet.bind(this);
         this.footerLink = this.footerLink.bind(this);
         this.exportWallet = this.exportWallet.bind(this);
-        this.backToBalanceModal = this.backToBalanceModal.bind(this);
         this.setOpenBalanceAlert = this.setOpenBalanceAlert.bind(this);
         this.setCloseBalanceAlert = this.setCloseBalanceAlert.bind(this);
-        // this.refreshBalance = this.refreshBalance.bind(this);
         this.setOpenSendCash = this.setOpenSendCash.bind(this);
         this.setOpenSendTokens = this.setOpenSendTokens.bind(this);
         this.setCloseSendPopup = this.setCloseSendPopup.bind(this);
@@ -179,6 +177,10 @@ export default class MiningApp extends React.Component {
 
                     safex.openWallet(args)
                         .then((wallet) => {
+                            if (this.state.wallet_loaded) {
+                                this.state.wallet.off();
+                                this.state.wallet.close();
+                            }
                             this.setState({
                                 wallet_loaded: true,
                                 wallet: wallet,
@@ -226,6 +228,10 @@ export default class MiningApp extends React.Component {
 
                             safex.createWallet(args)
                                 .then((wallet) => {
+                                    if (this.state.wallet_loaded) {
+                                        this.state.wallet.off();
+                                        this.state.wallet.close();
+                                    }
                                     this.setState({
                                         wallet_loaded: true,
                                         wallet: wallet,
@@ -295,6 +301,10 @@ export default class MiningApp extends React.Component {
 
                                 safex.createWalletFromKeys(args)
                                     .then((wallet) => {
+                                        if (this.state.wallet_loaded) {
+                                            this.state.wallet.off();
+                                            this.state.wallet.close();
+                                        }
                                         this.setState({
                                             wallet_loaded: true,
                                             wallet: wallet,
@@ -351,8 +361,6 @@ export default class MiningApp extends React.Component {
     startBalanceCheck() {
         if (this.state.wallet_loaded) {
             console.log(this.state.wallet)
-            this.state.wallet.setRefreshFromBlockHeight(0);
-            this.state.wallet.startRefresh();
 
             var wallet = this.state.wallet;
             this.setState(() => ({
@@ -362,15 +370,15 @@ export default class MiningApp extends React.Component {
             const nextTick = () => {
                 if (wallet) {
                     this.setState(() => ({
-                        balance: parseInt(wallet.balance() / 10000000000).toFixed(2),
-                        unlocked_balance: parseInt(wallet.unlockedBalance() / 10000000000).toFixed(2),
-                        tokens: parseInt(wallet.tokenBalance() / 10000000000).toFixed(2),
-                        unlocked_tokens: parseInt(wallet.unlockedTokenBalance() / 10000000000).toFixed(2),
+                        balance: Math.floor(parseFloat(wallet.balance()) / 100000000) / 100,
+                        unlocked_balance: Math.floor(parseFloat(wallet.unlockedBalance()) / 100000000) / 100,
+                        tokens: Math.floor(parseFloat(wallet.tokenBalance()) / 100000000) / 100,
+                        unlocked_tokens: Math.floor(parseFloat(wallet.unlockedTokenBalance()) / 100000000) / 100,
                     }));
-                    console.log("balance: " + wallet.balance());
-                    console.log("unlocked balance: " + wallet.unlockedBalance());
-                    console.log("token balance: " + wallet.tokenBalance());
-                    console.log("unlocked token balance: " + wallet.unlockedTokenBalance());
+                    console.log("balance: " + Math.floor(parseFloat(wallet.balance()) / 100000000) / 100);
+                    console.log("unlocked balance: " + Math.floor(parseFloat(wallet.unlockedBalance()) / 100000000) / 100);
+                    console.log("token balance: " + Math.floor(parseFloat(wallet.tokenBalance()) / 100000000) / 100);
+                    console.log("unlocked token balance: " + Math.floor(parseFloat(wallet.unlockedTokenBalance()) / 100000000) / 100);
                     console.log("blockchain height" + wallet.blockchainHeight());
                     console.log('connected: ' + wallet.connected());
                 }
@@ -385,9 +393,21 @@ export default class MiningApp extends React.Component {
             wallet.on('newBlock', (height) => {
                 if (height - lastHeight > 60) {
                     console.log("blockchain updated, height: " + height);
-                    this.setOpenBalanceAlert('Please wait while blockchain is being updated, height ' + height);
+                    console.log('balance ' + wallet.balance());
                     lastHeight = height;
                 }
+            });
+
+            wallet.on('refreshed', () => {
+                console.log("wallet refreshed");
+
+                wallet.store()
+                    .then(() => {
+                        console.log("Wallet stored");
+                    })
+                    .catch((e) => {
+                        console.log("Unable to store wallet: " + e)
+                    })
             });
 
             wallet.on('updated', function () {
@@ -421,23 +441,6 @@ export default class MiningApp extends React.Component {
             nextTick();
         }
     }
-
-    // refreshBalance() {
-    //     var wallet = this.state.wallet;
-
-    //     wallet.on('refreshed', () => {
-    //         console.log("wallet refreshed");
-
-    //         wallet.store()
-    //             .then(() => {
-    //                 console.log("Wallet stored");
-    //             })
-    //             .catch((e) => {
-    //                 // this.setOpenBalanceAlert("Unable to store wallet: " + e);
-    //                 console.log("Unable to store wallet: " + e)
-    //             })
-    //     });
-    // }
 
     openCreateWalletModal() {
         this.setState(() => ({
@@ -474,12 +477,6 @@ export default class MiningApp extends React.Component {
         closeBalanceAlert(this);
     }
 
-    backToBalanceModal() {
-        this.setState(() => ({
-            wallet_exists: false
-        }));
-    }
-
     setOpenSendCash() {
         openSendCashPopup(this);
     }
@@ -496,105 +493,64 @@ export default class MiningApp extends React.Component {
         e.preventDefault();
         let sendingAddress = e.target.send_to.value;
         let amount = e.target.amount.value;
-        let promise = null;
-        let wallet = null;
-        let args = {
-            'path': this.state.wallet_path,
-            'password': '1',
-            'network': 'mainnet',
-            'daemonAddress': 'rpc.safex.io:17402',
-            'restoreHeight': 0,
-            'addressString': this.state.balance_wallet,
-            'viewKeyString': this.state.balance_view_key,
-            'spendKeyString': this.state.balance_spend_key
-        }
+        let wallet = this.state.wallet;
 
-        promise = safex.openWallet(args);
+        if (sendingAddress !== '' || amount !== '') {
+            wallet.createTransaction({
+                'address': sendingAddress,
+                'amount': amount,
+                'tx_type': 0 // cash transaction
+            }).then((tx) => {
+                console.log("Cash transaction created: " + tx.transactionsIds());
 
-        if (sendingAddress === '' || amount === '') {
-            this.setOpenBalanceAlert('Fill out all the fields');
-        } else {
-            promise.then((w) => {
-                wallet = w;
+                tx.commit().then(() => {
+                    console.log("Transaction commited successfully");
+                    this.setCloseSendPopup();
+                    this.setOpenBalanceAlert('Transaction commited successfully');
 
-                wallet.createTransaction({
-                    'address': sendingAddress,
-                    'amount': amount,
-                    'tx_type': 0 // cash transaction
-                }).then((tx) => {
-                    console.log("Cash transaction created: " + tx.transactionsIds());
-
-                    tx.commit().then(() => {
-                        console.log("Transaction commited successfully");
-                        this.setCloseSendPopup();
-                        this.setOpenBalanceAlert('Transaction commited successfully');
-
-                    }).catch((e) => {
-                        console.log("Error on commiting transaction: " + e);
-                        this.setOpenBalanceAlert("Error on commiting transaction: " + e);
-                    });
                 }).catch((e) => {
-                    console.log("Couldn't create transaction: " + e);
-                    this.setOpenBalanceAlert("Couldn't create transaction: " + e);
+                    console.log("Error on commiting transaction: " + e);
+                    this.setOpenBalanceAlert("Error on commiting transaction: " + e);
                 });
-            })
-                .catch((e) => {
-                    console.log("Error parsing wallet file: " + e);
-                    this.setOpenBalanceAlert("Error parsing wallet file: " + e);
-                });
+            }).catch((e) => {
+                console.log("Couldn't create transaction: " + e);
+                this.setOpenBalanceAlert("Couldn't create transaction: " + e);
+            });
+        } else {
+            this.setOpenBalanceAlert('Fill out all the fields');
         }
     }
 
     sendToken(e) {
         e.preventDefault();
         let sendingAddress = e.target.send_to.value;
-        let amount = e.target.amount.value;
-        let promise = null;
-        let wallet = null;
-        let args = {
-            'path': this.state.wallet_path,
-            'password': '1',
-            'network': 'mainnet',
-            'daemonAddress': 'rpc.safex.io:17402',
-            'restoreHeight': 0,
-            'addressString': this.state.balance_wallet,
-            'viewKeyString': this.state.balance_view_key,
-            'spendKeyString': this.state.balance_spend_key
-        }
+        let amount = Math.floor(e.target.amount.value) * 10000000000;
+        let wallet = this.state.wallet;
 
-        promise = safex.openWallet(args);
+        if (sendingAddress !== '' || amount !== '') {
+            console.log(amount)
+            wallet.createTransaction({
+                'address': sendingAddress,
+                'amount': amount,
+                'tx_type': 1 // token transaction
+            }).then((tx) => {
+                console.log("Cash transaction created: " + tx.transactionsIds());
 
-        if (sendingAddress === '' || amount === '') {
-            this.setOpenBalanceAlert('Fill out all the fields');
-        } else {
-            promise.then((w) => {
-                wallet = w;
+                tx.commit().then(() => {
+                    console.log("Transaction commited successfully");
+                    this.setCloseSendPopup();
+                    this.setOpenBalanceAlert('Transaction commited successfully');
 
-                wallet.createTransaction({
-                    'address': sendingAddress,
-                    'amount': amount,
-                    'tx_type': 1 // token transaction
-                }).then((tx) => {
-                    console.log("Cash transaction created: " + tx.transactionsIds());
-
-                    tx.commit().then(() => {
-                        console.log("Transaction commited successfully");
-                        this.setCloseSendPopup();
-                        this.setOpenBalanceAlert('Transaction commited successfully');
-
-                    }).catch((e) => {
-                        console.log("Error on commiting transaction: " + e);
-                        this.setOpenBalanceAlert("Error on commiting transaction: " + e);
-                    });
                 }).catch((e) => {
-                    console.log("Couldn't create transaction: " + e);
-                    this.setOpenBalanceAlert("Couldn't create transaction: " + e);
+                    console.log("Error on commiting transaction: " + e);
+                    this.setOpenBalanceAlert("Error on commiting transaction: " + e);
                 });
-            })
-                .catch((e) => {
-                    console.log("Error parsing wallet file: " + e);
-                    this.setOpenBalanceAlert("Error parsing wallet file: " + e);
-                });
+            }).catch((e) => {
+                console.log("Couldn't create transaction: " + e);
+                this.setOpenBalanceAlert("Couldn't create transaction: " + e);
+            });
+        } else {
+            this.setOpenBalanceAlert('Fill out all the fields');
         }
     }
 
@@ -997,8 +953,7 @@ export default class MiningApp extends React.Component {
                         this.state.wallet_loaded
                             ?
                             <div className="wallet-exists">
-                                <button className="back" onClick={this.backToBalanceModal}>Go back</button>
-                                {/* <button className="refresh" onClick={this.refreshBalance}>Refresh</button> */}
+                                {/* <button className="back" onClick={this.refreshBalance}>Refresh</button> */}
                                 <label htmlFor="selected_balance_address">Safex Wallet Address</label>
                                 <textarea placeholder="Safex Wallet Address" name="selected_balance_address"
                                     value={this.state.balance_wallet} rows="2" readOnly />
@@ -1026,28 +981,6 @@ export default class MiningApp extends React.Component {
                             </div>
                             :
                             <div className="no-wallet">
-                                {/* <form onSubmit={this.startBalanceCheck}>
-                                    <label htmlFor="wallet_balance_address">Safex Wallet Address</label>
-                                    <textarea placeholder="Enter Safex Wallet Address" name="wallet_balance_address"
-                                        defaultValue={this.state.balance_wallet} rows="2" />
-
-                                    <label htmlFor="wallet_balance_private_view_key"> Safex Address Private View Key</label>
-                                    <input type="text" placeholder="Enter Safex Address Private View Key"
-                                        name="wallet_balance_private_view_key"
-                                        defaultValue={this.state.balance_view_key} />
-
-                                    <label htmlFor="wallet_balance_private_spend_key"> Safex Address Private Spend Key</label>
-                                    <input type="text" placeholder="Enter Safex Address Private Spend Key"
-                                        name="wallet_balance_private_spend_key"
-                                        defaultValue={this.state.balance_spend_key} />
-
-                                    <label htmlFor="wallet_balance_password">Password</label>
-                                    <input type="password" placeholder="Enter Safex Address Password" name="wallet_balance_password" />
-
-                                    <button type="submit">
-                                        Check balance
-                                    </button>
-                                </form> */}
                                 <h3>Please load the wallet file</h3>
                             </div>
                     }
