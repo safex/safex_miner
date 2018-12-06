@@ -147,7 +147,6 @@ export default class MiningApp extends React.Component {
         this.openCreateWalletModal = this.openCreateWalletModal.bind(this);
         this.openFromExistingModal = this.openFromExistingModal.bind(this);
         this.openCreateFromKeysModal = this.openCreateFromKeysModal.bind(this);
-
         this.closeWallet = this.closeWallet.bind(this);
 
         //wallet functions
@@ -512,7 +511,7 @@ export default class MiningApp extends React.Component {
     sendCash(e) {
         e.preventDefault();
         let sendingAddress = e.target.send_to.value;
-        let amount = e.target.amount.value;
+        let amount = e.target.amount.value * 10000000000;
         let wallet = this.state.wallet;
 
         if (sendingAddress !== '' || amount !== '') {

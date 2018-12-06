@@ -95,7 +95,6 @@
   font-size: 17px;
   padding: 12px 15px 15px;
   width: 600px;
-  min-height: 305px;
   visibility: hidden;
   opacity: 0;
   transition: all ease 0.3s;
@@ -134,12 +133,20 @@
   background: transparent;
   border: 0px none;
   margin-right: 0;
-  padding-right: 25px;
   font-size: 17px;
   margin-bottom: 0;
   text-transform: initial;
   line-height: 1.2;
-  text-align: left;
+  text-align: center;
+}
+.sendModal .form-group-wrap {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.sendModal .form-group-wrap .form-group {
+  margin-top: 0;
+  width: calc(50% - 7.5px);
 }
 .sendModalBackdrop {
   position: absolute;

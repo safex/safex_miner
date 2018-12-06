@@ -15,11 +15,17 @@ export default class SendModal extends React.Component {
                                 <div>
                                     <p>Send Cash</p>
                                     <form onSubmit={this.props.sendCash}>
-                                        <label htmlFor="from">From</label>
-                                        <textarea name="from" defaultValue={this.props.fromAddress} rows="2" />
+                                        <div className="form-group-wrap">
+                                            <div className="form-group">
+                                                <label htmlFor="from">From</label>
+                                                <textarea name="from" defaultValue={this.props.fromAddress} rows="2" />
+                                            </div>
 
-                                        <label htmlFor="send_to">To</label>
-                                        <textarea name="send_to" placeholder="Enter Safex Wallet Address" rows="2" />
+                                            <div className="form-group">
+                                                <label htmlFor="send_to">To</label>
+                                                <textarea name="send_to" placeholder="Enter Safex Wallet Address" rows="2" />
+                                            </div>
+                                        </div>
 
                                         <label htmlFor="amount">Amount</label>
                                         <input name="amount" placeholder="Enter Amount" />
@@ -34,11 +40,17 @@ export default class SendModal extends React.Component {
                                             <div>
                                                 <p>Send Tokens</p>
                                                 <form onSubmit={this.props.sendToken}>
-                                                    <label htmlFor="from">From</label>
-                                                    <textarea name="from" defaultValue={this.props.fromAddress} rows="2" />
+                                                    <div className="form-group-wrap">
+                                                        <div className="form-group">
+                                                            <label htmlFor="from">From</label>
+                                                            <textarea name="from" defaultValue={this.props.fromAddress} rows="2" />
+                                                        </div>
 
-                                                    <label htmlFor="send_to">To</label>
-                                                    <textarea name="send_to" placeholder="Enter Safex Wallet Address" rows="2" />
+                                                        <div className="form-group">
+                                                            <label htmlFor="send_to">To</label>
+                                                            <textarea name="send_to" placeholder="Enter Safex Wallet Address" rows="2" />
+                                                        </div>
+                                                    </div>
 
                                                     <label htmlFor="amount">Amount</label>
                                                     <input name="amount" placeholder="Enter Amount" />
