@@ -68,6 +68,7 @@
   },
   "build": {
     "appId": "com.electron.safex_1_click_mining_app",
+    "npmRebuild": true,
     "extends": null,
     "files": [
       "**/*",
@@ -76,7 +77,11 @@
       "build/fonts/*.*",
       "build/images/*.*",
       "build/static/css/*.*",
-      "build/static/js/*.*"
+      "build/static/js/*.*",
+      "!node_modules/safex-nodejs-libwallet/boost*",
+      "!node_modules/safex-nodejs-libwallet/safexcore",
+      "!node_modules/safex-nodejs-libwallet/deps",
+      "!node_modules/safex-nodejs-libwallet/build"
     ],
     "mac": {
       "category": "public.app-category.business",
