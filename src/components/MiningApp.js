@@ -150,7 +150,6 @@ export default class MiningApp extends React.Component {
         //wallet functions
         this.create_new_wallet = this.create_new_wallet.bind(this);
         this.open_from_wallet_file = this.open_from_wallet_file.bind(this);
-        this.create_new_wallet = this.create_new_wallet.bind(this);
         this.create_new_wallet_from_keys = this.create_new_wallet_from_keys.bind(this);
     }
 
@@ -225,6 +224,7 @@ export default class MiningApp extends React.Component {
                             safex.createWallet(args)
                                 .then((wallet) => {
                                     this.setState({
+                                        wallet: wallet,
                                         mining_address: wallet.address(),
                                         spend_key: wallet.secretSpendKey(),
                                         view_key: wallet.secretViewKey(),
@@ -295,6 +295,7 @@ export default class MiningApp extends React.Component {
                                 safex.createWalletFromKeys(args)
                                     .then((wallet) => {
                                         this.setState({
+                                            wallet: wallet,
                                             mining_address: wallet.address(),
                                             spend_key: wallet.secretSpendKey(),
                                             view_key: wallet.secretViewKey(),
