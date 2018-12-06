@@ -720,7 +720,6 @@ header p {
 .balance-modal {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   width: 730px;
-  min-height: 320px;
   padding: 15px;
 }
 .balance-modal h3 {
@@ -821,6 +820,11 @@ header p {
 .balance-modal .back {
   position: absolute;
   top: 15px;
+}
+.balance-modal .refresh {
+  position: absolute;
+  top: 15px;
+  left: 125px;
 }
 .balance-modal .groups-wrap {
   display: flex;
