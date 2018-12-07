@@ -412,12 +412,15 @@ export default class MiningApp extends React.Component {
                 if (wallet.synchronized()) {
                     console.log('got here')
                     this.setState(() => ({
-                        wallet_sync: wallet.synchronized()
+                        wallet_sync: wallet.synchronized(),
+                        modal_close_disabled: false,
+                        balance_alert_close_disabled: false
                     }));
                     this.setCloseBalanceAlert()
                 } else {
                     this.setState(() => ({
-                        wallet_sync: wallet.synchronized()
+                        wallet_sync: wallet.synchronized(),
+                        modal_close_disabled: true
                     }));
                 }
                 if (height - lastHeight > 60) {
