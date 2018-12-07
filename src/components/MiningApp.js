@@ -176,9 +176,9 @@ export default class MiningApp extends React.Component {
             }
             dialog.showOpenDialog((filepath) => {
                 if (filepath !== undefined) {
-                    this.setState({ 
+                    this.setState({
                         wallet_path: filepath,
-                        modal_close_disabled: true 
+                        modal_close_disabled: true
                     });
 
                     var args = {
@@ -206,7 +206,7 @@ export default class MiningApp extends React.Component {
                             this.setState(() => ({
                                 modal_close_disabled: false
                             }));
-                            this.setOpenBalanceAlert('Error opening the wallet: ', false + err);
+                            this.setOpenBalanceAlert('Error opening the wallet: ' + err, false);
                         })
                 }
             });
@@ -262,7 +262,7 @@ export default class MiningApp extends React.Component {
                                     this.closeModal();
                                 })
                                 .catch((err) => {
-                                    this.setOpenBalanceAlert('error with the creation of the wallet ', false + err);
+                                    this.setOpenBalanceAlert('error with the creation of the wallet ' + err, false);
                                 });
                         } else {
                             this.setState(() => ({
@@ -340,7 +340,7 @@ export default class MiningApp extends React.Component {
                                         this.closeModal();
                                     })
                                     .catch((err) => {
-                                        this.setOpenBalanceAlert('Error with the creation of the wallet ', false + err);
+                                        this.setOpenBalanceAlert('Error with the creation of the wallet ' + err, false);
                                     });
                             } else {
                                 this.setState(() => ({
