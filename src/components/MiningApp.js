@@ -365,13 +365,15 @@ export default class MiningApp extends React.Component {
     }
 
     closeWallet() {
-        this.state.wallet.pauseRefresh();
-        this.state.wallet.off();
-        this.state.wallet.close(true);
-        this.state.wallet_loaded = false;
-        clearTimeout(this.state.tick_handle);
+        if (this.state.wallet_loaded) {
+            this.state.wallet.pauseRefresh();
+            this.state.wallet.off();
+            this.state.wallet.close(true);
+            this.state.wallet_loaded = false;
+            clearTimeout(this.state.tick_handle);
 
-        console.log('wallet closed')
+            console.log('wallet closed')
+        }
     }
 
     startBalanceCheck() {
@@ -526,9 +528,6 @@ export default class MiningApp extends React.Component {
                 open_from_existing_modal: false,
                 create_from_keys_modal: false
             }));
-        }
-        if (this.state.balance_modal_active) {
-            this.closeWallet();
         }
     }
 
