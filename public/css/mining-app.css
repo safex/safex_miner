@@ -394,7 +394,7 @@ header p {
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  background: rgba(0,0,0,.6);
+  background: rgba(0,0,0,.8);
   z-index: 10001;
   opacity: 0;
   visibility: hidden;
@@ -619,7 +619,7 @@ header p {
 .modal p {
   font-size: 13px;
   text-transform: initial;
-  margin-bottom: 2px;
+  margin-bottom: 0;
   text-align: center;
 }
 

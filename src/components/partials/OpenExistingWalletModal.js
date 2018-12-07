@@ -1,7 +1,7 @@
 import React from "react";
 import BalanceAlert from './BalanceAlert';
 
-export default class OpenFromExistingModal extends React.Component {
+export default class OpenExistingWalletModal extends React.Component {
     render() {
         return (
             <div>
