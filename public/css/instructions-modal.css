@@ -54,6 +54,7 @@
 .instructions-modal p button.icon-btn {
   padding: 0;
   min-width: 38px;
+  top: -2px;
 }
 .instructions-modal p button.icon-btn img {
   max-height: 23px;
