@@ -24,8 +24,8 @@ export default class InstructionsModal extends React.Component {
                             <p>
                                 If you don't already have a Safex Wallet, click the Create New Wallet File<button className="icon-btn"><img src="images/new-wallet.png" alt="new-wallet" /></button>button.
                                 Enter password for your new wallet and click <button>Create New Wallet</button>. In the dialog box, enter the name for your wallet file and choose where you want to
-                                save your wallet file on your file system. If you already have a wallet file, click Open Existing Wallet File<button className="icon-btn"><img src="images/open-logo.png" alt="open-logo" /></button>
-                                button, enter the password for your wallet file and and click<button>Open Wallet File</button>button. If you want to create new wallet from keys click
+                                save your wallet file. If you already have a wallet file, click Open Existing Wallet File<button className="icon-btn"><img src="images/open-logo.png" alt="open-logo" /></button>
+                                button, enter the password for your wallet file and and click<button>Open Wallet File</button>button. If you want to create new wallet from keys click Create Wallet From Keys
                                 <button className="icon-btn"><img src="images/create-from-keys.png" alt="create-from-keys" /></button>button. Enter your Safex address, private spend key, private view key and password and save it in
                                 a wallet file by clicking<button>Create Wallet From Keys </button>button.
                             </p>
