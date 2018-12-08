@@ -780,11 +780,11 @@ export default class MiningApp extends React.Component {
     }
 
     render() {
-        var cores_options = [];
+        var cpu_options = [];
         for (var i = 25; i <= 100; i += 25) {
-            cores_options.push(<option key={i} value={i}>{i}%</option>);
+            cpu_options.push(<option key={i} value={i}>{i}%</option>);
         }
-        cores_options.reverse();
+        cpu_options.reverse();
 
         const pools_list = this.state.pools_list.map((pool, index) => (
             <option key={index} id={index}>
@@ -833,13 +833,19 @@ export default class MiningApp extends React.Component {
                     <form onSubmit={this.handleSubmit}>
                         <div className="address-wrap">
                             <img src="images/line-left.png" alt="Line Left" />
-                            <input type="text" value={this.state.mining_address} placeholder="Safex address"
+                            <input type="text" value={this.state.mining_address} 
+                                placeholder="Open or create your Wallet File"
                                 name="user_wallet" id="user_wallet" readOnly
-                                disabled={this.state.active ? "disabled" : ""} />
+                                disabled={this.state.active ? "disabled" : ""}
+                                title={this.state.mining_address === '' ? "Your Safex Address will be shown here" : "Your Safex Address"}
+                            />
                             <img src="images/line-right.png" alt="Line Right" />
                         </div>
 
-                        <select className="pool-url" name="pool" id="pool" disabled={this.state.active ? "disabled" : ""}>
+                        <select className="pool-url" name="pool" id="pool" 
+                            disabled={this.state.active ? "disabled" : ""}
+                            title="Choose the pool you want to connect to"
+                        >
                             {pools_list}
                         </select>
 
@@ -847,8 +853,10 @@ export default class MiningApp extends React.Component {
                             <div className="input-group">
                                 <p># CPU</p>
                                 <select className="form-control" name="cores" id="cpuUsage"
-                                    disabled={this.state.active ? "disabled" : ""}>
-                                    {cores_options}
+                                    disabled={this.state.active ? "disabled" : ""}
+                                    title="Choose how much CPU power you want to use for mining"
+                                >
+                                    {cpu_options}
                                 </select>
                             </div>
                         </div>

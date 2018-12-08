@@ -178,6 +178,9 @@ header p {
   text-align-last: center;
   height: 30px;
 }
+.main form .pool-url:hover {
+  cursor: pointer;
+}
 .main form .pool-url:focus {
   outline: none;
 }
@@ -230,6 +233,9 @@ header p {
   width: auto;
   height: 30px;
   margin-left: 5px;
+}
+.main form #cpuUsage:hover {
+  cursor: pointer;
 }
 .main form #cpuUsage[disabled] {
   background-color: rgba(28, 170, 203, .35);
