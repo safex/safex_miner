@@ -925,10 +925,10 @@ export default class MiningApp extends React.Component {
                                     value={this.state.balance_wallet} rows="2" readOnly />
 
                                 <label htmlFor="spend_key">Private Spend Key</label>
-                                <input type="text" name="spend_key" value={this.state.spend_key} />
+                                <input type="text" name="spend_key" defaultValue={this.state.spend_key} />
 
                                 <label htmlFor="view_key">Private View Key</label>
-                                <input type="text" name="view_key" value={this.state.view_key} />
+                                <input type="text" name="view_key" defaultValue={this.state.view_key} />
 
                                 <div className="groups-wrap">
                                     <div className="form-group">
