@@ -435,6 +435,10 @@ export default class MiningApp extends React.Component {
             wallet.on('refreshed', () => {
                 console.log("wallet refreshed");
                 console.log('wallet synchronized: ' + wallet.synchronized())
+                this.setState(() => ({
+                    modal_close_disabled: false,
+                    balance_alert_close_disabled: false
+                }));
 
                 wallet.store()
                     .then(() => {
@@ -804,24 +808,33 @@ export default class MiningApp extends React.Component {
 
                 <div className="main animated fadeIn">
                     <div className="btns-wrap">
-                        <button className="button-shine modal-btn hidden" onClick={this.openModal}
-                            title="Generate New Wallet" disabled={this.state.active || this.state.stopping ? "disabled" : ""}>
+                        <button className="button-shine modal-btn hidden" 
+                            onClick={this.openModal}
+                            title="Generate New Wallet" 
+                            disabled={this.state.active || this.state.stopping ? "disabled" : ""}>
                             <img src="images/new.png" alt="open-logo" />
                         </button>
-                        <button className="button-shine modal-btn" onClick={this.openCreateWalletModal}
-                            title="Create New Wallet File" disabled={this.state.active || this.state.stopping ? "disabled" : ""}>
+                        <button className="button-shine modal-btn" 
+                            onClick={this.openCreateWalletModal}
+                            title="Create New Wallet File" 
+                            disabled={this.state.active || this.state.stopping ? "disabled" : ""}>
                             <img src="images/new-wallet.png" alt="new-wallet" />
                         </button>
-                        <button className="button-shine modal-btn" onClick={this.openFromExistingModal}
-                            title="Open Wallet File" disabled={this.state.active || this.state.stopping ? "disabled" : ""}>
+                        <button className="button-shine modal-btn" 
+                            onClick={this.openFromExistingModal}
+                            title="Open Wallet File" 
+                            disabled={this.state.active || this.state.stopping ? "disabled" : ""}>
                             <img src="images/open-logo.png" alt="open-logo" />
                         </button>
-                        <button className="button-shine modal-btn" onClick={this.openCreateFromKeysModal}
-                            title="Create New Wallet From Keys" disabled={this.state.active || this.state.stopping ? "disabled" : ""}>
+                        <button className="button-shine modal-btn" 
+                            onClick={this.openCreateFromKeysModal}
+                            title="Create New Wallet From Keys" 
+                            disabled={this.state.active || this.state.stopping ? "disabled" : ""}>
                             <img src="images/create-from-keys.png" alt="open-logo" />
                         </button>
-                        <button className="button-shine balance-wallet-btn modal-btn" onClick={this.openBalanceModal}
-                            title="Check Balance" disabled={this.state.active || this.state.stopping ? "disabled" : ""}>
+                        <button className="button-shine balance-wallet-btn modal-btn" 
+                            onClick={this.openBalanceModal}
+                            title="Check Balance">
                             <img src="images/key.png" alt="key" />
                         </button>
                         <button className="button-shine instructions-btn modal-btn" onClick={this.openInstructionsModal}
