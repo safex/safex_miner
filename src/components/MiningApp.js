@@ -558,15 +558,15 @@ export default class MiningApp extends React.Component {
                 tx.commit().then(() => {
                     console.log("Transaction commited successfully");
                     this.setCloseSendPopup();
-                    this.setOpenBalanceAlert('Transaction commited successfully', false);
-
+                    this.setOpenBalanceAlert('Transaction commited successfully, Your cash transaction ID is: ' 
+                    + tx.transactionsIds(), false);
                 }).catch((e) => {
                     console.log("Error on commiting transaction: " + e);
                     this.setOpenBalanceAlert("Error on commiting transaction: " + e, false);
                 });
             }).catch((e) => {
                 console.log("Couldn't create transaction: " + e);
-                this.setOpenBalanceAlert("Couldn't create transaction: "+ e, false );
+                this.setOpenBalanceAlert("Couldn't create transaction: " + e, false );
             });
         } else {
             this.setOpenBalanceAlert('Fill out all the fields', false);
@@ -586,13 +586,13 @@ export default class MiningApp extends React.Component {
                 'amount': amount,
                 'tx_type': 1 // token transaction
             }).then((tx) => {
-                console.log("Cash transaction created: " + tx.transactionsIds());
+                console.log("Token transaction created: " + tx.transactionsIds());
 
                 tx.commit().then(() => {
                     console.log("Transaction commited successfully");
                     this.setCloseSendPopup();
-                    this.setOpenBalanceAlert('Transaction commited successfully', false);
-
+                    this.setOpenBalanceAlert('Transaction commited successfully, Your token transaction ID is: '
+                    + tx.transactionsIds(), false);
                 }).catch((e) => {
                     console.log("Error on commiting transaction: " + e);
                     this.setOpenBalanceAlert("Error on commiting transaction: " + e, false );
