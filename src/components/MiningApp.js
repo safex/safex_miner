@@ -924,6 +924,12 @@ export default class MiningApp extends React.Component {
                                 <textarea placeholder="Safex Wallet Address" name="selected_balance_address"
                                     value={this.state.balance_wallet} rows="2" readOnly />
 
+                                <label htmlFor="spend_key">Private Spend Key</label>
+                                <input type="text" name="spend_key" value={this.state.spend_key} />
+
+                                <label htmlFor="view_key">Private View Key</label>
+                                <input type="text" name="view_key" value={this.state.view_key} />
+
                                 <div className="groups-wrap">
                                     <div className="form-group">
                                         <label htmlFor="balance">Balance</label>
