@@ -389,22 +389,22 @@ export default class MiningApp extends React.Component {
             }));
 
 
-                if (this.state.wallet_loaded) {
-                    this.setState(() => ({
-                        balance: Math.floor(parseFloat(wallet.balance()) / 100000000) / 100,
-                        unlocked_balance: Math.floor(parseFloat(wallet.unlockedBalance()) / 100000000) / 100,
-                        tokens: Math.floor(parseFloat(wallet.tokenBalance()) / 100000000) / 100,
-                        unlocked_tokens: Math.floor(parseFloat(wallet.unlockedTokenBalance()) / 100000000) / 100,
-                    }));
-                    console.log("balance: " + Math.floor(parseFloat(wallet.balance()) / 100000000) / 100);
-                    console.log("unlocked balance: " + Math.floor(parseFloat(wallet.unlockedBalance()) / 100000000) / 100);
-                    console.log("token balance: " + Math.floor(parseFloat(wallet.tokenBalance()) / 100000000) / 100);
-                    console.log("unlocked token balance: " + Math.floor(parseFloat(wallet.unlockedTokenBalance()) / 100000000) / 100);
-                    console.log("blockchain height" + wallet.blockchainHeight());
-                    console.log('connected: ' + wallet.connected());
+            if (this.state.wallet_loaded) {
+                this.setState(() => ({
+                    balance: Math.floor(parseFloat(wallet.balance()) / 100000000) / 100,
+                    unlocked_balance: Math.floor(parseFloat(wallet.unlockedBalance()) / 100000000) / 100,
+                    tokens: Math.floor(parseFloat(wallet.tokenBalance()) / 100000000) / 100,
+                    unlocked_tokens: Math.floor(parseFloat(wallet.unlockedTokenBalance()) / 100000000) / 100,
+                }));
+                console.log("balance: " + Math.floor(parseFloat(wallet.balance()) / 100000000) / 100);
+                console.log("unlocked balance: " + Math.floor(parseFloat(wallet.unlockedBalance()) / 100000000) / 100);
+                console.log("token balance: " + Math.floor(parseFloat(wallet.tokenBalance()) / 100000000) / 100);
+                console.log("unlocked token balance: " + Math.floor(parseFloat(wallet.unlockedTokenBalance()) / 100000000) / 100);
+                console.log("blockchain height" + wallet.blockchainHeight());
+                console.log('connected: ' + wallet.connected());
 
-                 //   this.state.tick_handle = setTimeout(nextTick, 10000);
-                }
+                //   this.state.tick_handle = setTimeout(nextTick, 10000);
+            }
 
             var lastHeight = 0;
             console.log("balance address: " + wallet.address());
@@ -418,7 +418,7 @@ export default class MiningApp extends React.Component {
                         modal_close_disabled: false,
                         balance_alert_close_disabled: false
                     }));
-                    this.setCloseBalanceAlert()
+                    this.setCloseBalanceAlert();
                 } else {
                     this.setState(() => ({
                         wallet_sync: wallet.synchronized(),
@@ -457,6 +457,7 @@ export default class MiningApp extends React.Component {
                 wallet.store()
                     .then(() => {
                         console.log("Wallet stored");
+                        this.setCloseBalanceAlert();
                     })
                     .catch((e) => {
                         console.log("Unable to store wallet: " + e)
@@ -501,14 +502,13 @@ export default class MiningApp extends React.Component {
             wallet.on('updated', () => {
                 console.log("UPDATED");
                 wallet.store()
-                         .then(() => {
-                             console.log("Wallet stored");
-                         })
-                         .catch((e) => {
-                             console.log("Unable to store wallet: " + e)
-                         })
+                .then(() => {
+                    console.log("Wallet stored");
+                })
+                .catch((e) => {
+                    console.log("Unable to store wallet: " + e)
+                })
             });
-
 
             //nextTick();
         }
