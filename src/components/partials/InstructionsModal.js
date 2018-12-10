@@ -46,11 +46,11 @@ export default class InstructionsModal extends React.Component {
                             <h3>Uputstvo</h3>
                             <p>
                                 Ako nemate Safex Wallet, kliknite Create New Wallet File<button className="icon-btn"><img src="images/new-wallet.png" alt="new-wallet" /></button>dugme.
-                                Unesite password za svoju datoteku i kliknite<button>Create New Wallet</button>. U dijalog prozoru, unesite ime za Vašu wallet datoteku i izaberite gde želite da ga sačuvate.
+                                Unesite lozinku za svoju datoteku i kliknite<button>Create New Wallet</button>. U dijalog prozoru, unesite ime za Vašu wallet datoteku i izaberite gde želite da ga sačuvate.
                                 Ako već imate wallet datoteku, kliknite Open Existing Wallet File<button className="icon-btn"><img src="images/open-logo.png" alt="open-logo" /></button>dugme,
-                                unesite password Vaše datoteke i kliknite <button>Open Wallet File</button>dugme. Ako želite da napravite novu datoteku od već postojećih ključeva, kliknite
+                                unesite lozinku Vaše datoteke i kliknite <button>Open Wallet File</button>dugme. Ako želite da napravite novu datoteku od već postojećih ključeva, kliknite
                                 <button className="icon-btn"><img src="images/create-from-keys.png" alt="create-from-keys" /></button>dugme. Unesite svoju Safex adresu, tajni spend ključ (private spend key),
-                                tajni view ključ (private view key), password i sačuvajte datoteku klikom na<button>Create Wallet From Keys </button>dugme.
+                                tajni view ključ (private view key), lozinku i sačuvajte datoteku klikom na<button>Create Wallet From Keys </button>dugme.
                             </p>
                             <p className="warning red">
                                 Wallet datoteka kontroliše Vaše novčiće, zato je uvek čuvajte na bezbednom.
