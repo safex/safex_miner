@@ -135,10 +135,11 @@
 }
 .balance-modal .btns-wrap .blockheight {
   margin-left: 15px;
+  min-width: 75px;
 }
 .balance-modal .btns-wrap .blockheight img {
   opacity: 1;
-  margin-right: 5px;
+  margin-right: 8px;
 }
 .balance-modal .btns-wrap .blockheight span {
   letter-spacing: 0px;

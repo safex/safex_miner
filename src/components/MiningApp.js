@@ -407,7 +407,7 @@ export default class MiningApp extends React.Component {
                 console.log("unlocked balance: " + Math.floor(parseFloat(wallet.unlockedBalance()) / 100000000) / 100);
                 console.log("token balance: " + Math.floor(parseFloat(wallet.tokenBalance()) / 100000000) / 100);
                 console.log("unlocked token balance: " + Math.floor(parseFloat(wallet.unlockedTokenBalance()) / 100000000) / 100);
-                console.log("blockchain height" + wallet.blockchainHeight());
+                console.log("blockchain height " + wallet.blockchainHeight());
                 console.log('connected: ' + wallet.connected());
 
                 // this.state.tick_handle = setTimeout(nextTick, 10000);
@@ -429,11 +429,10 @@ export default class MiningApp extends React.Component {
                         tokens: Math.floor(parseFloat(wallet.tokenBalance()) / 100000000) / 100,
                         unlocked_tokens: Math.floor(parseFloat(wallet.unlockedTokenBalance()) / 100000000) / 100,
                     }));
-                    this.setCloseBalanceAlert();
                 } else {
                     this.setState(() => ({
                         wallet_sync: synchronized,
-                        modal_close_disabled: true
+                        modal_close_disabled: true,
                     }));
                 }
 
@@ -442,6 +441,9 @@ export default class MiningApp extends React.Component {
                     console.log('wallet synchronized: ' + synchronized)
                     console.log("blockchain updated, height: " + height);
                     lastHeight = height;
+                    this.setState(() => ({
+                        blockchain_height: height
+                    }));
                 }
             });
 
@@ -463,7 +465,8 @@ export default class MiningApp extends React.Component {
                         this.setCloseBalanceAlert();
                     })
                     .catch((e) => {
-                        console.log("Unable to store wallet: " + e)
+                        console.log("Unable to store wallet: " + e);
+                        this.setOpenBalanceAlert("Unable to store wallet: " + e, false);
                     });
                 wallet.off('refreshed');
             });
@@ -525,6 +528,7 @@ export default class MiningApp extends React.Component {
         this.setState(() => ({
             wallet_refresh: true,
             modal_close_disabled: true,
+            blockchain_height: wallet.blockchainHeight(),
         }));
 
         this.setOpenBalanceAlert('Refreshing, please wait ', true);
