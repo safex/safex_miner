@@ -29,7 +29,7 @@ export default class SendModal extends React.Component {
 
                                         <label htmlFor="amount">Amount</label>
                                         <input name="amount" placeholder="Enter Amount" />
-                                        <button type="submit">Send</button>
+                                        <button className="button-shine" type="submit">Send</button>
                                     </form>
                                 </div>
                                 :
@@ -54,7 +54,7 @@ export default class SendModal extends React.Component {
 
                                                     <label htmlFor="amount">Amount</label>
                                                     <input name="amount" placeholder="Enter Amount" />
-                                                    <button type="submit">Send</button>
+                                                    <button className="button-shine" type="submit">Send</button>
                                                 </form>
                                             </div>
                                             :

@@ -932,36 +932,30 @@ export default class MiningApp extends React.Component {
 
                 <div className="main animated fadeIn">
                     <div className="btns-wrap">
-                        <button className="button-shine modal-btn hidden" 
-                            onClick={this.openModal}
-                            title="Generate New Wallet" 
-                            disabled={this.state.active || this.state.stopping ? "disabled" : ""}>
-                            <img src="images/new.png" alt="open-logo" />
-                        </button>
-                        <button className="button-shine modal-btn" 
+                        <button className="modal-btn" 
                             onClick={this.openCreateWalletModal}
                             title="Create New Wallet File" 
                             disabled={this.state.active || this.state.stopping ? "disabled" : ""}>
                             <img src="images/new-wallet.png" alt="new-wallet" />
                         </button>
-                        <button className="button-shine modal-btn" 
+                        <button className="modal-btn" 
                             onClick={this.openFromExistingModal}
                             title="Open Wallet File" 
                             disabled={this.state.active || this.state.stopping ? "disabled" : ""}>
                             <img src="images/open-logo.png" alt="open-logo" />
                         </button>
-                        <button className="button-shine modal-btn" 
+                        <button className="modal-btn" 
                             onClick={this.openCreateFromKeysModal}
                             title="Create New Wallet From Keys" 
                             disabled={this.state.active || this.state.stopping ? "disabled" : ""}>
-                            <img src="images/create-from-keys.png" alt="open-logo" />
+                            <img src="images/create-from-keys.png" alt="create-from-keys" />
                         </button>
-                        <button className="button-shine balance-wallet-btn modal-btn" 
+                        <button className="balance-wallet-btn modal-btn" 
                             onClick={this.openBalanceModal}
                             title="Check Balance">
                             <img src="images/key.png" alt="key" />
                         </button>
-                        <button className="button-shine instructions-btn modal-btn" onClick={this.openInstructionsModal}
+                        <button className="instructions-btn modal-btn" onClick={this.openInstructionsModal}
                             title="Instructions">
                             ?
                         </button>
@@ -970,7 +964,7 @@ export default class MiningApp extends React.Component {
                     <form onSubmit={this.handleSubmit}>
                         <div className="address-wrap">
                             <img src="images/line-left.png" alt="Line Left" />
-                            <input type="text" value={this.state.mining_address} 
+                            <input type="text" value={this.state.mining_address}
                                 placeholder="Open or create your Wallet File"
                                 name="user_wallet" id="user_wallet" readOnly
                                 disabled={this.state.active ? "disabled" : ""}
@@ -979,7 +973,7 @@ export default class MiningApp extends React.Component {
                             <img src="images/line-right.png" alt="Line Right" />
                         </div>
 
-                        <select className="pool-url" name="pool" id="pool" 
+                        <select className="button-shine pool-url" name="pool" id="pool" 
                             disabled={this.state.active ? "disabled" : ""}
                             title="Choose the pool you want to connect to"
                         >
@@ -989,7 +983,7 @@ export default class MiningApp extends React.Component {
                         <div className="options">
                             <div className="input-group">
                                 <p># CPU</p>
-                                <select className="form-control" name="cores" id="cpuUsage"
+                                <select className="button-shine form-control" name="cores" id="cpuUsage"
                                     disabled={this.state.active ? "disabled" : ""}
                                     title="Choose how much CPU power you want to use for mining"
                                 >
@@ -1068,7 +1062,7 @@ export default class MiningApp extends React.Component {
                                             {this.state.blockchain_height}
                                         </span>
                                     </button>
-                                    <button className="refresh" onClick={this.rescanBalance} title="Refresh">
+                                    <button className="button-shine refresh" onClick={this.rescanBalance} title="Refresh">
                                         <img src="images/refresh.png" alt="refresh" />
                                     </button>
                                 </div>
@@ -1090,7 +1084,7 @@ export default class MiningApp extends React.Component {
                                         <label htmlFor="unlocked_balance">Available Safex Cash</label>
                                         <input type="text" placeholder="Unlocked balance" name="unlocked_balance"
                                             value={this.state.unlocked_balance} readOnly />
-                                        <button onClick={this.setOpenSendCash}>Send Cash</button>
+                                        <button className="button-shine" onClick={this.setOpenSendCash}>Send Cash</button>
                                     </div>
 
                                     <div className="form-group">
@@ -1099,7 +1093,7 @@ export default class MiningApp extends React.Component {
                                         <label htmlFor="unlocked_tokens">Available Safex Tokens</label>
                                         <input type="text" placeholder="Unlocked Tokens" name="unlocked_tokens"
                                             value={this.state.unlocked_tokens} readOnly />
-                                        <button onClick={this.setOpenSendTokens}>Send Tokens</button>
+                                        <button className="button-shine" onClick={this.setOpenSendTokens}>Send Tokens</button>
                                     </div>
                                 </div>
                             </div>

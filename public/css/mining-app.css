@@ -56,12 +56,9 @@ header p {
   font-weight: 600;
   font-size: 23px;
   line-height: 1;
-  color: rgba(255,255,255,.7);
+  color: rgba(255,255,255,1);
   position: relative;
   top: 4px;
-}
-.instructions-btn:hover {
-  opacity: 1;
 }
 
 .modal-btn {
@@ -69,37 +66,22 @@ header p {
   z-index: 3;
   background-color: transparent;
   border: 0px;
+  -webkit-transition: all 0.2s ease-in;
+  -moz-transition: all 0.2s ease-in;
+  transition: all 0.2s ease-in;
 }
 .modal-btn:first-of-type {
   padding: 0;
 }
 .modal-btn:hover {
   cursor: pointer;
-}
-.balance-wallet-btn {
-  border-radius: 7px;
-  background-color: transparent;
-  color: #fff;
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1.26px;
-  line-height: 1.2;
-  position: relative;
-  border: 0px none;
-}
-.modal-btn:hover img {
-  opacity: 1;
+  transform: translate(0,-2px);
 }
 .modal-btn:active {
   box-shadow: none !important;
 }
 .modal-btn img {
   max-height: 23px;
-  -webkit-transition: all 0.2s ease-in;
-  -moz-transition: all 0.2s ease-in;
-  transition: all 0.2s ease-in;
-  opacity: .7;
 }
 
 .main form {
@@ -233,6 +215,9 @@ header p {
   width: auto;
   height: 30px;
   margin-left: 5px;
+  -webkit-transition: all 0.2s ease-in;
+  -moz-transition: all 0.2s ease-in;
+  transition: all 0.2s ease-in;
 }
 .main form #cpuUsage:hover {
   cursor: pointer;
