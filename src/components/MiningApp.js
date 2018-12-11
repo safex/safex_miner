@@ -411,35 +411,31 @@ export default class MiningApp extends React.Component {
             console.log("seed: " + wallet.seed());
 
             wallet.on('newBlock', (height) => {
-                if (wallet.synchronized()) {
-                    console.log('got here')
+                let synchronized = wallet.synchronized();
+                if (synchronized) {
                     this.setState(() => ({
-                        wallet_sync: wallet.synchronized(),
+                        wallet_sync: synchronized,
                         modal_close_disabled: false,
-                        balance_alert_close_disabled: false
+                        balance_alert_close_disabled: false,
+                        balance: Math.floor(parseFloat(wallet.balance()) / 100000000) / 100,
+                        unlocked_balance: Math.floor(parseFloat(wallet.unlockedBalance()) / 100000000) / 100,
+                        tokens: Math.floor(parseFloat(wallet.tokenBalance()) / 100000000) / 100,
+                        unlocked_tokens: Math.floor(parseFloat(wallet.unlockedTokenBalance()) / 100000000) / 100,
                     }));
                     this.setCloseBalanceAlert();
                 } else {
                     this.setState(() => ({
-                        wallet_sync: wallet.synchronized(),
+                        wallet_sync: synchronized,
                         modal_close_disabled: true
                     }));
                 }
+
                 if (height - lastHeight > 60) {
                     this.setOpenBalanceAlert('Please wait while blockchain is being updated, height ' + height, false);
-                    console.log('wallet synchronized: ' + wallet.synchronized())
+                    console.log('wallet synchronized: ' + synchronized)
                     console.log("blockchain updated, height: " + height);
-                    console.log('balance ' + wallet.balance());
                     lastHeight = height;
                 }
-
-                this.setState(() => ({
-                    balance: Math.floor(parseFloat(wallet.balance()) / 100000000) / 100,
-                    unlocked_balance: Math.floor(parseFloat(wallet.unlockedBalance()) / 100000000) / 100,
-                    tokens: Math.floor(parseFloat(wallet.tokenBalance()) / 100000000) / 100,
-                    unlocked_tokens: Math.floor(parseFloat(wallet.unlockedTokenBalance()) / 100000000) / 100,
-                }));
-
             });
 
             wallet.on('refreshed', () => {
