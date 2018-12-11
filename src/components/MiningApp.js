@@ -39,12 +39,6 @@ export default class MiningApp extends React.Component {
             hashrate: '0',
             address: '',
             pool_url: '',
-            modal_active: false,
-            modal_close_disabled: false,
-            instructions_modal_active: false,
-            balance_modal_active: false,
-            balance_alert_close_disabled: false,
-            instructions_lang: 'english',
             pools_list: [
                 'pool.safexnews.net:1111',
                 'safex.cool-pool.net:3333',
@@ -93,6 +87,14 @@ export default class MiningApp extends React.Component {
                 "watch": false
             },
 
+            //UI settings 
+            modal_active: false,
+            modal_close_disabled: false,
+            instructions_modal_active: false,
+            balance_modal_active: false,
+            balance_alert_close_disabled: false,
+            instructions_lang: 'english',
+
             //balance settings
             balance: 0,
             unlocked_balance: 0,
@@ -110,7 +112,10 @@ export default class MiningApp extends React.Component {
 
             //wallet state settings
             wallet: {},
+            wallet_connected: false,
+            blockchain_height: 0,
             wallet_sync: false,
+            wallet_refresh: false,
             wallet_being_created: false,
             create_new_wallet_modal: false,
             open_from_existing_modal: false,
@@ -145,6 +150,7 @@ export default class MiningApp extends React.Component {
         this.startBalanceCheck = this.startBalanceCheck.bind(this);
         this.setOpenBalanceAlert = this.setOpenBalanceAlert.bind(this);
         this.setCloseBalanceAlert = this.setCloseBalanceAlert.bind(this);
+        this.rescanBalance = this.rescanBalance.bind(this);
 
         //wallet functions
         this.create_new_wallet = this.create_new_wallet.bind(this);
@@ -388,9 +394,10 @@ export default class MiningApp extends React.Component {
                 balance_wallet: wallet.address()
             }));
 
-
             if (this.state.wallet_loaded) {
                 this.setState(() => ({
+                    wallet_connected: wallet.connected(),
+                    blockchain_height: wallet.blockchainHeight(),
                     balance: Math.floor(parseFloat(wallet.balance()) / 100000000) / 100,
                     unlocked_balance: Math.floor(parseFloat(wallet.unlockedBalance()) / 100000000) / 100,
                     tokens: Math.floor(parseFloat(wallet.tokenBalance()) / 100000000) / 100,
@@ -403,7 +410,7 @@ export default class MiningApp extends React.Component {
                 console.log("blockchain height" + wallet.blockchainHeight());
                 console.log('connected: ' + wallet.connected());
 
-                //   this.state.tick_handle = setTimeout(nextTick, 10000);
+                // this.state.tick_handle = setTimeout(nextTick, 10000);
             }
 
             var lastHeight = 0;
@@ -463,7 +470,7 @@ export default class MiningApp extends React.Component {
 
             wallet.on('unconfirmedMoneyReceived', (tx, amount) => {
                 console.log("UNCONFIRMEDMONEYRECEIVED");
-                this.state.balance =  Math.floor(parseFloat(wallet.balance()) / 100000000) / 100;
+                this.state.balance = Math.floor(parseFloat(wallet.balance()) / 100000000) / 100;
             });
 
             wallet.on('moneyReceived', (tx, amount) => {
@@ -474,7 +481,7 @@ export default class MiningApp extends React.Component {
             wallet.on('unconfirmedTokenReceived', (tx, amount) => {
                 console.log("UNCONFIRMEDTOKENRECEIVED");
                 this.setState({
-                    tokens : Math.floor(parseFloat(wallet.tokenBalance()) / 100000000) / 100
+                    tokens: Math.floor(parseFloat(wallet.tokenBalance()) / 100000000) / 100
                 });
             });
 
@@ -498,16 +505,84 @@ export default class MiningApp extends React.Component {
             wallet.on('updated', () => {
                 console.log("UPDATED");
                 wallet.store()
-                .then(() => {
-                    console.log("Wallet stored");
-                })
-                .catch((e) => {
-                    console.log("Unable to store wallet: " + e)
-                })
+                    .then(() => {
+                        console.log("Wallet stored");
+                    })
+                    .catch((e) => {
+                        console.log("Unable to store wallet: " + e)
+                    })
             });
 
             //nextTick();
         }
+    }
+
+    rescanBalance() {
+        var wallet = this.state.wallet;
+        var lastHeight = 0;
+        wallet.setRefreshFromBlockHeight(0);
+
+        this.setState(() => ({
+            wallet_refresh: true,
+            modal_close_disabled: true,
+        }));
+
+        this.setOpenBalanceAlert('Refreshing, please wait ', true);
+
+        wallet.on('newBlock', (height) => {
+            let synchronized = wallet.synchronized();
+            if (synchronized) {
+                this.setState(() => ({
+                    wallet_sync: synchronized,
+                    modal_close_disabled: false,
+                    balance_alert_close_disabled: false,
+                    balance: Math.floor(parseFloat(wallet.balance()) / 100000000) / 100,
+                    unlocked_balance: Math.floor(parseFloat(wallet.unlockedBalance()) / 100000000) / 100,
+                    tokens: Math.floor(parseFloat(wallet.tokenBalance()) / 100000000) / 100,
+                    unlocked_tokens: Math.floor(parseFloat(wallet.unlockedTokenBalance()) / 100000000) / 100,
+                }));
+                this.setCloseBalanceAlert();
+            } else {
+                this.setState(() => ({
+                    wallet_sync: synchronized,
+                    modal_close_disabled: true
+                }));
+            }
+
+            if (height - lastHeight > 60) {
+                this.setOpenBalanceAlert('Please wait while blockchain is being updated, height ' + height, false);
+                console.log('wallet synchronized: ' + synchronized)
+                console.log("blockchain updated, height: " + height);
+                lastHeight = height;
+            }
+        });
+
+        wallet.on('refreshed', () => {
+            console.log("wallet refreshed");
+            console.log('wallet synchronized: ' + wallet.synchronized())
+            this.setState(() => ({
+                modal_close_disabled: false,
+                balance_alert_close_disabled: false,
+                balance: Math.floor(parseFloat(wallet.balance()) / 100000000) / 100,
+                unlocked_balance: Math.floor(parseFloat(wallet.unlockedBalance()) / 100000000) / 100,
+                tokens: Math.floor(parseFloat(wallet.tokenBalance()) / 100000000) / 100,
+                unlocked_tokens: Math.floor(parseFloat(wallet.unlockedTokenBalance()) / 100000000) / 100,
+            }));
+
+            wallet.store()
+                .then(() => {
+                    console.log("Wallet stored");
+                    this.setState(() => ({
+                        wallet_refresh: false,
+                        modal_close_disabled: false
+                    }));
+                    this.setCloseBalanceAlert();
+                })
+                .catch((e) => {
+                    console.log("Unable to store wallet: " + e)
+                });
+            wallet.off('refreshed');
+        });
     }
 
     openInfoPopup(message) {
@@ -977,7 +1052,22 @@ export default class MiningApp extends React.Component {
                         this.state.wallet_loaded
                             ?
                             <div className="wallet-exists">
-                                {/* <button className="back" onClick={this.refreshBalance}>Refresh</button> */}
+                                <div className="btns-wrap">
+                                    <button className={this.state.wallet_connected ? "signal connected" : "signal"}
+                                        title={this.state.wallet_connected ? "Connected" : "Connection failure, please refresh"}>
+                                        <img src={this.state.wallet_connected ? "images/connected-blue.png" : "images/connected-white.png"} alt="connected" />
+                                    </button>
+                                    <button className="blockheight"
+                                        title="Blockchain Height">
+                                        <img src="images/blocks.png" alt="blocks" />
+                                        <span>
+                                            {this.state.blockchain_height}
+                                        </span>
+                                    </button>
+                                    <button className="refresh" onClick={this.rescanBalance} title="Refresh">
+                                        <img src="images/refresh.png" alt="refresh" />
+                                    </button>
+                                </div>
                                 <label htmlFor="selected_balance_address">Safex Wallet Address</label>
                                 <textarea placeholder="Safex Wallet Address" name="selected_balance_address"
                                     value={this.state.balance_wallet} rows="2" readOnly />

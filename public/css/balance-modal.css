@@ -108,14 +108,46 @@
   color: #c80e4b;
   text-transform: uppercase;
 }
-.balance-modal .back {
+.balance-modal .btns-wrap {
   position: absolute;
   top: 15px;
 }
-.balance-modal .refresh {
-  position: absolute;
-  top: 15px;
-  left: 125px;
+.balance-modal .btns-wrap button {
+  padding: 7px 9px 7px;
+  position: relative;
+}
+.balance-modal .btns-wrap button img {
+  max-height: 23px;
+  -webkit-transition: all 0.2s ease-in;
+  -moz-transition: all 0.2s ease-in;
+  transition: all 0.2s ease-in;
+}
+.balance-modal .btns-wrap .signal,
+.balance-modal .btns-wrap .blockheight {
+  border: 0px none;
+  padding: 0;
+  background: transparent;
+}
+.balance-modal .btns-wrap .signal:hover,
+.balance-modal .btns-wrap .blockheight:hover {
+  box-shadow: none !important;
+  cursor: initial;
+}
+.balance-modal .btns-wrap .blockheight {
+  margin-left: 15px;
+}
+.balance-modal .btns-wrap .blockheight img {
+  opacity: 1;
+  margin-right: 5px;
+}
+.balance-modal .btns-wrap .blockheight span {
+  letter-spacing: 0px;
+}
+.balance-modal .btns-wrap .signal img {
+  max-height: 23px;
+}
+.balance-modal .btns-wrap .refresh {
+  margin-left: 15px;
 }
 .balance-modal .groups-wrap {
   display: flex;
