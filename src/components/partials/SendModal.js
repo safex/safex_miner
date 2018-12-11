@@ -18,12 +18,12 @@ export default class SendModal extends React.Component {
                                         <div className="form-group-wrap">
                                             <div className="form-group">
                                                 <label htmlFor="from">From</label>
-                                                <textarea name="from" defaultValue={this.props.fromAddress} rows="5" readOnly />
+                                                <textarea name="from" defaultValue={this.props.fromAddress} rows="3" readOnly />
                                             </div>
 
                                             <div className="form-group">
                                                 <label htmlFor="send_to">To</label>
-                                                <textarea name="send_to" placeholder="Enter Safex Wallet Address" rows="5" />
+                                                <textarea name="send_to" placeholder="Enter Safex Wallet Address" rows="3" />
                                             </div>
                                         </div>
 
@@ -43,12 +43,12 @@ export default class SendModal extends React.Component {
                                                     <div className="form-group-wrap">
                                                         <div className="form-group">
                                                             <label htmlFor="from">From</label>
-                                                            <textarea name="from" defaultValue={this.props.fromAddress} rows="5" readOnly />
+                                                            <textarea name="from" defaultValue={this.props.fromAddress} rows="3" readOnly />
                                                         </div>
 
                                                         <div className="form-group">
                                                             <label htmlFor="send_to">To</label>
-                                                            <textarea name="send_to" placeholder="Enter Safex Wallet Address" rows="5" />
+                                                            <textarea name="send_to" placeholder="Enter Safex Wallet Address" rows="3" />
                                                         </div>
                                                     </div>
 
