@@ -46,7 +46,7 @@ export default class InstructionsModal extends React.Component {
                             <h3>Uputstvo</h3>
                             <p>
                                 Ako nemate Safex Wallet, kliknite Create New Wallet File<button className="icon-btn"><img src="images/new-wallet.png" alt="new-wallet" /></button>dugme.
-                                Unesite lozinku za svoju datoteku i kliknite<button>Create New Wallet</button>. U dijalog prozoru, unesite ime za Vašu wallet datoteku i izaberite gde želite da ga sačuvate.
+                                Unesite lozinku za svoju datoteku i kliknite<button>Create New Wallet</button>dugme. U dijalog prozoru, unesite ime za Vašu wallet datoteku i izaberite gde želite da ga sačuvate.
                                 Ako već imate wallet datoteku, kliknite Open Existing Wallet File<button className="icon-btn"><img src="images/open-logo.png" alt="open-logo" /></button>dugme,
                                 unesite lozinku Vaše datoteke i kliknite <button>Open Wallet File</button>dugme. Ako želite da napravite novu datoteku od već postojećih ključeva, kliknite
                                 <button className="icon-btn"><img src="images/create-from-keys.png" alt="create-from-keys" /></button>dugme. Unesite svoju Safex adresu, tajni spend ključ (private spend key),
@@ -57,7 +57,7 @@ export default class InstructionsModal extends React.Component {
                                 Ako podelite ili izgubite Vašu Wallet datoteku sigurno ćete izgubiti sav Vaš Safex Cash i Safex Tokene.
                             </p>
                             <p className="warning green">
-                                Kada sačuvate Vašu datoteku, Vaša Safex adresa će se pojaviti u address polju i spremni ste da počnete sa rudarenjem.
+                                Kada sačuvate Vašu datoteku, Vaša Safex adresa će se pojaviti u predvidjenom polju i spremni ste da počnete sa rudarenjem.
                             </p>
                             <p>
                                 Izaberite pool na koji želite da se povežete, izaberite koliku procesorku snagu želite da koristite i

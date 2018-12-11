@@ -9,7 +9,13 @@ export default class BalanceAlert extends React.Component {
                     : 'balanceAlert'}>
                     <div className="mainAlertPopupInner">
                         <p>{this.props.balanceAlertText}</p>
-                        <span className="close" onClick={this.props.closeBalanceAlert}>X</span>
+                        {
+                            this.props.balanceAlertCloseDisabled
+                                ?
+                                <span className="hidden"></span>
+                                :
+                                <span className="close" onClick={this.props.closeBalanceAlert}>X</span>
+                        }
                     </div>
                 </div>
 
