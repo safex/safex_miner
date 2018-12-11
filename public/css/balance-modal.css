@@ -150,6 +150,9 @@
 .balance-modal .btns-wrap .refresh {
   margin-left: 15px;
 }
+.balance-modal .btns-wrap .refresh img {
+  max-height: 18px;
+}
 .balance-modal .groups-wrap {
   display: flex;
   flex-direction: row;
