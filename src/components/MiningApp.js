@@ -404,7 +404,7 @@ export default class MiningApp extends React.Component {
 
             if (this.state.wallet_loaded) {
                 this.setState(() => ({
-                    wallet_connected: wallet.connected(),
+                    wallet_connected: wallet.connected() == "connected" ? true:false,
                     blockchain_height: wallet.blockchainHeight(),
                     balance: Math.floor(parseFloat(wallet.balance()) / 100000000) / 100,
                     unlocked_balance: Math.floor(parseFloat(wallet.unlockedBalance()) / 100000000) / 100,
@@ -524,14 +524,16 @@ export default class MiningApp extends React.Component {
                     })
             });
 
-            //nextTick();
         }
     }
 
     rescanBalance() {
         var wallet = this.state.wallet;
         var lastHeight = 0;
+        console.log("Starting blockchain rescnan...");
         wallet.rescanBlockchain();
+
+        console.log("Blockchain rescan called...");
 
         this.setState(() => ({
             wallet_refresh: true,
@@ -1032,7 +1034,7 @@ export default class MiningApp extends React.Component {
                             <div className="wallet-exists">
                                 <div className="btns-wrap">
                                     <button className={this.state.wallet_connected ? "signal connected" : "signal"}
-                                        title={this.state.wallet_connected ? "Connected" : "Connection failure, please refresh"}>
+                                        title={this.state.wallet_connected ? "Connected" : "Connection to server failure"}>
                                         <img src={this.state.wallet_connected ? "images/connected-blue.png" : "images/connected-white.png"} alt="connected" />
                                     </button>
                                     <button className="blockheight"
