@@ -393,6 +393,7 @@ export default class MiningApp extends React.Component {
         }
     }
 
+
     startBalanceCheck() {
         if (this.state.wallet_loaded) {
             console.log(this.state.wallet)
@@ -404,7 +405,7 @@ export default class MiningApp extends React.Component {
 
             if (this.state.wallet_loaded) {
                 this.setState(() => ({
-                    wallet_connected: wallet.connected() == "connected" ? true:false,
+                    wallet_connected: (wallet.connected() === "connected"),
                     blockchain_height: wallet.blockchainHeight(),
                     balance: Math.floor(parseFloat(wallet.balance()) / 100000000) / 100,
                     unlocked_balance: Math.floor(parseFloat(wallet.unlockedBalance()) / 100000000) / 100,
@@ -418,12 +419,25 @@ export default class MiningApp extends React.Component {
                 console.log("blockchain height " + wallet.blockchainHeight());
                 console.log('connected: ' + wallet.connected());
 
-                // this.state.tick_handle = setTimeout(nextTick, 10000);
+
+                let that = this;
+                const checkConnection = function() {
+                    if (that.state.wallet_loaded) {
+                        that.setState(() => ({
+                            wallet_connected: (wallet.connected() === "connected")
+                        }));
+                    }
+                    console.log("Checking daemon connection:"+that.state.wallet_connected);
+                    setTimeout(checkConnection, 20000);
+                }
+
+                that.setState(() => ({
+                    tick_handle: setTimeout(checkConnection, 20000)
+                }));
             }
 
             var lastHeight = 0;
             console.log("balance address: " + wallet.address());
-            console.log("seed: " + wallet.seed());
 
             wallet.on('newBlock', (height) => {
                 let synchronized = wallet.synchronized();
@@ -531,8 +545,7 @@ export default class MiningApp extends React.Component {
         var wallet = this.state.wallet;
         var lastHeight = 0;
         console.log("Starting blockchain rescnan...");
-        wallet.rescanBlockchain();
-
+        wallet.rescanBlockchainAsync();
         console.log("Blockchain rescan called...");
 
         this.setState(() => ({
