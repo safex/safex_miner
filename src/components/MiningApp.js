@@ -25,23 +25,12 @@ import CreateFromKeysModal from './partials/CreateFromKeysModal';
 import InstructionsModal from './partials/InstructionsModal';
 
 // Testnet conf
-let net = 'testnet';
-let daemonHostPort = '192.168.1.22:29393';
+// let net = 'testnet';
+// let daemonHostPort = '192.168.1.22:29393';
 
 // Mainnet conf
-// let net = 'mainnet';
-// let daemonHostPort = 'rpc.safex.io:17402';
-
-
-function roundCashBalance(balance)
-{
-    return Math.floor(parseFloat(balance) / 100000000) / 100;
-}
-
-function roundTokenBalance(tokenBalance)
-{
-    return Math.floor(parseFloat(tokenBalance) / 100000000) / 100;
-}
+let net = 'mainnet';
+let daemonHostPort = 'rpc.safex.io:17402';
 
 export default class MiningApp extends React.Component {
     constructor(props) {
@@ -169,6 +158,7 @@ export default class MiningApp extends React.Component {
         this.setOpenBalanceAlert = this.setOpenBalanceAlert.bind(this);
         this.setCloseBalanceAlert = this.setCloseBalanceAlert.bind(this);
         this.rescanBalance = this.rescanBalance.bind(this);
+        this.roundBalanceAmount = this.roundBalanceAmount.bind(this);
 
         //wallet functions
         this.create_new_wallet = this.create_new_wallet.bind(this);
@@ -186,7 +176,6 @@ export default class MiningApp extends React.Component {
         this.exportWallet = this.exportWallet.bind(this);
         this.refreshCallback = this.refreshCallback.bind(this);
         this.updatedCallback = this.updatedCallback.bind(this);
-
     }
 
     //first step select wallet path, if exists, set password
@@ -286,9 +275,9 @@ export default class MiningApp extends React.Component {
                                         view_key: wallet.secretViewKey(),
                                         modal_close_disabled: false
                                     });
-                                    console.log('wallet address  ' + wallet.address());
-                                    console.log('wallet view private key  ' + wallet.secretViewKey());
-                                    console.log('wallet spend private key  ' + wallet.secretSpendKey());
+                                    console.log('wallet address  ' + this.state.mining_address);
+                                    console.log('wallet spend private key  ' + this.state.spend_key);
+                                    console.log('wallet view private key  ' + this.state.view_key);
                                     this.closeModal();
                                 })
                                 .catch((err) => {
@@ -364,9 +353,9 @@ export default class MiningApp extends React.Component {
                                             view_key: wallet.secretViewKey(),
                                             modal_close_disabled: false
                                         });
-                                        console.log('wallet address  ' + wallet.address());
-                                        console.log('wallet view private key  ' + wallet.secretViewKey());
-                                        console.log('wallet spend private key  ' + wallet.secretSpendKey());
+                                        console.log('wallet address  ' + this.state.mining_address);
+                                        console.log('wallet spend private key  ' + this.state.spend_key);
+                                        console.log('wallet view private key  ' + this.state.view_key);
                                         this.closeModal();
                                     })
                                     .catch((err) => {
@@ -406,7 +395,6 @@ export default class MiningApp extends React.Component {
         }
     }
 
-
     updatedCallback() {
         console.log("UPDATED");
         this.state.wallet.store()
@@ -424,12 +412,12 @@ export default class MiningApp extends React.Component {
         this.setState(() => ({
             modal_close_disabled: false,
             balance_alert_close_disabled: false,
-            balance: roundCashBalance(wallet.balance()),
-            unlocked_balance: roundCashBalance(wallet.unlockedBalance()),
-            tokens: roundTokenBalance(wallet.tokenBalance()),
-            unlocked_tokens: roundTokenBalance(wallet.unlockedTokenBalance()),
+            balance: this.roundBalanceAmount(wallet.balance()),
+            unlocked_balance: this.roundBalanceAmount(wallet.unlockedBalance()),
+            tokens: this.roundBalanceAmount(wallet.tokenBalance()),
+            unlocked_tokens: this.roundBalanceAmount(wallet.unlockedTokenBalance()),
             blockchain_height: wallet.blockchainHeight(),
-            wallet_connected: (wallet.connected() === "connected")
+            wallet_connected: wallet.connected() === "connected"
         }));
 
         wallet.store()
@@ -445,14 +433,11 @@ export default class MiningApp extends React.Component {
         wallet.on('updated', this.updatedCallback);
     }
 
-
     startBalanceCheck() {
         if (this.state.wallet_loaded) {
-
             let wallet = this.state.wallet;
-
-            console.log("daemon blockchain height:"+wallet.daemonBlockchainHeight());
-            console.log("blockchain height:"+wallet.blockchainHeight());
+            console.log("daemon blockchain height: " + wallet.daemonBlockchainHeight());
+            console.log("blockchain height: " + wallet.blockchainHeight());
 
             this.setState(() => ({
                 balance_wallet: wallet.address()
@@ -460,18 +445,18 @@ export default class MiningApp extends React.Component {
 
             if (this.state.wallet_loaded) {
                 this.setState(() => ({
-                    wallet_connected: (wallet.connected() === "connected"),
+                    wallet_connected: wallet.connected() === "connected",
                     blockchain_height: wallet.blockchainHeight(),
-                    balance: roundCashBalance(wallet.balance()),
-                    unlocked_balance: roundCashBalance(wallet.unlockedBalance()),
-                    tokens: roundTokenBalance(wallet.tokenBalance()),
-                    unlocked_tokens: roundTokenBalance(wallet.unlockedTokenBalance())
+                    balance: this.roundBalanceAmount(wallet.balance()),
+                    unlocked_balance: this.roundBalanceAmount(wallet.unlockedBalance()),
+                    tokens: this.roundBalanceAmount(wallet.tokenBalance()),
+                    unlocked_tokens: this.roundBalanceAmount(wallet.unlockedTokenBalance())
                 }));
 
-                console.log("balance: " + roundCashBalance(wallet.balance()));
-                console.log("unlocked balance: " + roundCashBalance(wallet.unlockedBalance()));
-                console.log("token balance: " + roundTokenBalance(wallet.tokenBalance()));
-                console.log("unlocked token balance: " + roundTokenBalance(wallet.unlockedTokenBalance()));
+                console.log("balance: " + this.roundBalanceAmount(wallet.balance()));
+                console.log("unlocked balance: " + this.roundBalanceAmount(wallet.unlockedBalance()));
+                console.log("token balance: " + this.roundBalanceAmount(wallet.tokenBalance()));
+                console.log("unlocked token balance: " + this.roundBalanceAmount(wallet.unlockedTokenBalance()));
                 console.log("blockchain height " + wallet.blockchainHeight());
                 console.log('connected: ' + wallet.connected());
             }
@@ -493,10 +478,10 @@ export default class MiningApp extends React.Component {
                             wallet_sync: true,
                             modal_close_disabled: false,
                             balance_alert_close_disabled: false,
-                            balance: roundCashBalance(wallet.balance()),
-                            unlocked_balance: roundCashBalance(wallet.unlockedBalance()),
-                            tokens: roundTokenBalance(wallet.tokenBalance()),
-                            unlocked_tokens: roundTokenBalance(wallet.unlockedTokenBalance()),
+                            balance: this.roundBalanceAmount(wallet.balance()),
+                            unlocked_balance: this.roundBalanceAmount(wallet.unlockedBalance()),
+                            tokens: this.roundBalanceAmount(wallet.tokenBalance()),
+                            unlocked_tokens: this.roundBalanceAmount(wallet.unlockedTokenBalance()),
                             blockchain_height: wallet.blockchainHeight()
                         }));
                     }
@@ -527,6 +512,10 @@ export default class MiningApp extends React.Component {
         }));
 
         this.setOpenBalanceAlert('Rescaning, please wait ', true);
+    }
+
+    roundBalanceAmount(balance) {
+        return Math.floor(parseFloat(balance) / 100000000) / 100;
     }
 
     openInfoPopup(message) {
@@ -633,8 +622,8 @@ export default class MiningApp extends React.Component {
                     this.setCloseSendPopup();
                     this.setOpenBalanceAlert('Transaction commited successfully, Your cash transaction ID is: ' 
                     + tx.transactionsIds(), false);
-                    this.state.balance = Math.floor(parseFloat(this.state.wallet.balance()) / 100000000) / 100;
-                    this.state.unlocked_balance = Math.floor(parseFloat(this.state.wallet.unlockedBalance()) / 100000000) / 100;
+                    this.state.balance = this.roundBalanceAmount(wallet.balance());
+                    this.state.unlocked_balance = this.roundBalanceAmount(wallet.unlockedBalance());
                 }).catch((e) => {
                     console.log("Error on commiting transaction: " + e);
                     this.setOpenBalanceAlert("Error on commiting transaction: " + e, false);
@@ -668,8 +657,8 @@ export default class MiningApp extends React.Component {
                     this.setCloseSendPopup();
                     this.setOpenBalanceAlert('Transaction commited successfully, Your token transaction ID is: '
                     + tx.transactionsIds(), false);
-                    this.state.tokens = Math.floor(parseFloat(this.state.wallet.tokenBalance()) / 100000000) / 100;
-                    this.state.unlocked_tokens = Math.floor(parseFloat(this.state.wallet.unlockedTokenBalance()) / 100000000) / 100;
+                    this.state.balance = this.roundBalanceAmount(wallet.tokenBalance());
+                    this.state.unlocked_balance = this.roundBalanceAmount(wallet.unlockedTokenBalance());
                 }).catch((e) => {
                     console.log("Error on commiting transaction: " + e);
                     this.setOpenBalanceAlert("Error on commiting transaction: " + e, false );
