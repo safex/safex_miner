@@ -447,9 +447,12 @@ export default class MiningApp extends React.Component {
 
     startBalanceCheck() {
         if (this.state.wallet_loaded) {
-            console.log(this.state.wallet)
 
             let wallet = this.state.wallet;
+
+            console.log("daemon blockchain height:"+wallet.daemonBlockchainHeight());
+            console.log("blockchain height:"+wallet.blockchainHeight());
+
             this.setState(() => ({
                 balance_wallet: wallet.address()
             }));
@@ -475,12 +478,16 @@ export default class MiningApp extends React.Component {
             var lastHeight = 0;
             console.log("balance address: " + wallet.address());
 
+            this.setState(() => ({
+                wallet_sync: false,
+            }));
+
             wallet.on('newBlock', (height) => {
-                let synchronized = wallet.daemonBlockchainHeight() - wallet.blockchainHeight() < 5;
-                if (synchronized) {
+                let syncedHeight = wallet.daemonBlockchainHeight() - height < 10;
+                if (syncedHeight && wallet.synchronized()) {
                     console.log("newBlock wallet synchronized, setting state...");
                     this.setState(() => ({
-                        wallet_sync: synchronized,
+                        wallet_sync: true,
                         modal_close_disabled: false,
                         balance_alert_close_disabled: false,
                         balance: roundCashBalance(wallet.balance()),
@@ -489,20 +496,15 @@ export default class MiningApp extends React.Component {
                         unlocked_tokens: roundTokenBalance(wallet.unlockedTokenBalance())
                     }));
                 } else {
-                    this.setState(() => ({
-                        wallet_sync: synchronized,
-                        modal_close_disabled: true,
-                    }));
-                }
-
-                if (height - lastHeight > 60) {
-                    this.setOpenBalanceAlert('Please wait while blockchain is being updated, height ' + height, false);
-                    console.log('wallet synchronized: ' + synchronized)
-                    console.log("blockchain updated, height: " + height);
-                    lastHeight = height;
-                    this.setState(() => ({
-                        blockchain_height: height
-                    }));
+                    if (height - lastHeight > 100) {
+                        this.setState(() => ({
+                            modal_close_disabled: true,
+                            blockchain_height: height
+                        }));
+                        this.setOpenBalanceAlert('Please wait while blockchain is being updated, height ' + height, false);
+                        console.log("blockchain updated, height: " + height);
+                        lastHeight = height;
+                    }
                 }
             });
 
