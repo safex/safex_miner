@@ -421,7 +421,6 @@ export default class MiningApp extends React.Component {
 
     refreshCallback() {
         console.log("wallet refreshed");
-        console.log('wallet synchronized: ' + wallet.synchronized())
         let wallet = this.state.wallet;
         this.setState(() => ({
             modal_close_disabled: false,
@@ -477,7 +476,7 @@ export default class MiningApp extends React.Component {
             console.log("balance address: " + wallet.address());
 
             wallet.on('newBlock', (height) => {
-                let synchronized = wallet.synchronized();
+                let synchronized = wallet.daemonBlockchainHeight() - wallet.blockchainHeight() < 5;
                 if (synchronized) {
                     console.log("newBlock wallet synchronized, setting state...");
                     this.setState(() => ({
