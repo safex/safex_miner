@@ -1042,8 +1042,8 @@ export default class MiningApp extends React.Component {
                                             {this.state.blockchain_height}
                                         </span>
                                     </button>
-                                    <button className="button-shine refresh" onClick={this.rescanBalance} title="Refresh">
-                                        <img src="images/refresh.png" alt="refresh" />
+                                    <button className="button-shine refresh" onClick={this.rescanBalance} title="Rescan blockchain from scratch">
+                                        <img src="images/refresh.png" alt="rescan" />
                                     </button>
                                 </div>
                                 <label htmlFor="selected_balance_address">Safex Wallet Address</label>
