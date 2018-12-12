@@ -25,12 +25,12 @@ import CreateFromKeysModal from './partials/CreateFromKeysModal';
 import InstructionsModal from './partials/InstructionsModal';
 
 // Testnet conf
-// let net = 'testnet';
-// let daemonHostPort = '192.168.1.22:29393';
+let net = 'testnet';
+let daemonHostPort = '192.168.1.22:29393';
 
 // Mainnet conf
-let net = 'mainnet';
-let daemonHostPort = 'rpc.safex.io:17402';
+// let net = 'mainnet';
+// let daemonHostPort = 'rpc.safex.io:17402';
 
 export default class MiningApp extends React.Component {
     constructor(props) {
@@ -159,6 +159,8 @@ export default class MiningApp extends React.Component {
         this.setCloseBalanceAlert = this.setCloseBalanceAlert.bind(this);
         this.rescanBalance = this.rescanBalance.bind(this);
         this.roundBalanceAmount = this.roundBalanceAmount.bind(this);
+        this.refreshCallback = this.refreshCallback.bind(this);
+        this.updatedCallback = this.updatedCallback.bind(this);
 
         //wallet functions
         this.create_new_wallet = this.create_new_wallet.bind(this);
@@ -174,8 +176,6 @@ export default class MiningApp extends React.Component {
         this.openCreateFromKeysModal = this.openCreateFromKeysModal.bind(this);
         this.closeWallet = this.closeWallet.bind(this);
         this.exportWallet = this.exportWallet.bind(this);
-        this.refreshCallback = this.refreshCallback.bind(this);
-        this.updatedCallback = this.updatedCallback.bind(this);
     }
 
     //first step select wallet path, if exists, set password
