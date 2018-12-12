@@ -24,6 +24,14 @@ import OpenExistingWalletModal from './partials/OpenExistingWalletModal';
 import CreateFromKeysModal from './partials/CreateFromKeysModal';
 import InstructionsModal from './partials/InstructionsModal';
 
+// Testnet conf
+let net = 'testnet';
+let daemonHostPort = '192.168.1.22:29393';
+
+// Mainnet conf
+// let net = 'mainnet';
+// let daemonHostPort = 'rpc.safex.io:17402';
+
 export default class MiningApp extends React.Component {
     constructor(props) {
         super(props);
@@ -193,8 +201,8 @@ export default class MiningApp extends React.Component {
                     var args = {
                         'path': filepath,
                         'password': pass,
-                        'network': 'mainnet',
-                        'daemonAddress': 'rpc.safex.io:17402',
+                        'network': net,
+                        'daemonAddress': daemonHostPort,
                     }
                     this.setOpenBalanceAlert('Please wait while your wallet file is loaded', true);
 
@@ -244,8 +252,8 @@ export default class MiningApp extends React.Component {
                         var args = {
                             'path': filepath,
                             'password': pass1,
-                            'network': 'mainnet',
-                            'daemonAddress': 'rpc.safex.io:17402',
+                            'network': net,
+                            'daemonAddress': daemonHostPort,
                         }
                         if (!safex.walletExists(filepath)) {
                             this.setState(() => ({
@@ -308,7 +316,7 @@ export default class MiningApp extends React.Component {
 
         if (safex_address !== '' || view_key !== '' || spend_key !== '' || pass1 !== '' || pass2 !== '') {
             if (pass1 !== '' && pass2 !== '' && pass1 === pass2) {
-                if (verify_safex_address(spend_key, view_key, safex_address)) {
+                if (net == 'testnet' || verify_safex_address(spend_key, view_key, safex_address)) {
                     if (this.state.wallet_loaded) {
                         this.closeWallet();
                     }
@@ -318,8 +326,8 @@ export default class MiningApp extends React.Component {
                             var args = {
                                 'path': this.state.wallet_path,
                                 'password': pass1,
-                                'network': 'mainnet',
-                                'daemonAddress': 'rpc.safex.io:17402',
+                                'network': net,
+                                'daemonAddress': daemonHostPort,
                                 'restoreHeight': 0,
                                 'addressString': safex_address,
                                 'viewKeyString': view_key,
@@ -523,7 +531,7 @@ export default class MiningApp extends React.Component {
     rescanBalance() {
         var wallet = this.state.wallet;
         var lastHeight = 0;
-        wallet.setRefreshFromBlockHeight(0);
+        wallet.rescanBlockchain();
 
         this.setState(() => ({
             wallet_refresh: true,
