@@ -32,6 +32,17 @@ let daemonHostPort = '192.168.1.22:29393';
 // let net = 'mainnet';
 // let daemonHostPort = 'rpc.safex.io:17402';
 
+
+function roundCashBalance(balance)
+{
+    return Math.floor(parseFloat(balance) / 100000000) / 100;
+}
+
+function roundTokenBalance(tokenBalance)
+{
+    return Math.floor(parseFloat(tokenBalance) / 100000000) / 100;
+}
+
 export default class MiningApp extends React.Component {
     constructor(props) {
         super(props);
@@ -407,15 +418,16 @@ export default class MiningApp extends React.Component {
                 this.setState(() => ({
                     wallet_connected: (wallet.connected() === "connected"),
                     blockchain_height: wallet.blockchainHeight(),
-                    balance: Math.floor(parseFloat(wallet.balance()) / 100000000) / 100,
-                    unlocked_balance: Math.floor(parseFloat(wallet.unlockedBalance()) / 100000000) / 100,
-                    tokens: Math.floor(parseFloat(wallet.tokenBalance()) / 100000000) / 100,
-                    unlocked_tokens: Math.floor(parseFloat(wallet.unlockedTokenBalance()) / 100000000) / 100,
+                    balance: roundCashBalance(wallet.balance()),
+                    unlocked_balance: roundCashBalance(wallet.unlockedBalance()),
+                    tokens: roundTokenBalance(wallet.tokenBalance()),
+                    unlocked_tokens: roundTokenBalance(wallet.unlockedTokenBalance())
                 }));
-                console.log("balance: " + Math.floor(parseFloat(wallet.balance()) / 100000000) / 100);
-                console.log("unlocked balance: " + Math.floor(parseFloat(wallet.unlockedBalance()) / 100000000) / 100);
-                console.log("token balance: " + Math.floor(parseFloat(wallet.tokenBalance()) / 100000000) / 100);
-                console.log("unlocked token balance: " + Math.floor(parseFloat(wallet.unlockedTokenBalance()) / 100000000) / 100);
+
+                console.log("balance: " + roundCashBalance(wallet.balance()));
+                console.log("unlocked balance: " + roundCashBalance(wallet.unlockedBalance()));
+                console.log("token balance: " + roundTokenBalance(wallet.tokenBalance()));
+                console.log("unlocked token balance: " + roundTokenBalance(wallet.unlockedTokenBalance()));
                 console.log("blockchain height " + wallet.blockchainHeight());
                 console.log('connected: ' + wallet.connected());
 
@@ -446,10 +458,10 @@ export default class MiningApp extends React.Component {
                         wallet_sync: synchronized,
                         modal_close_disabled: false,
                         balance_alert_close_disabled: false,
-                        balance: Math.floor(parseFloat(wallet.balance()) / 100000000) / 100,
-                        unlocked_balance: Math.floor(parseFloat(wallet.unlockedBalance()) / 100000000) / 100,
-                        tokens: Math.floor(parseFloat(wallet.tokenBalance()) / 100000000) / 100,
-                        unlocked_tokens: Math.floor(parseFloat(wallet.unlockedTokenBalance()) / 100000000) / 100,
+                        balance: roundCashBalance(wallet.balance()),
+                        unlocked_balance: roundCashBalance(wallet.unlockedBalance()),
+                        tokens: roundTokenBalance(wallet.tokenBalance()),
+                        unlocked_tokens: roundTokenBalance(wallet.unlockedTokenBalance())
                     }));
                 } else {
                     this.setState(() => ({
@@ -475,10 +487,10 @@ export default class MiningApp extends React.Component {
                 this.setState(() => ({
                     modal_close_disabled: false,
                     balance_alert_close_disabled: false,
-                    balance: Math.floor(parseFloat(wallet.balance()) / 100000000) / 100,
-                    unlocked_balance: Math.floor(parseFloat(wallet.unlockedBalance()) / 100000000) / 100,
-                    tokens: Math.floor(parseFloat(wallet.tokenBalance()) / 100000000) / 100,
-                    unlocked_tokens: Math.floor(parseFloat(wallet.unlockedTokenBalance()) / 100000000) / 100,
+                    balance: roundCashBalance(wallet.balance()),
+                    unlocked_balance: roundCashBalance(wallet.unlockedBalance()),
+                    tokens:roundTokenBalance(wallet.tokenBalance()),
+                    unlocked_tokens: roundTokenBalance(wallet.unlockedTokenBalance())
                 }));
 
                 wallet.store()
@@ -495,36 +507,46 @@ export default class MiningApp extends React.Component {
 
             wallet.on('unconfirmedMoneyReceived', (tx, amount) => {
                 console.log("UNCONFIRMEDMONEYRECEIVED");
-                this.state.balance = Math.floor(parseFloat(wallet.balance()) / 100000000) / 100;
+                this.setState(() => ({
+                    balance: roundCashBalance(wallet.balance())
+                }));
             });
 
             wallet.on('moneyReceived', (tx, amount) => {
                 console.log("MONEYRECEIVED");
-                this.state.unlocked_balance = Math.floor(parseFloat(wallet.unlockedBalance()) / 100000000) / 100
+                this.setState({
+                    unlocked_balance: roundCashBalance(wallet.unlockedBalance())
+                });
             });
 
             wallet.on('unconfirmedTokenReceived', (tx, amount) => {
                 console.log("UNCONFIRMEDTOKENRECEIVED");
                 this.setState({
-                    tokens: Math.floor(parseFloat(wallet.tokenBalance()) / 100000000) / 100
+                    tokens: roundTokenBalance(wallet.tokenBalance())
                 });
             });
 
             wallet.on('tokenReceived', (tx, amount) => {
                 console.log("TOKENRECEIVED");
-                this.state.unlocked_tokens = Math.floor(parseFloat(wallet.unlockedTokenBalance()) / 100000000) / 100
+                this.setState({
+                    unlocked_tokens: roundTokenBalance(wallet.unlockedTokenBalance())
+                });
             });
 
             wallet.on('moneySpent', (tx, amount) => {
-                console.log("moneySpent");
-                this.state.unlocked_balance = Math.floor(parseFloat(wallet.unlockedBalance()) / 100000000) / 100;
-                this.state.balance = Math.floor(parseFloat(wallet.balance()) / 100000000) / 100;
+                console.log("MONEYSPENT");
+                this.setState({
+                    unlocked_balance: roundCashBalance(wallet.unlockedBalance()),
+                    balance: roundCashBalance(wallet.balance())
+                });
             });
 
             wallet.on('tokenSpent', (tx, amount) => {
-                console.log("tokenSpent");
-                this.state.tokens = Math.floor(parseFloat(wallet.tokenBalance()) / 100000000) / 100;
-                this.state.unlocked_tokens = Math.floor(parseFloat(wallet.unlockedTokenBalance()) / 100000000) / 100;
+                console.log("TOKENSPENT");
+                this.setState({
+                    tokens: roundCashBalance(wallet.tokenBalance()),
+                    unlocked_tokens: roundTokenBalance(wallet.unlockedTokenBalance())
+                });
             });
 
             wallet.on('updated', () => {
