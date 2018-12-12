@@ -539,39 +539,11 @@ export default class MiningApp extends React.Component {
             blockchain_height: wallet.blockchainHeight(),
         }));
 
-        this.setOpenBalanceAlert('Refreshing, please wait ', true);
-
-        wallet.on('newBlock', (height) => {
-            let synchronized = wallet.synchronized();
-            if (synchronized) {
-                this.setState(() => ({
-                    wallet_sync: synchronized,
-                    modal_close_disabled: false,
-                    balance_alert_close_disabled: false,
-                    balance: Math.floor(parseFloat(wallet.balance()) / 100000000) / 100,
-                    unlocked_balance: Math.floor(parseFloat(wallet.unlockedBalance()) / 100000000) / 100,
-                    tokens: Math.floor(parseFloat(wallet.tokenBalance()) / 100000000) / 100,
-                    unlocked_tokens: Math.floor(parseFloat(wallet.unlockedTokenBalance()) / 100000000) / 100,
-                }));
-                this.setCloseBalanceAlert();
-            } else {
-                this.setState(() => ({
-                    wallet_sync: synchronized,
-                    modal_close_disabled: true
-                }));
-            }
-
-            if (height - lastHeight > 60) {
-                this.setOpenBalanceAlert('Please wait while blockchain is being updated, height ' + height, false);
-                console.log('wallet synchronized: ' + synchronized)
-                console.log("blockchain updated, height: " + height);
-                lastHeight = height;
-            }
-        });
+        this.setOpenBalanceAlert('Rescaning, please wait ', true);
 
         wallet.on('refreshed', () => {
-            console.log("wallet refreshed");
-            console.log('wallet synchronized: ' + wallet.synchronized())
+            console.log("wallet rescaned");
+            console.log('wallet synchronized: ' + wallet.synchronized());
             this.setState(() => ({
                 modal_close_disabled: false,
                 balance_alert_close_disabled: false,
@@ -583,7 +555,7 @@ export default class MiningApp extends React.Component {
 
             wallet.store()
                 .then(() => {
-                    console.log("Wallet stored");
+                    console.log("Rescaned wallet stored");
                     this.setState(() => ({
                         wallet_refresh: false,
                         modal_close_disabled: false
@@ -591,7 +563,7 @@ export default class MiningApp extends React.Component {
                     this.setCloseBalanceAlert();
                 })
                 .catch((e) => {
-                    console.log("Unable to store wallet: " + e)
+                    console.log("Unable to store rescanned wallet: " + e)
                 });
             wallet.off('refreshed');
         });
