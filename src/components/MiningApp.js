@@ -505,49 +505,6 @@ export default class MiningApp extends React.Component {
                 wallet.off('refreshed');
             });
 
-            wallet.on('unconfirmedMoneyReceived', (tx, amount) => {
-                console.log("UNCONFIRMEDMONEYRECEIVED");
-                this.setState(() => ({
-                    balance: roundCashBalance(wallet.balance())
-                }));
-            });
-
-            wallet.on('moneyReceived', (tx, amount) => {
-                console.log("MONEYRECEIVED");
-                this.setState({
-                    unlocked_balance: roundCashBalance(wallet.unlockedBalance())
-                });
-            });
-
-            wallet.on('unconfirmedTokenReceived', (tx, amount) => {
-                console.log("UNCONFIRMEDTOKENRECEIVED");
-                this.setState({
-                    tokens: roundTokenBalance(wallet.tokenBalance())
-                });
-            });
-
-            wallet.on('tokenReceived', (tx, amount) => {
-                console.log("TOKENRECEIVED");
-                this.setState({
-                    unlocked_tokens: roundTokenBalance(wallet.unlockedTokenBalance())
-                });
-            });
-
-            wallet.on('moneySpent', (tx, amount) => {
-                console.log("MONEYSPENT");
-                this.setState({
-                    unlocked_balance: roundCashBalance(wallet.unlockedBalance()),
-                    balance: roundCashBalance(wallet.balance())
-                });
-            });
-
-            wallet.on('tokenSpent', (tx, amount) => {
-                console.log("TOKENSPENT");
-                this.setState({
-                    tokens: roundCashBalance(wallet.tokenBalance()),
-                    unlocked_tokens: roundTokenBalance(wallet.unlockedTokenBalance())
-                });
-            });
 
             wallet.on('updated', () => {
                 console.log("UPDATED");
@@ -577,33 +534,6 @@ export default class MiningApp extends React.Component {
         }));
 
         this.setOpenBalanceAlert('Rescaning, please wait ', true);
-
-        wallet.on('refreshed', () => {
-            console.log("wallet rescaned");
-            console.log('wallet synchronized: ' + wallet.synchronized());
-            this.setState(() => ({
-                modal_close_disabled: false,
-                balance_alert_close_disabled: false,
-                balance: Math.floor(parseFloat(wallet.balance()) / 100000000) / 100,
-                unlocked_balance: Math.floor(parseFloat(wallet.unlockedBalance()) / 100000000) / 100,
-                tokens: Math.floor(parseFloat(wallet.tokenBalance()) / 100000000) / 100,
-                unlocked_tokens: Math.floor(parseFloat(wallet.unlockedTokenBalance()) / 100000000) / 100,
-            }));
-
-            wallet.store()
-                .then(() => {
-                    console.log("Rescaned wallet stored");
-                    this.setState(() => ({
-                        wallet_refresh: false,
-                        modal_close_disabled: false
-                    }));
-                    this.setCloseBalanceAlert();
-                })
-                .catch((e) => {
-                    console.log("Unable to store rescanned wallet: " + e)
-                });
-            wallet.off('refreshed');
-        });
     }
 
     openInfoPopup(message) {
