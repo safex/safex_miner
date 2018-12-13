@@ -134,6 +134,12 @@ header p {
 .main form input:focus {
   box-shadow: 0 0 30px 0 rgba(0, 199, 236, 0.5) !important;
 }
+.main form input[disabled] {
+  color: rgba(255,255,255,.7);
+}
+.main form input[disabled]:hover {
+  box-shadow: none !important;
+}
 .main form input::-webkit-input-placeholder { /* Chrome/Opera/Safari */
   opacity: 1;
   color: #fff;
@@ -176,6 +182,12 @@ header p {
 }
 .main form .pool-url:focus {
   outline: none;
+}
+.main form .pool-url[disabled] {
+  color: rgba(255,255,255,.7);
+}
+.main form .pool-url[disabled]:hover {
+  box-shadow: none !important;
 }
 .options {
   display: flex;
@@ -240,7 +252,10 @@ header p {
   border: 1px solid rgba(255,255,255,.85);
 }
 .main form #cpuUsage[disabled] {
-  background-color: rgba(28, 170, 203, .35);
+  color: rgba(255,255,255,.7);
+}
+.main form #cpuUsage[disabled]:hover {
+  box-shadow: none !important;
 }
 .main form .input-group p {
   font-family: 'Avenir Bold', sans-serif;

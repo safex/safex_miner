@@ -888,7 +888,7 @@ export default class MiningApp extends React.Component {
                             <input type="text" value={this.state.mining_address}
                                 placeholder="Open or create your Wallet File"
                                 name="user_wallet" id="user_wallet" readOnly
-                                disabled={this.state.active ? "disabled" : ""}
+                                disabled={this.state.active || this.state.stopping ? "disabled" : ""}
                                 title={this.state.mining_address === '' ? "Your Safex Address will be shown here" : "Your Safex Address"}
                             />
                             <img src="images/line-right.png" alt="Line Right" />
