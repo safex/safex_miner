@@ -653,13 +653,14 @@ export default class MiningApp extends React.Component {
                 'amount': amount,
                 'tx_type': 0 // cash transaction
             }).then((tx) => {
-                console.log("Cash transaction created: " + tx.transactionsIds());
+                let txId = tx.transactionsIds();
+                console.log("Cash transaction created: " + txId);
 
                 tx.commit().then(() => {
                     console.log("Transaction commited successfully");
                     this.setCloseSendPopup();
                     this.setOpenBalanceAlert('Transaction commited successfully, Your cash transaction ID is: ' 
-                    + tx.transactionsIds(), false);
+                    + txId, false);
                     this.state.balance = this.roundBalanceAmount(wallet.balance());
                     this.state.unlocked_balance = this.roundBalanceAmount(wallet.unlockedBalance());
                 }).catch((e) => {
@@ -688,13 +689,14 @@ export default class MiningApp extends React.Component {
                 'amount': amount,
                 'tx_type': 1 // token transaction
             }).then((tx) => {
-                console.log("Token transaction created: " + tx.transactionsIds());
+                let txId = tx.transactionsIds();
+                console.log("Token transaction created: " + txId);
 
                 tx.commit().then(() => {
                     console.log("Transaction commited successfully");
                     this.setCloseSendPopup();
                     this.setOpenBalanceAlert('Transaction commited successfully, Your token transaction ID is: '
-                    + tx.transactionsIds(), false);
+                    + txId, false);
                     this.state.tokens = this.roundBalanceAmount(wallet.tokenBalance());
                     this.state.unlocked_tokens = this.roundBalanceAmount(wallet.unlockedTokenBalance());
                 }).catch((e) => {
