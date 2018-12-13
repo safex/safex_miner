@@ -218,7 +218,8 @@ export default class MiningApp extends React.Component {
                                 mining_address: wallet.address(),
                                 spend_key: wallet.secretSpendKey(),
                                 view_key: wallet.secretViewKey(),
-                                modal_close_disabled: false
+                                modal_close_disabled: false,
+                                mining_info: false
                             });
                             this.closeModal();
                             console.log("wallet loaded " + this.state.wallet_loaded)
@@ -275,7 +276,8 @@ export default class MiningApp extends React.Component {
                                         mining_address: wallet.address(),
                                         spend_key: wallet.secretSpendKey(),
                                         view_key: wallet.secretViewKey(),
-                                        modal_close_disabled: false
+                                        modal_close_disabled: false,
+                                        mining_info: false
                                     });
                                     console.log('wallet address  ' + this.state.mining_address);
                                     console.log('wallet spend private key  ' + this.state.spend_key);
@@ -354,7 +356,8 @@ export default class MiningApp extends React.Component {
                                             mining_address: wallet.address(),
                                             spend_key: wallet.secretSpendKey(),
                                             view_key: wallet.secretViewKey(),
-                                            modal_close_disabled: false
+                                            modal_close_disabled: false,
+                                            mining_info: false
                                         });
                                         console.log('wallet address  ' + this.state.mining_address);
                                         console.log('wallet spend private key  ' + this.state.spend_key);
