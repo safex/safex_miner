@@ -43,9 +43,9 @@ function structureSafexKeys(spend, view) {
 /**
  * Open Balance Alert Popup
  */
-function openBalanceAlert(target, alert, disabled) {
+function openBalanceAlert(target, alert, alert_state, disabled) {
     target.setState({
-        balance_alert: true,
+        [alert_state]: true,
         balance_alert_text: alert,
         balance_alert_close_disabled: disabled
     });
@@ -57,6 +57,9 @@ function openBalanceAlert(target, alert, disabled) {
 function closeBalanceAlert(target) {
     target.setState({
         balance_alert: false,
+        open_file_alert: false,
+        create_new_wallet_alert: false,
+        create_from_keys_alert: false,
         balance_alert_close_disabled: false
     });
 }
