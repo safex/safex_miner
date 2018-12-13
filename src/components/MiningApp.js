@@ -479,19 +479,22 @@ export default class MiningApp extends React.Component {
             let wallet = this.state.wallet;
             console.log("daemon blockchain height: " + wallet.daemonBlockchainHeight());
             console.log("blockchain height: " + wallet.blockchainHeight());
+            console.log("this.state.lastNewBlockHeight: " + this.state.lastNewBlockHeight);
 
             this.setState(() => ({
                 balance_wallet: wallet.address()
             }));
 
             if (this.state.wallet_loaded) {
+                let myBlockchainHeight = wallet.blockchainHeight();
                 this.setState(() => ({
                     wallet_connected: wallet.connected() === "connected",
-                    blockchain_height: wallet.blockchainHeight(),
+                    blockchain_height: myBlockchainHeight,
                     balance: this.roundBalanceAmount(wallet.balance()),
                     unlocked_balance: this.roundBalanceAmount(wallet.unlockedBalance()),
                     tokens: this.roundBalanceAmount(wallet.tokenBalance()),
-                    unlocked_tokens: this.roundBalanceAmount(wallet.unlockedTokenBalance())
+                    unlocked_tokens: this.roundBalanceAmount(wallet.unlockedTokenBalance()),
+                    lastNewBlockHeight: myBlockchainHeight
                 }));
 
                 console.log("balance: " + this.roundBalanceAmount(wallet.balance()));
@@ -523,8 +526,10 @@ export default class MiningApp extends React.Component {
         wallet.off('refreshed');
 
         setTimeout(() => {
+            let myBlockchainHeight = wallet.blockchainHeight();
             this.setState(() => ({
-                blockchain_height: wallet.blockchainHeight()
+                blockchain_height: myBlockchainHeight,
+                lastNewBlockHeight: myBlockchainHeight
             }));
             console.log("Starting blockchain rescan sync...");
             wallet.rescanBlockchain();
@@ -532,6 +537,7 @@ export default class MiningApp extends React.Component {
 
             setTimeout(() => {
                 console.log("Rescan setting callbacks");
+                let myBlockchainHeight2 = wallet.blockchainHeight();
                 this.setState(() => ({
                     modal_close_disabled: false,
                     balance_alert_close_disabled: false,
@@ -539,8 +545,9 @@ export default class MiningApp extends React.Component {
                     unlocked_balance: this.roundBalanceAmount(wallet.unlockedBalance()),
                     tokens: this.roundBalanceAmount(wallet.tokenBalance()),
                     unlocked_tokens: this.roundBalanceAmount(wallet.unlockedTokenBalance()),
-                    blockchain_height: wallet.blockchainHeight(),
-                    wallet_connected: wallet.connected() === "connected"
+                    blockchain_height: myBlockchainHeight2,
+                    wallet_connected: wallet.connected() === "connected",
+                    lastNewBlockHeight: myBlockchainHeight2
                 }));
 
                 wallet.store()
