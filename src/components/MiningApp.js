@@ -709,8 +709,8 @@ export default class MiningApp extends React.Component {
                     this.setCloseSendPopup();
                     this.setOpenBalanceAlert('Transaction commited successfully, Your token transaction ID is: '
                     + tx.transactionsIds(), false);
-                    this.state.balance = this.roundBalanceAmount(wallet.tokenBalance());
-                    this.state.unlocked_balance = this.roundBalanceAmount(wallet.unlockedTokenBalance());
+                    this.state.tokens = this.roundBalanceAmount(wallet.tokenBalance());
+                    this.state.unlocked_tokens = this.roundBalanceAmount(wallet.unlockedTokenBalance());
                 }).catch((e) => {
                     console.log("Error on commiting transaction: " + e);
                     this.setOpenBalanceAlert("Error on commiting transaction: " + e, false );
