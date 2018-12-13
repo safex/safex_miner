@@ -133,8 +133,7 @@ export default class MiningApp extends React.Component {
             wallet_password: '',
             wallet_path: '',
             spend_key: '',
-            view_key: '',
-            lastNewBlockHeight: 0
+            view_key: ''
         };
 
         //mining functions
@@ -461,15 +460,8 @@ export default class MiningApp extends React.Component {
                     unlocked_balance: this.roundBalanceAmount(wallet.unlockedBalance()),
                     tokens: this.roundBalanceAmount(wallet.tokenBalance()),
                     unlocked_tokens: this.roundBalanceAmount(wallet.unlockedTokenBalance()),
-                    blockchain_height: wallet.blockchainHeight(),
-                    lastNewBlockHeight: height
+                    blockchain_height: wallet.blockchainHeight()
                 }));
-            }
-        } else {
-            if (height - this.state.lastNewBlockHeight > 1000) {
-                this.setOpenBalanceAlert('Please wait while blockchain is being updated, height ' + height, false);
-                console.log("blockchain updated, height: " + height);
-                this.state.lastNewBlockHeight = height;
             }
         }
     }
@@ -479,7 +471,6 @@ export default class MiningApp extends React.Component {
             let wallet = this.state.wallet;
             console.log("daemon blockchain height: " + wallet.daemonBlockchainHeight());
             console.log("blockchain height: " + wallet.blockchainHeight());
-            console.log("this.state.lastNewBlockHeight: " + this.state.lastNewBlockHeight);
 
             this.setState(() => ({
                 balance_wallet: wallet.address()
@@ -493,8 +484,7 @@ export default class MiningApp extends React.Component {
                     balance: this.roundBalanceAmount(wallet.balance()),
                     unlocked_balance: this.roundBalanceAmount(wallet.unlockedBalance()),
                     tokens: this.roundBalanceAmount(wallet.tokenBalance()),
-                    unlocked_tokens: this.roundBalanceAmount(wallet.unlockedTokenBalance()),
-                    lastNewBlockHeight: myBlockchainHeight
+                    unlocked_tokens: this.roundBalanceAmount(wallet.unlockedTokenBalance())
                 }));
 
                 console.log("balance: " + this.roundBalanceAmount(wallet.balance()));
@@ -511,7 +501,7 @@ export default class MiningApp extends React.Component {
                 wallet_sync: false,
             }));
 
-            if (wallet.daemonBlockchainHeight() - this.state.lastNewBlockHeight > 10) { 
+            if (wallet.daemonBlockchainHeight() - wallet.blockchainHeight() > 10) {
               this.setOpenBalanceAlert('Please wait while blockchain is being updated...', true);
             }
             wallet.on('refreshed', this.refreshCallback);
@@ -526,10 +516,8 @@ export default class MiningApp extends React.Component {
         wallet.off('refreshed');
 
         setTimeout(() => {
-            let myBlockchainHeight = wallet.blockchainHeight();
             this.setState(() => ({
-                blockchain_height: myBlockchainHeight,
-                lastNewBlockHeight: myBlockchainHeight
+                blockchain_height: wallet.blockchainHeight()
             }));
             console.log("Starting blockchain rescan sync...");
             wallet.rescanBlockchain();
@@ -537,7 +525,6 @@ export default class MiningApp extends React.Component {
 
             setTimeout(() => {
                 console.log("Rescan setting callbacks");
-                let myBlockchainHeight2 = wallet.blockchainHeight();
                 this.setState(() => ({
                     modal_close_disabled: false,
                     balance_alert_close_disabled: false,
@@ -545,9 +532,8 @@ export default class MiningApp extends React.Component {
                     unlocked_balance: this.roundBalanceAmount(wallet.unlockedBalance()),
                     tokens: this.roundBalanceAmount(wallet.tokenBalance()),
                     unlocked_tokens: this.roundBalanceAmount(wallet.unlockedTokenBalance()),
-                    blockchain_height: myBlockchainHeight2,
-                    wallet_connected: wallet.connected() === "connected",
-                    lastNewBlockHeight: myBlockchainHeight2
+                    blockchain_height: wallet.blockchainHeight(),
+                    wallet_connected: wallet.connected() === "connected"
                 }));
 
                 wallet.store()
