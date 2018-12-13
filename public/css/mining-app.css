@@ -82,6 +82,17 @@ header p {
 }
 .modal-btn img {
   max-height: 23px;
+  transition: all ease 0.2s;
+  -o-transition: all ease 0.2s;
+  -moz-transition: all ease 0.2s;
+  -webkit-transition: all ease 0.2s;
+}
+.modal-btn[disabled] img {
+  -webkit-filter: invert(25%);
+  filter: invert(25%);
+}
+.modal-btn[disabled]:hover {
+  transform: none;
 }
 
 .main form {

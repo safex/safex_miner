@@ -25,12 +25,12 @@ import CreateFromKeysModal from './partials/CreateFromKeysModal';
 import InstructionsModal from './partials/InstructionsModal';
 
 // Testnet conf
-let net = 'testnet';
-let daemonHostPort = '192.168.1.22:29393';
+// let net = 'testnet';
+// let daemonHostPort = '192.168.1.22:29393';
 
 // Mainnet conf
-// let net = 'mainnet';
-// let daemonHostPort = 'rpc.safex.io:17402';
+let net = 'mainnet';
+let daemonHostPort = 'rpc.safex.io:17402';
 
 export default class MiningApp extends React.Component {
     constructor(props) {
@@ -517,10 +517,11 @@ export default class MiningApp extends React.Component {
 
     rescanBalance() {
         var wallet = this.state.wallet;
-        this.setOpenBalanceAlert('Rescaning, may take long time, please wait ', true);
+        this.setOpenBalanceAlert('Rescaning, this may take some time, please wait ', true);
         wallet.off('updated');
         wallet.off('newBlock');
         wallet.off('refreshed');
+
         setTimeout(() => {
             this.setState(() => ({
                 blockchain_height: wallet.blockchainHeight()
@@ -554,11 +555,8 @@ export default class MiningApp extends React.Component {
 
                 wallet.on('newBlock', this.newBlockCallback);
                 wallet.on('updated', this.updatedCallback);
-
             }, 1000);
         }, 1000);
-
-
     }
 
     roundBalanceAmount(balance) {
@@ -910,19 +908,19 @@ export default class MiningApp extends React.Component {
                     <div className="btns-wrap">
                         <button className="modal-btn" 
                             onClick={this.openCreateWalletModal}
-                            title="Create New Wallet File" 
+                            title={this.state.active || this.state.stopping ? "Create New Wallet File (disabled while mining)" : "Create New Wallet File"}
                             disabled={this.state.active || this.state.stopping ? "disabled" : ""}>
                             <img src="images/new-wallet.png" alt="new-wallet" />
                         </button>
                         <button className="modal-btn" 
                             onClick={this.openFromExistingModal}
-                            title="Open Wallet File" 
+                            title={this.state.active || this.state.stopping ? "Open Wallet File (disabled while mining)" : "Open Wallet File"}
                             disabled={this.state.active || this.state.stopping ? "disabled" : ""}>
                             <img src="images/open-logo.png" alt="open-logo" />
                         </button>
                         <button className="modal-btn" 
                             onClick={this.openCreateFromKeysModal}
-                            title="Create New Wallet From Keys" 
+                            title={this.state.active || this.state.stopping ? "Create New Wallet From Keys (disabled while mining)" : "Create New Wallet From Keys"}
                             disabled={this.state.active || this.state.stopping ? "disabled" : ""}>
                             <img src="images/create-from-keys.png" alt="create-from-keys" />
                         </button>
