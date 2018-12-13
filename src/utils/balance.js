@@ -42,6 +42,9 @@ function structureSafexKeys(spend, view) {
 
 /**
  * Open Balance Alert Popup
+ * @param alert
+ * @param alert_state
+ * @param disabled
  */
 function openBalanceAlert(target, alert, alert_state, disabled) {
     target.setState({

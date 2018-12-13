@@ -111,12 +111,11 @@ export default class MiningApp extends React.Component {
             balance_wallet: '',
             balance_view_key: '',
             balance_spend_key: '',
-            balance_check: false,
-            balance_alert: '',
+            balance_alert: false,
+            open_file_alert: false,
+            create_new_wallet_alert: false,
+            create_from_keys_alert: false,
             balance_alert_text: '',
-            open_file_alert: '',
-            create_new_wallet_alert: '',
-            create_from_keys_alert: '',
             send_cash: false,
             send_token: false,
             tick_handle: null,
@@ -409,6 +408,7 @@ export default class MiningApp extends React.Component {
         this.state.wallet.store()
             .then(() => {
                 console.log("Wallet stored");
+                this.setCloseBalanceAlert();
             })
             .catch((e) => {
                 console.log("Unable to store wallet: " + e)
@@ -537,17 +537,16 @@ export default class MiningApp extends React.Component {
                     blockchain_height: wallet.blockchainHeight(),
                     wallet_connected: wallet.connected() === "connected"
                 }));
+                this.setCloseBalanceAlert();
 
                 wallet.store()
                     .then(() => {
                         console.log("Wallet stored");
-                        this.setCloseBalanceAlert();
                     })
                     .catch((e) => {
                         console.log("Unable to store wallet: " + e);
                         this.setOpenBalanceAlert("Unable to store wallet: " + e, 'balance_alert', false);
                     });
-
                 wallet.on('newBlock', this.newBlockCallback);
                 wallet.on('updated', this.updatedCallback);
             }, 1000);
