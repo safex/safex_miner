@@ -348,6 +348,7 @@ export default class MiningApp extends React.Component {
 
                                 safex.createWalletFromKeys(args)
                                     .then((wallet) => {
+                                        console.log("Create wallet form keys performed!");
                                         this.setState({
                                             wallet_loaded: true,
                                             wallet: wallet,
@@ -360,11 +361,14 @@ export default class MiningApp extends React.Component {
                                         console.log('wallet spend private key  ' + this.state.spend_key);
                                         console.log('wallet view private key  ' + this.state.view_key);
                                         this.closeModal();
+                                        console.log("create_new_wallet_from_keys checkpoint 1");
                                     })
                                     .catch((err) => {
+                                        console.log("Create wallet form keys failed!");
                                         this.setOpenBalanceAlert('Error with the creation of the wallet ' + err, false);
                                     });
                             } else {
+                                console.log("Safex wallet exists!");
                                 this.setState(() => ({
                                     modal_close_disabled: false
                                 }));
@@ -374,6 +378,7 @@ export default class MiningApp extends React.Component {
                             }
                         }
                     });
+                    console.log("create_new_wallet_from_keys checkpoint 2");
                 } else {
                     console.log('Incorrect keys');
                     this.setOpenBalanceAlert('Incorrect keys', false);
@@ -432,8 +437,13 @@ export default class MiningApp extends React.Component {
                 console.log("Unable to store wallet: " + e);
                 this.setOpenBalanceAlert("Unable to store wallet: " + e, false);
             });
+
         wallet.off('refreshed');
-        wallet.on('updated', this.updatedCallback);
+
+        setTimeout(() => {
+          wallet.on('newBlock', this.newBlockCallback);
+          wallet.on('updated', this.updatedCallback);
+        }, 300);
     }
 
     newBlockCallback(height){
@@ -451,7 +461,8 @@ export default class MiningApp extends React.Component {
                     unlocked_balance: this.roundBalanceAmount(wallet.unlockedBalance()),
                     tokens: this.roundBalanceAmount(wallet.tokenBalance()),
                     unlocked_tokens: this.roundBalanceAmount(wallet.unlockedTokenBalance()),
-                    blockchain_height: wallet.blockchainHeight()
+                    blockchain_height: wallet.blockchainHeight(),
+                    lastNewBlockHeight: height
                 }));
             }
         } else {
@@ -497,7 +508,9 @@ export default class MiningApp extends React.Component {
                 wallet_sync: false,
             }));
 
-            wallet.on('newBlock', this.newBlockCallback);
+            if (wallet.daemonBlockchainHeight() - this.state.lastNewBlockHeight > 10) { 
+              this.setOpenBalanceAlert('Please wait while blockchain is being updated...', true);
+            }
             wallet.on('refreshed', this.refreshCallback);
         }
     }
