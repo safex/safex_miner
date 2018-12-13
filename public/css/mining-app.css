@@ -226,12 +226,18 @@ header p {
   width: auto;
   height: 30px;
   margin-left: 5px;
-  -webkit-transition: all 0.2s ease-in;
-  -moz-transition: all 0.2s ease-in;
-  transition: all 0.2s ease-in;
+  transition: all ease 0.2s;
+  -o-transition: all ease 0.2s;
+  -moz-transition: all ease 0.2s;
+  -webkit-transition: all ease 0.2s;
 }
 .main form #cpuUsage:hover {
   cursor: pointer;
+  box-shadow: 0 0 30px 0 rgba(0, 199, 236, 0.5) !important;
+}
+.main form #cpuUsage:focus {
+  outline: none;
+  border: 1px solid rgba(255,255,255,.85);
 }
 .main form #cpuUsage[disabled] {
   background-color: rgba(28, 170, 203, .35);

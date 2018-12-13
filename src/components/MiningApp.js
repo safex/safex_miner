@@ -510,7 +510,7 @@ export default class MiningApp extends React.Component {
 
     rescanBalance() {
         var wallet = this.state.wallet;
-        this.setOpenBalanceAlert('Rescaning, this may take some time, please wait ', true);
+        this.setOpenBalanceAlert('Rescanning, this may take some time, please wait ', true);
         wallet.off('updated');
         wallet.off('newBlock');
         wallet.off('refreshed');
@@ -952,7 +952,7 @@ export default class MiningApp extends React.Component {
                         <div className="options">
                             <div className="input-group">
                                 <p># CPU</p>
-                                <select className="button-shine form-control" name="cores" id="cpuUsage"
+                                <select name="cores" id="cpuUsage"
                                     disabled={this.state.active || this.state.stopping ? "disabled" : ""}
                                     title="Choose how much CPU power you want to use for mining"
                                 >
