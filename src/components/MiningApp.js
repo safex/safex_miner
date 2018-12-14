@@ -896,7 +896,7 @@ export default class MiningApp extends React.Component {
 
                         <select className="button-shine pool-url" name="pool" id="pool" 
                             disabled={this.state.active || this.state.stopping ? "disabled" : ""}
-                            title="Choose the pool you want to connect to"
+                            title={this.state.active || this.state.stopping ? "Choose the pool you want to connect to (disabled while mining)" : "Choose the pool you want to connect to"}
                         >
                             {pools_list}
                         </select>
@@ -906,7 +906,7 @@ export default class MiningApp extends React.Component {
                                 <p># CPU</p>
                                 <select name="cores" id="cpuUsage"
                                     disabled={this.state.active || this.state.stopping ? "disabled" : ""}
-                                    title="Choose how much CPU power you want to use for mining"
+                                    title={this.state.active || this.state.stopping ? "Choose how much CPU power you want to use for mining (disabled while mining)" : "Choose how much CPU power you want to use for mining"}
                                 >
                                     {cpu_options}
                                 </select>
@@ -965,7 +965,7 @@ export default class MiningApp extends React.Component {
 
                 <div className={this.state.balance_modal_active ? 'modal balance-modal active' : 'modal balance-modal'}>
                     <span className="close" onClick={this.closeModal} disabled={this.state.wallet_sync ? "" : "disabled"}>X</span>
-                    <h3>Check Balance</h3>
+                    <h3 className={this.state.wallet_loaded ? "wallet-loaded-h3" : ""}>Check Balance</h3>
 
                     {
                         this.state.wallet_loaded

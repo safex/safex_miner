@@ -88,11 +88,11 @@ header p {
   -webkit-transition: all ease 0.2s;
 }
 .modal-btn[disabled] img {
-  -webkit-filter: invert(25%);
-  filter: invert(25%);
+  opacity: .5;
 }
 .modal-btn[disabled]:hover {
   transform: none;
+  cursor: initial;
 }
 
 .main form {
@@ -188,6 +188,7 @@ header p {
 }
 .main form .pool-url[disabled]:hover {
   box-shadow: none !important;
+  cursor: initial;
 }
 .options {
   display: flex;
@@ -256,6 +257,7 @@ header p {
 }
 .main form #cpuUsage[disabled]:hover {
   box-shadow: none !important;
+  cursor: initial;
 }
 .main form .input-group p {
   font-family: 'Avenir Bold', sans-serif;
