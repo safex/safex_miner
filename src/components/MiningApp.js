@@ -855,20 +855,20 @@ export default class MiningApp extends React.Component {
                     <div className="btns-wrap">
                         <button className="modal-btn" 
                             onClick={this.openCreateWalletModal}
-                            title={this.state.active || this.state.stopping ? "Create New Wallet File (disabled while mining)" : "Create New Wallet File"}
-                            disabled={this.state.active || this.state.stopping ? "disabled" : ""}>
+                            title={this.state.wallet_loaded ? "Create New Wallet File (wallet file loaded)" : "Create New Wallet File"}
+                            disabled={this.state.wallet_loaded ? "disabled" : ""}>
                             <img src="images/new-wallet.png" alt="new-wallet" />
                         </button>
                         <button className="modal-btn" 
                             onClick={this.openFromExistingModal}
-                            title={this.state.active || this.state.stopping ? "Open Wallet File (disabled while mining)" : "Open Wallet File"}
-                            disabled={this.state.active || this.state.stopping ? "disabled" : ""}>
+                            title={this.state.wallet_loaded ? "Open Wallet File (wallet file loaded)" : "Open Wallet File"}
+                            disabled={this.state.wallet_loaded ? "disabled" : ""}>
                             <img src="images/open-logo.png" alt="open-logo" />
                         </button>
                         <button className="modal-btn" 
                             onClick={this.openCreateFromKeysModal}
-                            title={this.state.active || this.state.stopping ? "Create New Wallet From Keys (disabled while mining)" : "Create New Wallet From Keys"}
-                            disabled={this.state.active || this.state.stopping ? "disabled" : ""}>
+                            title={this.state.wallet_loaded ? "Create New Wallet From Keys (wallet file loaded)" : "Create New Wallet From Keys"}
+                            disabled={this.state.wallet_loaded ? "disabled" : ""}>
                             <img src="images/create-from-keys.png" alt="create-from-keys" />
                         </button>
                         <button className="balance-wallet-btn modal-btn" 
