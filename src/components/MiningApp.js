@@ -141,6 +141,9 @@ export default class MiningApp extends React.Component {
         //mining functions
         this.openInfoPopup = this.openInfoPopup.bind(this);
         this.openInstructionsModal = this.openInstructionsModal.bind(this);
+        this.inputValidate = this.inputValidate.bind(this);
+        this.checkInputValueLenght = this.checkInputValueLenght.bind(this);
+        this.checkInputValuePrefix = this.checkInputValuePrefix.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.startMining = this.startMining.bind(this);
         this.stopMining = this.stopMining.bind(this);
@@ -726,41 +729,93 @@ export default class MiningApp extends React.Component {
         }));
     }
 
+    inputValidate(inputValue) {
+        let inputRegex = /^[a-zA-Z0-9]/;
+        return inputRegex.test(inputValue);
+    }
+
+    checkInputValueLenght(inputValue) {
+        let inputValueLength = inputValue.length;
+        if (inputValueLength <= 95) {
+            console.log('Safex hash address length is too short');
+            this.openInfoPopup('Address length is too short');
+            return false;
+        } else if (inputValueLength >= 105) {
+            console.log('Safex hash address length is too long');
+            this.openInfoPopup('Address length is too long');
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    checkInputValuePrefix(inputValue) {
+        let userInputValue = inputValue;
+        if (userInputValue.startsWith("SFXt") || userInputValue.startsWith("Safex")) {
+            if (!userInputValue.startsWith("SFXts") || !userInputValue.startsWith("SFXti")) {
+                return true;
+            } else {
+                console.log('Suffix is invalid');
+                return false;
+            }
+        } else {
+            console.log('Suffix is invalid');
+            return false;
+        }
+    }
+
     handleSubmit(e) {
         e.preventDefault();
+        let miningAddress = e.target.mining_address.value;
 
-        if (this.state.active) {
-            this.setState(() => ({
-                active: false,
-                stopping: true
-            }));
-            this.openInfoPopup('Stopping miner...');
-            setTimeout(() => {
-                this.setState(() => ({
-                    mining_info: false,
-                    mining_info_text: '',
-                    stopping: false
-                }));
-            }, 5000);
-            this.stopMining();
+        if (miningAddress !== '') {
+            if (this.inputValidate(miningAddress))
+                if (this.checkInputValueLenght(miningAddress)) {
+                    if (this.checkInputValuePrefix(miningAddress)) {
+                        if (this.state.active) {
+                            this.setState(() => ({
+                                active: false,
+                                stopping: true
+                            }));
+                            this.openInfoPopup('Stopping miner...');
+                            setTimeout(() => {
+                                this.setState(() => ({
+                                    mining_info: false,
+                                    mining_info_text: '',
+                                    stopping: false
+                                }));
+                            }, 5000);
+                            this.stopMining();
+                        } else {
+                            this.setState(() => ({
+                                active: true,
+                                starting: true
+                            }));
+                            this.openInfoPopup('Starting miner...');
+                            setTimeout(() => {
+                                this.setState(() => ({
+                                    starting: false
+                                }));
+                                this.openInfoPopup('Mining in progress');
+                            }, 12000);
+                            this.startMining();
+                        }
+                    } else {
+                        this.openInfoPopup('Your address must start with Safex or SFXt');
+                    }
+                } else {
+                    console.log('Address length is not valid')
+                }
+            else {
+                this.openInfoPopup('Please enter valid address');
+            }
         } else {
-            this.setState(() => ({
-                active: true,
-                starting: true
-            }));
-            this.openInfoPopup('Starting miner...');
-            setTimeout(() => {
-                this.setState(() => ({
-                    starting: false
-                }));
-                this.openInfoPopup('Mining in progress');
-            }, 12000);
-            this.startMining();
+            this.openInfoPopup('Please enter valid address');
         }
     }
 
     startMining() {
-        var userWallet = document.getElementById("user_wallet").value;
+        var userWallet = document.getElementById("mining_address").value;
         var pool = document.getElementById("pool").value;
         var maxCpuUsage = document.getElementById("cpuUsage").value;
 
@@ -890,7 +945,8 @@ export default class MiningApp extends React.Component {
                                 value={this.state.mining_address}
                                 onChange={this.addressChange}
                                 placeholder="Safex Address"
-                                name="user_wallet" id="user_wallet"
+                                name="mining_address" 
+                                id="mining_address"
                                 disabled={this.state.active || this.state.stopping ? "disabled" : ""}
                                 title={this.state.mining_address === '' ? "Your Safex Address will be shown here" : "Your Safex Address"}
                             />
