@@ -176,6 +176,7 @@ export default class MiningApp extends React.Component {
         this.openCreateFromKeysModal = this.openCreateFromKeysModal.bind(this);
         this.closeWallet = this.closeWallet.bind(this);
         this.exportWallet = this.exportWallet.bind(this);
+        this.addressChange = this.addressChange.bind(this);
     }
 
     //first step select wallet path, if exists, set password
@@ -389,6 +390,10 @@ export default class MiningApp extends React.Component {
         } else {
             this.setOpenBalanceAlert("Fill out all the fields", 'create_from_keys_alert', false);
         }
+    }
+
+    addressChange(e) {
+        this.setState({ mining_address: e.target.value });
     }
 
     closeWallet() {
@@ -881,7 +886,9 @@ export default class MiningApp extends React.Component {
                     <form onSubmit={this.handleSubmit}>
                         <div className="address-wrap">
                             <img src="images/line-left.png" alt="Line Left" />
-                            <input type="text" defaultValue={this.state.mining_address}
+                            <input type="text"
+                                value={this.state.mining_address}
+                                onChange={this.addressChange}
                                 placeholder="Safex Address"
                                 name="user_wallet" id="user_wallet"
                                 disabled={this.state.active || this.state.stopping ? "disabled" : ""}
@@ -986,12 +993,6 @@ export default class MiningApp extends React.Component {
                                 <label htmlFor="selected_balance_address">Safex Wallet Address</label>
                                 <textarea placeholder="Safex Wallet Address" name="selected_balance_address"
                                     value={this.state.balance_wallet} rows="2" readOnly />
-
-                                {/*<label htmlFor="spend_key">Private Spend Key</label>
-                                <input type="text" name="spend_key" defaultValue={this.state.spend_key} />
-
-                                <label htmlFor="view_key">Private View Key</label>
-                                <input type="text" name="view_key" defaultValue={this.state.view_key} />*/}
 
                                 <div className="groups-wrap">
                                     <div className="form-group">
