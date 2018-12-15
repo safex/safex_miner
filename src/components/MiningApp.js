@@ -772,33 +772,37 @@ export default class MiningApp extends React.Component {
             if (this.inputValidate(miningAddress))
                 if (this.checkInputValueLenght(miningAddress)) {
                     if (this.checkInputValuePrefix(miningAddress)) {
-                        if (this.state.active) {
-                            this.setState(() => ({
-                                active: false,
-                                stopping: true
-                            }));
-                            this.openInfoPopup('Stopping miner...');
-                            setTimeout(() => {
+                        if (safex.addressValid(miningAddress, 'mainnet')) {
+                            if (this.state.active) {
                                 this.setState(() => ({
-                                    mining_info: false,
-                                    mining_info_text: '',
-                                    stopping: false
+                                    active: false,
+                                    stopping: true
                                 }));
-                            }, 5000);
-                            this.stopMining();
+                                this.openInfoPopup('Stopping miner...');
+                                setTimeout(() => {
+                                    this.setState(() => ({
+                                        mining_info: false,
+                                        mining_info_text: '',
+                                        stopping: false
+                                    }));
+                                }, 5000);
+                                this.stopMining();
+                            } else {
+                                this.setState(() => ({
+                                    active: true,
+                                    starting: true
+                                }));
+                                this.openInfoPopup('Starting miner...');
+                                setTimeout(() => {
+                                    this.setState(() => ({
+                                        starting: false
+                                    }));
+                                    this.openInfoPopup('Mining in progress');
+                                }, 12000);
+                                this.startMining();
+                            }   
                         } else {
-                            this.setState(() => ({
-                                active: true,
-                                starting: true
-                            }));
-                            this.openInfoPopup('Starting miner...');
-                            setTimeout(() => {
-                                this.setState(() => ({
-                                    starting: false
-                                }));
-                                this.openInfoPopup('Mining in progress');
-                            }, 12000);
-                            this.startMining();
+                            this.openInfoPopup('Address is not valid');
                         }
                     } else {
                         this.openInfoPopup('Your address must start with Safex or SFXt');
