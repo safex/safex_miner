@@ -955,6 +955,7 @@ export default class MiningApp extends React.Component {
                                 id="mining_address"
                                 disabled={this.state.active || this.state.stopping ? "disabled" : ""}
                                 title={this.state.mining_address === '' ? "Your Safex Address will be shown here" : "Your Safex Address"}
+                                readOnly={this.state.wallet_loaded ? "readOnly" : ""}
                             />
                             <img src="images/line-right.png" alt="Line Right" />
                         </div>
