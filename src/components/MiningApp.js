@@ -724,37 +724,33 @@ export default class MiningApp extends React.Component {
     handleSubmit(e) {
         e.preventDefault();
 
-        if (this.state.wallet_loaded) {
-            if (this.state.active) {
+        if (this.state.active) {
+            this.setState(() => ({
+                active: false,
+                stopping: true
+            }));
+            this.openInfoPopup('Stopping miner...');
+            setTimeout(() => {
                 this.setState(() => ({
-                    active: false,
-                    stopping: true
+                    mining_info: false,
+                    mining_info_text: '',
+                    stopping: false
                 }));
-                this.openInfoPopup('Stopping miner...');
-                setTimeout(() => {
-                    this.setState(() => ({
-                        mining_info: false,
-                        mining_info_text: '',
-                        stopping: false
-                    }));
-                }, 5000);
-                this.stopMining();
-            } else {
-                this.setState(() => ({
-                    active: true,
-                    starting: true
-                }));
-                this.openInfoPopup('Starting miner...');
-                setTimeout(() => {
-                    this.setState(() => ({
-                        starting: false
-                    }));
-                    this.openInfoPopup('Mining in progress');
-                }, 12000);
-                this.startMining();
-            }
+            }, 5000);
+            this.stopMining();
         } else {
-            this.openInfoPopup('Please load the wallet file');
+            this.setState(() => ({
+                active: true,
+                starting: true
+            }));
+            this.openInfoPopup('Starting miner...');
+            setTimeout(() => {
+                this.setState(() => ({
+                    starting: false
+                }));
+                this.openInfoPopup('Mining in progress');
+            }, 12000);
+            this.startMining();
         }
     }
 
@@ -885,9 +881,9 @@ export default class MiningApp extends React.Component {
                     <form onSubmit={this.handleSubmit}>
                         <div className="address-wrap">
                             <img src="images/line-left.png" alt="Line Left" />
-                            <input type="text" value={this.state.mining_address}
-                                placeholder="Open or create your Wallet File"
-                                name="user_wallet" id="user_wallet" readOnly
+                            <input type="text" defaultValue={this.state.mining_address}
+                                placeholder="Safex Address"
+                                name="user_wallet" id="user_wallet"
                                 disabled={this.state.active || this.state.stopping ? "disabled" : ""}
                                 title={this.state.mining_address === '' ? "Your Safex Address will be shown here" : "Your Safex Address"}
                             />
