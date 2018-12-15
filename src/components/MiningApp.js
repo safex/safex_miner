@@ -1000,19 +1000,19 @@ export default class MiningApp extends React.Component {
                                 <div className="groups-wrap">
                                     <div className="form-group">
                                         <label htmlFor="balance">Pending Safex Cash</label>
-                                        <input type="text" placeholder="Balance" name="balance"
+                                        <input type="text" placeholder="Balance" name="balance" className="yellow-field"
                                             value={this.state.balance} readOnly />
                                         <label htmlFor="unlocked_balance">Available Safex Cash</label>
-                                        <input type="text" placeholder="Unlocked balance" name="unlocked_balance"
+                                        <input type="text" placeholder="Unlocked balance" name="unlocked_balance" className="green-field"
                                             value={this.state.unlocked_balance} readOnly />
                                         <button className="button-shine" onClick={this.setOpenSendCash}>Send Cash</button>
                                     </div>
 
                                     <div className="form-group">
                                         <label htmlFor="tokens">Pending Safex Tokens</label>
-                                        <input type="text" placeholder="Tokens" value={this.state.tokens} readOnly />
+                                        <input type="text" className="yellow-field" placeholder="Tokens" value={this.state.tokens} readOnly />
                                         <label htmlFor="unlocked_tokens">Available Safex Tokens</label>
-                                        <input type="text" placeholder="Unlocked Tokens" name="unlocked_tokens"
+                                        <input type="text" className="green-field" placeholder="Unlocked Tokens" name="unlocked_tokens"
                                             value={this.state.unlocked_tokens} readOnly />
                                         <button className="button-shine" onClick={this.setOpenSendTokens}>Send Tokens</button>
                                     </div>

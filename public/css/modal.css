@@ -165,6 +165,18 @@
   -moz-transition: all ease 0.3s;
   -webkit-transition: all ease 0.3s;
 }
+.modal input.yellow-field {
+  background: rgba(221, 201, 144, .8);
+}
+.modal input.yellow-field:hover {
+  box-shadow: 0 0 25px 0 rgba(255, 214, 22, 0.8) !important;
+}
+.modal input.green-field {
+  background: rgba(14, 200, 193, .95);
+}
+.modal input.green-field:hover {
+  box-shadow: 0 0 30px 0 rgba(14, 200, 193, .5) !important;
+}
 .modal .close {
   position: absolute;
   right: 15px;
