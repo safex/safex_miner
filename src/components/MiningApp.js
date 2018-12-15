@@ -431,9 +431,9 @@ export default class MiningApp extends React.Component {
         this.setState(() => ({
             modal_close_disabled: false,
             balance_alert_close_disabled: false,
-            balance: this.roundBalanceAmount(wallet.balance()),
+            balance: this.roundBalanceAmount(wallet.unlockedBalance() - wallet.balance()),
             unlocked_balance: this.roundBalanceAmount(wallet.unlockedBalance()),
-            tokens: this.roundBalanceAmount(wallet.tokenBalance()),
+            tokens: this.roundBalanceAmount(wallet.unlockedTokenBalance() - wallet.tokenBalance()),
             unlocked_tokens: this.roundBalanceAmount(wallet.unlockedTokenBalance()),
             blockchain_height: wallet.blockchainHeight(),
             wallet_connected: wallet.connected() === "connected"
@@ -468,9 +468,9 @@ export default class MiningApp extends React.Component {
                     wallet_sync: true,
                     modal_close_disabled: false,
                     balance_alert_close_disabled: false,
-                    balance: this.roundBalanceAmount(wallet.balance()),
+                    balance: this.roundBalanceAmount(wallet.unlockedBalance() - wallet.balance()),
                     unlocked_balance: this.roundBalanceAmount(wallet.unlockedBalance()),
-                    tokens: this.roundBalanceAmount(wallet.tokenBalance()),
+                    tokens: this.roundBalanceAmount(wallet.unlockedTokenBalance() - wallet.tokenBalance()),
                     unlocked_tokens: this.roundBalanceAmount(wallet.unlockedTokenBalance()),
                     blockchain_height: wallet.blockchainHeight()
                 }));
@@ -493,15 +493,15 @@ export default class MiningApp extends React.Component {
                 this.setState(() => ({
                     wallet_connected: wallet.connected() === "connected",
                     blockchain_height: myBlockchainHeight,
-                    balance: this.roundBalanceAmount(wallet.balance()),
+                    balance: this.roundBalanceAmount(wallet.unlockedBalance() - wallet.balance()),
                     unlocked_balance: this.roundBalanceAmount(wallet.unlockedBalance()),
-                    tokens: this.roundBalanceAmount(wallet.tokenBalance()),
+                    tokens: this.roundBalanceAmount(wallet.unlockedTokenBalance() - wallet.tokenBalance()),
                     unlocked_tokens: this.roundBalanceAmount(wallet.unlockedTokenBalance())
                 }));
 
-                console.log("balance: " + this.roundBalanceAmount(wallet.balance()));
+                console.log("balance: " + this.roundBalanceAmount(wallet.unlockedBalance() - wallet.balance()));
                 console.log("unlocked balance: " + this.roundBalanceAmount(wallet.unlockedBalance()));
-                console.log("token balance: " + this.roundBalanceAmount(wallet.tokenBalance()));
+                console.log("token balance: " + this.roundBalanceAmount(wallet.unlockedTokenBalance() - wallet.tokenBalance()));
                 console.log("unlocked token balance: " + this.roundBalanceAmount(wallet.unlockedTokenBalance()));
                 console.log("blockchain height " + wallet.blockchainHeight());
                 console.log('connected: ' + wallet.connected());
