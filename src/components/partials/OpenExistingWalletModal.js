@@ -13,6 +13,7 @@ export default class OpenExistingWalletModal extends React.Component {
                         <h3>Open Wallet File</h3>
 
                         <form onSubmit={this.props.openFromWalletFile}>
+                            <input name="filepath" value={this.props.filepath} />
                             <label htmlFor="path">Wallet Password</label>
                             <input type="password" name="pass" placeholder="Wallet Password" />
 

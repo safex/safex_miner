@@ -197,43 +197,38 @@ export default class MiningApp extends React.Component {
             if (this.state.wallet_loaded) {
                 this.closeWallet();
             }
-            dialog.showOpenDialog((filepath) => {
-                if (filepath !== undefined) {
-                    this.setState({
-                        wallet_path: filepath,
-                        modal_close_disabled: true
-                    });
-
-                    var args = {
-                        'path': filepath,
-                        'password': pass,
-                        'network': net,
-                        'daemonAddress': daemonHostPort,
-                    }
-                    this.setOpenBalanceAlert('Please wait while your wallet file is loaded', 'open_file_alert', true);
-
-                    safex.openWallet(args)
-                        .then((wallet) => {
-                            this.setState({
-                                wallet_loaded: true,
-                                wallet: wallet,
-                                mining_address: wallet.address(),
-                                spend_key: wallet.secretSpendKey(),
-                                view_key: wallet.secretViewKey(),
-                                modal_close_disabled: false,
-                                mining_info: false
-                            });
-                            this.closeModal();
-                            console.log("wallet loaded " + this.state.wallet_loaded)
-                        })
-                        .catch((err) => {
-                            this.setState(() => ({
-                                modal_close_disabled: false
-                            }));
-                            this.setOpenBalanceAlert('Error opening the wallet: ' + err, 'open_file_alert', false);
-                        })
+            if (this.state.wallet_path) {
+                this.setState({
+                    modal_close_disabled: true
+                });
+                var args = {
+                    'path': this.state.wallet_path,
+                    'password': pass,
+                    'network': net,
+                    'daemonAddress': daemonHostPort,
                 }
-            });
+                this.setOpenBalanceAlert('Please wait while your wallet file is loaded', 'open_file_alert', true);
+                safex.openWallet(args)
+                    .then((wallet) => {
+                        this.setState({
+                            wallet_loaded: true,
+                            wallet: wallet,
+                            mining_address: wallet.address(),
+                            spend_key: wallet.secretSpendKey(),
+                            view_key: wallet.secretViewKey(),
+                            modal_close_disabled: false,
+                            mining_info: false
+                        });
+                        this.closeModal();
+                        console.log("wallet loaded " + this.state.wallet_loaded)
+                    })
+                    .catch((err) => {
+                        this.setState(() => ({
+                            modal_close_disabled: false
+                        }));
+                        this.setOpenBalanceAlert('Error opening the wallet: ' + err, 'open_file_alert', false);
+                    })
+            }
         } else {
             this.setOpenBalanceAlert("Enter password for your wallet file", 'open_file_alert', false);
         }
@@ -593,7 +588,15 @@ export default class MiningApp extends React.Component {
     }
 
     openFromExistingModal() {
+
+        var filename = "";
+
+        filename = dialog.showOpenDialog({})
+
+        console.log("filename " + filename);
+
         this.setState(() => ({
+            wallet_path: filename,
             open_from_existing_modal: true
         }));
     }
@@ -1125,6 +1128,7 @@ export default class MiningApp extends React.Component {
                     openFromWalletFile={this.open_from_wallet_file}
                     balanceAlert={this.state.open_file_alert}
                     balanceAlertText={this.state.balance_alert_text}
+                    filepath={this.state.wallet_path}
                     closeBalanceAlert={this.setCloseBalanceAlert}
                 />
 
