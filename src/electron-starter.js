@@ -7,7 +7,7 @@ if (setupEvents.handleSquirrelEvent()) {
 
 const electron = require('electron');
 // Module to control application life.
-const {app, Menu} = require('electron');
+const { app, Menu } = require('electron');
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow;
 
@@ -56,8 +56,9 @@ function createWindow() {
             submenu: [
                 { label: "About Safex 1 Click Mining App", selector: "orderFrontStandardAboutPanel:" },
                 { type: "separator" },
-                { label: "Quit", accelerator: "Command+Q", click: function() { app.quit(); }}
-            ]}, {
+                { label: "Quit", accelerator: "Command+Q", click: function () { app.quit(); } }
+            ]
+        }, {
             label: "Edit",
             submenu: [
                 { label: "Undo", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
@@ -67,7 +68,8 @@ function createWindow() {
                 { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
                 { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
                 { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" }
-            ]}
+            ]
+        }
         ];
 
         Menu.setApplicationMenu(Menu.buildFromTemplate(template));
@@ -79,17 +81,17 @@ function createWindow() {
 // Some APIs can only be used after this event occurs.
 
 require('electron-context-menu')({
-	prepend: (params, browserWindow) => [{
+    prepend: (params, browserWindow) => [{
         label: 'Safex 1 Click Mining App',
     }],
-    shouldShowMenu: (event, params) => params.mediaType!=='image',
+    shouldShowMenu: (event, params) => params.mediaType !== 'image',
     showInspectElement: false,
 });
 
 let win;
 
 app.on('ready', createWindow, () => {
-	win = new BrowserWindow();
+    win = new BrowserWindow();
 });
 
 // Quit when all windows are closed.
