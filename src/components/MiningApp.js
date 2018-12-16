@@ -7,6 +7,7 @@ const fileDownload = window.require('js-file-download');
 const safex = window.require('safex-nodejs-libwallet');
 const { dialog } = window.require('electron').remote;
 const path = window.require('path');
+const remote = window.require('electron').remote;
 
 import {
     verify_safex_address,
@@ -102,6 +103,7 @@ export default class MiningApp extends React.Component {
             balance_modal_active: false,
             balance_alert_close_disabled: false,
             instructions_lang: 'english',
+            exiting: false,
 
             //balance settings
             balance: 0,
@@ -154,6 +156,7 @@ export default class MiningApp extends React.Component {
         this.openModal = this.openModal.bind(this);
         this.closeModal = this.closeModal.bind(this);
         this.footerLink = this.footerLink.bind(this);
+        this.closeApp = this.closeApp.bind(this);
 
         //balance functions
         this.openBalanceModal = this.openBalanceModal.bind(this);
@@ -797,31 +800,9 @@ export default class MiningApp extends React.Component {
                     if (this.checkInputValuePrefix(miningAddress)) {
                         if (safex.addressValid(miningAddress, 'mainnet')) {
                             if (this.state.active) {
-                                this.setState(() => ({
-                                    active: false,
-                                    stopping: true
-                                }));
-                                this.openInfoPopup('Stopping miner...');
-                                setTimeout(() => {
-                                    this.setState(() => ({
-                                        mining_info: false,
-                                        mining_info_text: '',
-                                        stopping: false
-                                    }));
-                                }, 5000);
                                 this.stopMining();
                             } else {
-                                this.setState(() => ({
-                                    active: true,
-                                    starting: true
-                                }));
-                                this.openInfoPopup('Starting miner...');
-                                setTimeout(() => {
-                                    this.setState(() => ({
-                                        starting: false
-                                    }));
-                                    this.openInfoPopup('Mining in progress');
-                                }, 12000);
+                                
                                 this.startMining();
                             }   
                         } else {
@@ -854,8 +835,20 @@ export default class MiningApp extends React.Component {
         console.log("User address: " + userWallet);
         console.log("Pool: " + pool);
         console.log("CPU usage: " + maxCpuUsage);
-
         console.log("Starting mining...");
+
+        this.setState(() => ({
+            active: true,
+            starting: true
+        }));
+        this.openInfoPopup('Starting miner...');
+        setTimeout(() => {
+            this.setState(() => ({
+                starting: false
+            }));
+            this.openInfoPopup('Mining in progress');
+        }, 12000);
+
         if (this.miner) {
             this.miner.reloadConfig(JSON.stringify(this.state.jsonConfig));
         } else {
@@ -871,6 +864,18 @@ export default class MiningApp extends React.Component {
     }
 
     stopMining() {
+        this.setState(() => ({
+            active: false,
+            stopping: true
+        }));
+        this.openInfoPopup('Stopping miner...');
+        setTimeout(() => {
+            this.setState(() => ({
+                mining_info: false,
+                mining_info_text: '',
+                stopping: false
+            }));
+        }, 5000);
         console.log("Ending mining...");
         clearInterval(this.state.checkStatusInterval);
         this.setState(() => ({
@@ -911,6 +916,30 @@ export default class MiningApp extends React.Component {
         shell.openExternal('https://www.safex.io/')
     }
 
+    closeApp() {
+        let window = remote.getCurrentWindow();
+
+        if (this.state.active) {
+            this.stopMining();
+            this.closeWallet();
+            setTimeout(() => {
+                this.setState(() => ({
+                    exiting: true
+                }));
+            }, 5000);
+            setTimeout(() => {
+                window.close();
+            }, 6000);
+        } else {
+            this.setState(() => ({
+                exiting: true
+            }));
+            setTimeout(() => {
+                window.close();
+            }, 1000);
+        }
+    }
+
     render() {
         var cpu_options = [];
         for (var i = 25; i <= 100; i += 25) {
@@ -929,12 +958,18 @@ export default class MiningApp extends React.Component {
                 <div className="mining-bg-wrap">
                     <img className={this.state.active || this.state.stopping ? "rotating" : ""} src="images/circles.png" alt="Circles" />
                 </div>
-                <header className="animated fadeIn">
-                    <img src="images/logo.png" alt="Logo" />
-                    <p className="animated fadeIn">{packageJson.version}</p>
+                <header>
+                    <img src="images/logo.png" className={this.state.exiting ? "animated fadeOut" : "animated fadeIn"} alt="Logo" />
+                    <button className={this.state.exiting ? "close animated fadeOut " : "close animated fadeIn"}
+                    title={this.state.stopping ? "Please wait"  : "Close App"}
+                    onClick={this.closeApp}
+                    disabled={this.state.starting ? "disabled" : ''}>
+                        X
+                    </button>
+                    <p className={this.state.exiting ? "animated fadeOut " : "animated fadeIn"}>{packageJson.version}</p>
                 </header>
 
-                <div className="main animated fadeIn">
+                <div className={this.state.exiting ? "main animated fadeOut" : "main animated fadeIn"}>
                     <div className="btns-wrap">
                         <button className="modal-btn" 
                             onClick={this.openCreateWalletModal}
@@ -1043,7 +1078,7 @@ export default class MiningApp extends React.Component {
                         <p className="white-text">{this.state.hashrate} H/s</p>
                     </div>
 
-                    <footer className="animated fadeIn">
+                    <footer className={this.state.exiting ? "animated fadeOut" : "animated fadeIn"}>
                         <a onClick={this.footerLink} title="Visit our site">
                             <img src="images/powered.png" alt="Balkaneum" />
                         </a>
