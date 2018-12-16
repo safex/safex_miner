@@ -167,6 +167,7 @@ export default class MiningApp extends React.Component {
         this.newBlockCallback = this.newBlockCallback.bind(this);
 
         //wallet functions
+        this.browseFile = this.browseFile.bind(this);
         this.create_new_wallet = this.create_new_wallet.bind(this);
         this.open_from_wallet_file = this.open_from_wallet_file.bind(this);
         this.create_new_wallet_from_keys = this.create_new_wallet_from_keys.bind(this);
@@ -189,49 +190,65 @@ export default class MiningApp extends React.Component {
     //create new
     //import -> keys/file
 
+    browseFile() {
+        var filename = "";
+        filename = dialog.showOpenDialog({})
+        console.log("filename " + filename);
+
+        this.setState(() => ({
+            wallet_path: filename,
+        }));
+    }
+
     open_from_wallet_file(e) {
         e.preventDefault();
         const pass = e.target.pass.value;
+        let filename = e.target.filepath.value;
 
-        if (pass !== '') {
-            if (this.state.wallet_loaded) {
-                this.closeWallet();
-            }
-            if (this.state.wallet_path) {
-                this.setState({
-                    modal_close_disabled: true
-                });
-                var args = {
-                    'path': this.state.wallet_path,
-                    'password': pass,
-                    'network': net,
-                    'daemonAddress': daemonHostPort,
+        if (filename !== '') {
+            if (pass !== '') {
+                if (this.state.wallet_loaded) {
+                    this.closeWallet();
                 }
-                this.setOpenBalanceAlert('Please wait while your wallet file is loaded', 'open_file_alert', true);
-                safex.openWallet(args)
-                    .then((wallet) => {
-                        this.setState({
-                            wallet_loaded: true,
-                            wallet: wallet,
-                            mining_address: wallet.address(),
-                            spend_key: wallet.secretSpendKey(),
-                            view_key: wallet.secretViewKey(),
-                            modal_close_disabled: false,
-                            mining_info: false
-                        });
-                        this.closeModal();
-                        console.log("wallet loaded " + this.state.wallet_loaded)
-                    })
-                    .catch((err) => {
-                        this.setState(() => ({
-                            modal_close_disabled: false
-                        }));
-                        this.setOpenBalanceAlert('Error opening the wallet: ' + err, 'open_file_alert', false);
-                    })
+                if (this.state.wallet_path) {
+                    this.setState({
+                        modal_close_disabled: true
+                    });
+                    var args = {
+                        'path': this.state.wallet_path,
+                        'password': pass,
+                        'network': net,
+                        'daemonAddress': daemonHostPort,
+                    }
+                    this.setOpenBalanceAlert('Please wait while your wallet file is loaded', 'open_file_alert', true);
+                    safex.openWallet(args)
+                        .then((wallet) => {
+                            this.setState({
+                                wallet_loaded: true,
+                                wallet: wallet,
+                                mining_address: wallet.address(),
+                                spend_key: wallet.secretSpendKey(),
+                                view_key: wallet.secretViewKey(),
+                                modal_close_disabled: false,
+                                mining_info: false
+                            });
+                            this.closeModal();
+                            console.log("wallet loaded " + this.state.wallet_loaded)
+                        })
+                        .catch((err) => {
+                            this.setState(() => ({
+                                modal_close_disabled: false
+                            }));
+                            this.setOpenBalanceAlert('Error opening the wallet: ' + err, 'open_file_alert', false);
+                        })
+                }
+            } else {
+                this.setOpenBalanceAlert("Enter password for your wallet file", 'open_file_alert', false);
             }
         } else {
-            this.setOpenBalanceAlert("Enter password for your wallet file", 'open_file_alert', false);
+            this.setOpenBalanceAlert("Choose the wallet file", 'open_file_alert', false);
         }
+        
     }
 
     create_new_wallet(e) {
@@ -392,6 +409,7 @@ export default class MiningApp extends React.Component {
 
     addressChange(e) {
         this.setState({
+            mining_info: false,
             mining_address: e.target.value
         });
     }
@@ -588,15 +606,7 @@ export default class MiningApp extends React.Component {
     }
 
     openFromExistingModal() {
-
-        var filename = "";
-
-        filename = dialog.showOpenDialog({})
-
-        console.log("filename " + filename);
-
         this.setState(() => ({
-            wallet_path: filename,
             open_from_existing_modal: true
         }));
     }
@@ -663,30 +673,35 @@ export default class MiningApp extends React.Component {
         let amount = e.target.amount.value * 10000000000;
         let wallet = this.state.wallet;
 
-        if (sendingAddress !== '' || amount !== '') {
-            wallet.createTransaction({
-                'address': sendingAddress,
-                'amount': amount,
-                'tx_type': 0 // cash transaction
-            }).then((tx) => {
-                let txId = tx.transactionsIds();
-                console.log("Cash transaction created: " + txId);
+        if (sendingAddress !== '') {
+            if (amount !== '') {
+                console.log("amount " + amount);
+                wallet.createTransaction({
+                    'address': sendingAddress,
+                    'amount': amount,
+                    'tx_type': 0 // cash transaction
+                }).then((tx) => {
+                    let txId = tx.transactionsIds();
+                    console.log("Cash transaction created: " + txId);
 
-                tx.commit().then(() => {
-                    console.log("Transaction commited successfully");
-                    this.setCloseSendPopup();
-                    this.setOpenBalanceAlert('Transaction commited successfully, Your cash transaction ID is: ' 
-                    + txId, 'balance_alert', false);
-                    this.state.balance = this.roundBalanceAmount(wallet.unlockedBalance() - wallet.balance());
-                    this.state.unlocked_balance = this.roundBalanceAmount(wallet.unlockedBalance());
+                    tx.commit().then(() => {
+                        console.log("Transaction commited successfully");
+                        this.setCloseSendPopup();
+                        this.setOpenBalanceAlert('Transaction commited successfully, Your cash transaction ID is: ' 
+                        + txId, 'balance_alert', false);
+                        this.state.balance = this.roundBalanceAmount(wallet.unlockedBalance() - wallet.balance());
+                        this.state.unlocked_balance = this.roundBalanceAmount(wallet.unlockedBalance());
+                    }).catch((e) => {
+                        console.log("Error on commiting transaction: " + e);
+                        this.setOpenBalanceAlert("Error on commiting transaction: " + e, 'balance_alert', false);
+                    });
                 }).catch((e) => {
-                    console.log("Error on commiting transaction: " + e);
-                    this.setOpenBalanceAlert("Error on commiting transaction: " + e, 'balance_alert', false);
+                    console.log("Couldn't create transaction: " + e);
+                    this.setOpenBalanceAlert("Couldn't create transaction: " + e, 'balance_alert', false);
                 });
-            }).catch((e) => {
-                console.log("Couldn't create transaction: " + e);
-                this.setOpenBalanceAlert("Couldn't create transaction: " + e, 'balance_alert', false);
-            });
+            } else {
+                this.setOpenBalanceAlert('Enter Amount', 'balance_alert', false);
+            }
         } else {
             this.setOpenBalanceAlert('Fill out all the fields', 'balance_alert', false);
         }
@@ -698,31 +713,35 @@ export default class MiningApp extends React.Component {
         let amount = Math.floor(e.target.amount.value) * 10000000000;
         let wallet = this.state.wallet;
 
-        if (sendingAddress !== '' || amount !== '') {
-            console.log(amount)
-            wallet.createTransaction({
-                'address': sendingAddress,
-                'amount': amount,
-                'tx_type': 1 // token transaction
-            }).then((tx) => {
-                let txId = tx.transactionsIds();
-                console.log("Token transaction created: " + txId);
+        if (sendingAddress !== '') {
+            if (amount !== '') {
+                console.log("amount " + amount)
+                wallet.createTransaction({
+                    'address': sendingAddress,
+                    'amount': amount,
+                    'tx_type': 1 // token transaction
+                }).then((tx) => {
+                    let txId = tx.transactionsIds();
+                    console.log("Token transaction created: " + txId);
 
-                tx.commit().then(() => {
-                    console.log("Transaction commited successfully");
-                    this.setCloseSendPopup();
-                    this.setOpenBalanceAlert('Transaction commited successfully, Your token transaction ID is: '
-                    + txId, 'balance_alert', false);
-                    this.state.tokens = this.roundBalanceAmount(wallet.unlockedTokenBalance() - wallet.tokenBalance());
-                    this.state.unlocked_tokens = this.roundBalanceAmount(wallet.unlockedTokenBalance());
+                    tx.commit().then(() => {
+                        console.log("Transaction commited successfully");
+                        this.setCloseSendPopup();
+                        this.setOpenBalanceAlert('Transaction commited successfully, Your token transaction ID is: '
+                            + txId, 'balance_alert', false);
+                        this.state.tokens = this.roundBalanceAmount(wallet.unlockedTokenBalance() - wallet.tokenBalance());
+                        this.state.unlocked_tokens = this.roundBalanceAmount(wallet.unlockedTokenBalance());
+                    }).catch((e) => {
+                        console.log("Error on commiting transaction: " + e);
+                        this.setOpenBalanceAlert("Error on commiting transaction: " + e, 'balance_alert', false);
+                    });
                 }).catch((e) => {
-                    console.log("Error on commiting transaction: " + e);
-                    this.setOpenBalanceAlert("Error on commiting transaction: " + e, 'balance_alert', false);
+                    console.log("Couldn't create transaction: " + e);
+                    this.setOpenBalanceAlert("Couldn't create transaction: " + e, 'balance_alert', false);
                 });
-            }).catch((e) => {
-                console.log("Couldn't create transaction: " + e);
-                this.setOpenBalanceAlert("Couldn't create transaction: " + e, 'balance_alert', false);
-            });
+            } else {
+                this.setOpenBalanceAlert('Enter Amount', 'balance_alert', false);
+            }
         } else {
             this.setOpenBalanceAlert('Fill out all the fields', 'balance_alert', false);
         }
@@ -1123,6 +1142,7 @@ export default class MiningApp extends React.Component {
                 />
 
                 <OpenExistingWalletModal
+                    browseFile={this.browseFile}
                     openFromExistingModal={this.state.open_from_existing_modal}
                     closeFromExistingModal={this.closeModal}
                     openFromWalletFile={this.open_from_wallet_file}
