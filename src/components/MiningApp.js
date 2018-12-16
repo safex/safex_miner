@@ -542,6 +542,10 @@ export default class MiningApp extends React.Component {
         wallet.off('newBlock');
         wallet.off('refreshed');
 
+        this.setState(() => ({
+            modal_close_disabled: true
+        }));
+
         setTimeout(() => {
             this.setState(() => ({
                 blockchain_height: wallet.blockchainHeight()
@@ -961,7 +965,7 @@ export default class MiningApp extends React.Component {
                 <header>
                     <img src="images/logo.png" className={this.state.exiting ? "animated fadeOut" : "animated fadeIn"} alt="Logo" />
                     <button className={this.state.exiting ? "close animated fadeOut " : "close animated fadeIn"}
-                    title={this.state.stopping ? "Please wait"  : "Close App"}
+                    title={this.state.starting || this.state.stopping ? "Please wait" : "Close App"}
                     onClick={this.closeApp}
                     disabled={this.state.starting ? "disabled" : ''}>
                         X
