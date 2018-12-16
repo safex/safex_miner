@@ -11,9 +11,11 @@ export default class OpenExistingWalletModal extends React.Component {
                     <div className="sendModalInner">
                         <span className="close" onClick={this.props.closeFromExistingModal}>X</span>
                         <h3>Open Wallet File</h3>
-
+                        <button className="button-shine browse-btn" onClick={this.props.browseFile}>Browse File</button>
                         <form onSubmit={this.props.openFromWalletFile}>
-                            <input name="filepath" value={this.props.filepath} readOnly={true}/>
+                            <label htmlFor="path">Wallet File</label>
+                            <input name="filepath" value={this.props.filepath} readOnly />
+
                             <label htmlFor="path">Wallet Password</label>
                             <input type="password" name="pass" placeholder="Wallet Password" />
 

@@ -17,7 +17,7 @@ export default class SendModal extends React.Component {
                                     <form onSubmit={this.props.sendCash}>
 
                                         <label htmlFor="send_to">Destination</label>
-                                        <input name="send_to" placeholder="Enter The Address of Your Destination" />
+                                        <textarea name="send_to" placeholder="Enter Destination Address" rows="2" />
 
                                         <label htmlFor="amount">Amount</label>
                                         <input name="amount" placeholder="Enter Amount" />
@@ -32,17 +32,8 @@ export default class SendModal extends React.Component {
                                             <div>
                                                 <p>Send Tokens</p>
                                                 <form onSubmit={this.props.sendToken}>
-                                                    <div className="form-group-wrap">
-                                                        <div className="form-group">
-                                                            <label htmlFor="from">From</label>
-                                                            <textarea name="from" defaultValue={this.props.fromAddress} rows="3" readOnly />
-                                                        </div>
-
-                                                        <div className="form-group">
-                                                            <label htmlFor="send_to">To</label>
-                                                            <textarea name="send_to" placeholder="Enter Safex Wallet Address" rows="3" />
-                                                        </div>
-                                                    </div>
+                                                    <label htmlFor="send_to">Destination</label>
+                                                    <textarea name="send_to" placeholder="Enter Destination Address" rows="2" />
 
                                                     <label htmlFor="amount">Amount</label>
                                                     <input name="amount" placeholder="Enter Amount" />

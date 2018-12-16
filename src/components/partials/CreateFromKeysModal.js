@@ -30,10 +30,10 @@ export default class CreateFromKeysModal extends React.Component {
                             </div>
 
                             <label htmlFor="spendkey">Secret Spend Key (Sec, Private) </label>
-                            <input name="spendkey" placeholder="Private Spendkey" />
+                            <input name="spendkey" placeholder="Secret Spendkey" />
 
                             <label htmlFor="viewkey">Secret View Key (Sec, Private)</label>
-                            <input name="viewkey" placeholder="Private Viewkey" />
+                            <input name="viewkey" placeholder="Secret Viewkey" />
 
                             <button type="submit" className="button-shine new-wallet-btn">
                                 Create Wallet From Keys

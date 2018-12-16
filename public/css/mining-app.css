@@ -28,14 +28,36 @@ header {
   z-index: 1;
   margin: -30px 0 25px;
   position: relative;
+  
+}
+header .close {
+  position: absolute;
+  top: -20px;
+  right: 15px;
+  color: #fff;
+  opacity: 1;
+  font-size: 19px;
+  font-family: "Brandon Grotesque Bold", Helvetica, Arial,sans-serif;
+}
+header .close.fadeIn {
+  animation-delay: .8s;
+}
+header .close:focus,
+header .close:hover {
+  color: #fff;
+  opacity: 1;
+}
+header img.fadeIn {
   animation-delay: .3s;
 }
 header p {
   color: #fff;
   position: absolute;
   top: -20px;
-  right: 15px;
+  left: 15px;
   margin-bottom: 0;
+}
+header p.fadeIn {
   animation-delay: .8s;
 }
 
@@ -44,9 +66,11 @@ header p {
   z-index: 3;
   width: 100%;
   text-align: center;
-  animation-delay: .3s;
   position: relative;
   top: 0;
+}
+.main.fadeIn {
+  animation-delay: .3s;
 }
 .btns-wrap {
   margin-bottom: 8px;
@@ -241,10 +265,10 @@ header p {
   width: auto;
   height: 30px;
   margin-left: 5px;
-  transition: all ease 0.2s;
-  -o-transition: all ease 0.2s;
-  -moz-transition: all ease 0.2s;
-  -webkit-transition: all ease 0.2s;
+  transition: all ease 0.3s;
+  -o-transition: all ease 0.3s;
+  -moz-transition: all ease 0.3s;
+  -webkit-transition: all ease 0.3s;
 }
 .main form #cpuUsage:hover {
   cursor: pointer;
@@ -313,13 +337,19 @@ header p {
   color: #fff;
   text-transform: uppercase;
   visibility: hidden;
+  opacity: 0;
   min-height: 18px;
   margin-bottom: 0;
   font-size: 13px;
   line-height: 1;
+  transition: all ease 0.2s;
+  -o-transition: all ease 0.2s;
+  -moz-transition: all ease 0.2s;
+  -webkit-transition: all ease 0.2s;
 }
 .mining-info.active {
   visibility: visible;
+  opacity: 1;
 }
 
 /* Bottom blocks */
@@ -365,8 +395,10 @@ header p {
   right: 15px;
   bottom: -35px;
   text-align: right;
-  animation-delay: 0.8s;
   z-index: 2;
+}
+.main footer.fadeIn {
+  animation-delay: 0.8s;  
 }
 .main footer a {
   display: inline-block;
@@ -409,7 +441,7 @@ header p {
   -webkit-transition: all ease 0.3s;
 }
 
-@media (min-width: 800px) {
+@media (min-width: 820px) {
   .mining-bg-wrap img {
     max-width: 800px;
   }

@@ -83,6 +83,10 @@
 .modal button:active {
   box-shadow: none !important;
 }
+.modal .browse-btn {
+  float: left;
+  margin: 0 0 10px;
+}
 .modal .form-group {
   margin-bottom: 0;
   margin-top: 5px;
