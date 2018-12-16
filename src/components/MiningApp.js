@@ -248,7 +248,6 @@ export default class MiningApp extends React.Component {
         } else {
             this.setOpenBalanceAlert("Choose the wallet file", 'open_file_alert', false);
         }
-        
     }
 
     create_new_wallet(e) {
