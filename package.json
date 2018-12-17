@@ -50,7 +50,7 @@
     "react-dom": "^15.6.2",
     "react-router": "^3.2.1",
     "safex-addressjs": "git+https://github.com/safex/safex_addressjs.git",
-    "safex-nodejs-libwallet": "https://github.com/safex/safex-nodejs-libwallet.git#wallet_debug"
+    "safex-nodejs-libwallet": "https://github.com/safex/safex-nodejs-libwallet.git"
   },
   "main": "src/electron-starter.js",
   "scripts": {
