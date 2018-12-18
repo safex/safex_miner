@@ -441,8 +441,12 @@ header p.fadeIn {
 }
 
 @media (min-width: 820px) {
-  header,
   .mining-bg-wrap img {
+    max-width: 800px;
+  }
+}
+@media (min-width: 800px) {
+  header {
     max-width: 800px;
   }
   footer {
