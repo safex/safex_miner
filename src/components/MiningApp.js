@@ -960,7 +960,8 @@ export default class MiningApp extends React.Component {
         return (
             <div className="mining-app-wrap">
                 <div className="mining-bg-wrap">
-                    <img className={this.state.active || this.state.stopping ? "rotating" : ""} src="images/circles.png" alt="Circles" />
+                    <img className={this.state.active || this.state.stopping ? "rotatingLeft" : ""} src="images/circle-outer.png" alt="Circle-outer" />
+                    <img className={this.state.active || this.state.stopping ? "rotatingRight" : ""} src="images/circle-inner.png" alt="Circle-inner" />
                 </div>
                 <header>
                     <img src="images/logo.png" className={this.state.exiting ? "animated fadeOut" : "animated fadeIn"} alt="Logo" />
