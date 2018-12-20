@@ -209,6 +209,21 @@
 .modal .spendview.active {
   display: block;
 }
+.modal .cancel-btn {
+  background-color: rgba(221, 18, 99, 0.4);
+  border: 2px solid #ff004e;
+  margin: 0 7.5px 0 0;
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
+}
+.modal .cancel-btn:hover {
+  -webkit-box-shadow: 0 0 30px 0 rgba(200, 14, 75, 1) !important;
+  box-shadow: 0 0 30px 0 rgba(200, 14, 75, 1) !important;
+}
+.modal .confirm-btn {
+  margin: 0 0 0 7.5px;
+}
 .modal .save-btn {
   background: #c80e4b;
   border: 1px solid #c80e4b;

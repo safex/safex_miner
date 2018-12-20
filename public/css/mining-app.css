@@ -38,12 +38,16 @@ header .close {
   opacity: 1;
   font-size: 19px;
   font-family: "Brandon Grotesque Bold", Helvetica, Arial,sans-serif;
+  -webkit-transition: all 0.2s ease-in;
+  -moz-transition: all 0.2s ease-in;
+  transition: all 0.2s ease-in;
 }
 header .close.fadeIn {
   animation-delay: .8s;
 }
 header .close:focus,
 header .close:hover {
+  transform: translate(0,-2px);
   color: #fff;
   opacity: 1;
 }

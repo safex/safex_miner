@@ -24,6 +24,7 @@ import CreateNewWalletModal from './partials/CreateNewWalletModal';
 import OpenExistingWalletModal from './partials/OpenExistingWalletModal';
 import CreateFromKeysModal from './partials/CreateFromKeysModal';
 import InstructionsModal from './partials/InstructionsModal';
+import ExitModal from './partials/ExitModal';
 
 // Testnet conf
 // let net = 'testnet';
@@ -103,6 +104,7 @@ export default class MiningApp extends React.Component {
             balance_modal_active: false,
             balance_alert_close_disabled: false,
             instructions_lang: 'english',
+            exit_modal: false,
             exiting: false,
 
             //balance settings
@@ -156,6 +158,7 @@ export default class MiningApp extends React.Component {
         this.openModal = this.openModal.bind(this);
         this.closeModal = this.closeModal.bind(this);
         this.footerLink = this.footerLink.bind(this);
+        this.openExitModal = this.openExitModal.bind(this);
         this.closeApp = this.closeApp.bind(this);
 
         //balance functions
@@ -668,7 +671,8 @@ export default class MiningApp extends React.Component {
                 send_token: false,
                 create_new_wallet_modal: false,
                 open_from_existing_modal: false,
-                create_from_keys_modal: false
+                create_from_keys_modal: false,
+                exit_modal: false
             }));
         }
     }
@@ -922,6 +926,7 @@ export default class MiningApp extends React.Component {
 
     closeApp() {
         let window = remote.getCurrentWindow();
+        this.closeModal();
 
         if (this.state.active) {
             this.stopMining();
@@ -942,6 +947,12 @@ export default class MiningApp extends React.Component {
                 window.close();
             }, 1000);
         }
+    }
+
+    openExitModal() {
+        this.setState({
+            exit_modal: true
+        });
     }
 
     render() {
@@ -967,8 +978,7 @@ export default class MiningApp extends React.Component {
                     <img src="images/logo.png" className={this.state.exiting ? "animated fadeOut" : "animated fadeIn"} alt="Logo" />
                     <button className={this.state.exiting ? "close animated fadeOut " : "close animated fadeIn"}
                     title={this.state.starting || this.state.stopping ? "Please wait" : "Close App"}
-                    onClick={this.closeApp}
-                    disabled={this.state.starting ? "disabled" : ''}>
+                    onClick={this.openExitModal}>
                         X
                     </button>
                     <p className={this.state.exiting ? "animated fadeOut " : "animated fadeIn"}>{packageJson.version}</p>
@@ -1198,6 +1208,12 @@ export default class MiningApp extends React.Component {
                     balanceAlert={this.state.create_from_keys_alert}
                     balanceAlertText={this.state.balance_alert_text}
                     closeBalanceAlert={this.setCloseBalanceAlert}
+                />
+
+                <ExitModal
+                    exitModal={this.state.exit_modal}
+                    closeExitModal={this.closeModal}
+                    closeApp={this.closeApp}
                 />
 
                 <div
