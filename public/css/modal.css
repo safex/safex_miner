@@ -244,13 +244,11 @@
 }
 .modal .copy-btn {
   margin-top: 0;
-  margin-right: 10px;
   font-size: 11.5px;
   padding: 7px 12px 4px;
 }
 .modal .save-btn {
   margin-top: 5px;
-  margin-right: 10px;
   font-size: 11.5px;
   padding: 7px 12px 4px;
 }
@@ -269,6 +267,13 @@
   font-size: 13px;
   text-transform: initial;
   margin-bottom: 0;
+  text-align: center;
+}
+
+.newWalletModal .spendview label {
+  text-transform: uppercase;
+}
+.newWalletModal input {
   text-align: center;
 }
 

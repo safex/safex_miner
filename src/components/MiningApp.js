@@ -18,6 +18,7 @@ import {
     closeSendPopup
 } from '../utils/balance';
 
+import NewWalletModal from './partials/NewWalletModal';
 import BalanceAlert from './partials/BalanceAlert';
 import SendModal from './partials/SendModal';
 import CreateNewWalletModal from './partials/CreateNewWalletModal';
@@ -98,7 +99,7 @@ export default class MiningApp extends React.Component {
             },
 
             //UI settings 
-            modal_active: false,
+            new_wallet_modal: false,
             modal_close_disabled: false,
             instructions_modal_active: false,
             balance_modal_active: false,
@@ -155,7 +156,7 @@ export default class MiningApp extends React.Component {
         this.addressChange = this.addressChange.bind(this);
 
         //UI functions
-        this.openModal = this.openModal.bind(this);
+        this.openNewWalletModal = this.openNewWalletModal.bind(this);
         this.closeModal = this.closeModal.bind(this);
         this.footerLink = this.footerLink.bind(this);
         this.openExitModal = this.openExitModal.bind(this);
@@ -186,7 +187,6 @@ export default class MiningApp extends React.Component {
         this.openFromExistingModal = this.openFromExistingModal.bind(this);
         this.openCreateFromKeysModal = this.openCreateFromKeysModal.bind(this);
         this.closeWallet = this.closeWallet.bind(this);
-        this.exportWallet = this.exportWallet.bind(this);
     }
 
     //first step select wallet path, if exists, set password
@@ -596,9 +596,9 @@ export default class MiningApp extends React.Component {
         })
     }
 
-    openModal() {
+    openNewWalletModal() {
         this.setState(() => ({
-            modal_active: true
+            new_wallet_modal: true
         }));
     }
 
@@ -660,7 +660,7 @@ export default class MiningApp extends React.Component {
     closeModal() {
         if (this.state.modal_close_disabled === false) {
             this.setState(() => ({
-                modal_active: false,
+                new_wallet_modal: false,
                 instructions_modal_active: false,
                 balance_modal_active: false,
                 balance_alert: false,
@@ -900,26 +900,6 @@ export default class MiningApp extends React.Component {
         console.log(this.miner.getStatus(), this.state.hashrate);
     }
 
-    exportWallet() {
-        var wallet_data = JSON.parse(localStorage.getItem('wallet'));
-        var keys = "";
-
-        keys += "Public address: " + wallet_data.public_addr + '\n';
-        keys += "Spendkey " + '\n';
-        keys += "pub: " + wallet_data.spend.pub + '\n';
-        keys += "sec: " + wallet_data.spend.sec + '\n';
-        keys += "Viewkey " + '\n';
-        keys += "pub: " + wallet_data.view.pub + '\n';
-        keys += "sec: " + wallet_data.view.sec + '\n';
-        var date = Date.now();
-
-        fileDownload(keys, date + 'unsafex.txt');
-
-        this.setState(() => ({
-            exported: true
-        }));
-    }
-
     footerLink() {
         shell.openExternal('https://www.safex.io/')
     }
@@ -986,6 +966,11 @@ export default class MiningApp extends React.Component {
 
                 <div className={this.state.exiting ? "main animated fadeOut" : "main animated fadeIn"}>
                     <div className="btns-wrap">
+                        <button className="modal-btn"
+                            onClick={this.openNewWalletModal}
+                            title="Generate New Wallet Address">
+                            <img src="images/new.png" alt="new-wallet" />
+                        </button>
                         <button className="modal-btn" 
                             onClick={this.openCreateWalletModal}
                             title="Create New Wallet File"
@@ -1172,6 +1157,11 @@ export default class MiningApp extends React.Component {
                         sendToken={this.sendToken}
                     />
                 </div>
+
+                <NewWalletModal 
+                    newWalletModal={this.state.new_wallet_modal}
+                    closeNewWalletModal={this.closeModal}
+                />
 
                 <InstructionsModal
                     instructionsModalActive={this.state.instructions_modal_active}
