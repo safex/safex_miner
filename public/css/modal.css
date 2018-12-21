@@ -170,14 +170,16 @@
   -webkit-transition: all ease 0.3s;
 }
 .modal input.yellow-field {
-  background: rgba(221, 201, 144, .8);
+  background: rgba(221, 201, 144, .6);
+  border: 2px solid rgba(221, 201, 144, .8);
 }
 .modal input.yellow-field:hover,
 .modal input.yellow-field:focus {
   box-shadow: 0 0 25px 0 rgba(255, 214, 22, 0.8) !important;
 }
 .modal input.green-field {
-  background: rgba(14, 200, 193, .95);
+  background: rgba(14, 200, 193, .65);
+  border: 2px solid rgba(14, 200, 193, .95);
 }
 .modal input.green-field:hover,
 .modal input.green-field:active {
@@ -225,8 +227,8 @@
   margin: 0 0 0 7.5px;
 }
 .modal .save-btn {
-  background: #c80e4b;
-  border: 1px solid #c80e4b;
+  background: rgba(200, 14, 75, .5);
+  border: 2px solid #c80e4b;
   -webkit-transition: all 0.2s ease-out;
   -moz-transition: all 0.2s ease-out;
   transition: all 0.2s ease-out;
@@ -235,8 +237,8 @@
   box-shadow: 0 0 30px 0 rgba(200, 14, 75, 1) !important;
 }
 .modal .save-btn.green {
-  background: #0ec8c1;
-  border: 1px solid #0ec8c1;
+  background: rgba(14, 200, 193, 1);
+  border: 2px solid #0ec8c1;
   margin-right: 0;
 }
 .modal .save-btn.green:hover {
