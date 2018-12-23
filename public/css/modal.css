@@ -193,6 +193,15 @@
   opacity: 1;
   font-size: 19px;
   font-family: "Brandon Grotesque Bold", Helvetica, Arial,sans-serif;
+  -o-transition: all ease 0.2s;
+  -webkit-transition: all ease 0.2s;
+  -moz-transition: all ease 0.2s;
+  transition: all ease 0.2s;
+}
+.modal .close:hover {
+  transform: translate(0,-2px);
+  color: #fff;
+  opacity: 1;
 }
 .modal .warning {
   color: #c80e4b;
