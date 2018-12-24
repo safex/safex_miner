@@ -24,8 +24,9 @@ export default class NewWalletModal extends React.Component {
         const pubkey = sa.pubkeys_to_string(keys.spend.pub, keys.view.pub);
 
         localStorage.setItem("wallet", JSON.stringify(keys));
+        this.exportWallet();
         this.setState({
-            exported: false,
+            exported: true,
             new_wallet_generated: true,
             new_wallet: pubkey,
             spendkey_sec: keys.spend.sec,
@@ -47,10 +48,6 @@ export default class NewWalletModal extends React.Component {
         var date = Date.now();
 
         fileDownload(keys, date + 'unsafex.txt');
-
-        this.setState(() => ({
-            exported: true
-        }));
     }
 
     render() {
@@ -113,16 +110,16 @@ export default class NewWalletModal extends React.Component {
                                     luck!
                                 </h5>
                             ) : (
-                                <h5 className="warning red">
-                                    The following keys are to control your coins, do not share
-                                    them. Keep your keys for yourself only! Before you proceed to
-                                    mine please save your keys now.
+                                    <h5 className="warning red">
+                                        The following keys are to control your coins, do not share
+                                        them. Keep your keys for yourself only! Before you proceed to
+                                        mine please save your keys now.
                                 </h5>
-                            )}
+                                )}
 
                             <label htmlFor="sec-spendkey">Secret Spenkey</label>
                             <input type="text" name="sec-spendkey" value={this.state.spendkey_sec} />
-                            
+
                             <label htmlFor="sec-spendkey">Secret Viewkey</label>
                             <input type="text" name="sec-spendkey" value={this.state.viewkey_sec} />
 
