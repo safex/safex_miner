@@ -1094,9 +1094,17 @@ export default class MiningApp extends React.Component {
                             ?
                             <div className="wallet-exists">
                                 <div className="btns-wrap">
-                                    <button className={this.state.wallet_connected ? "signal connected" : "signal"}
-                                        title={this.state.wallet_connected ? "Connected" : "Connection to server failure"}>
+                                    <button className={this.state.wallet_connected ? "signal connected" : "signal"}>
                                         <img src={this.state.wallet_connected ? "images/connected-blue.png" : "images/connected-white.png"} alt="connected" />
+                                        <p>
+                                            {
+                                                this.state.wallet_connected 
+                                                    ?
+                                                    <span>Connected</span>
+                                                    :
+                                                    <span>Connection error</span>
+                                            }
+                                        </p>
                                     </button>
                                     <button className="blockheight"
                                         title="Blockchain Height">
