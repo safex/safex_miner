@@ -4,7 +4,9 @@ Official repository for SAFEX 1 click cpu mining app.
 
 ## Releases
 
-You can download the latest release from (https://github.com/safex/safex_miner/releases)
+You can download [CASH Wallet](https://github.com/safex/safex_miner/releases) on the github release page.
+
+Available for Mac, Windows (64, 32) and Linux.
 
 ## Development
 
