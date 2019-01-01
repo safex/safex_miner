@@ -14,7 +14,7 @@ export default class OpenExistingWalletModal extends React.Component {
                         <button className="button-shine browse-btn" onClick={this.props.browseFile}>Browse File</button>
                         <form onSubmit={this.props.openFromWalletFile}>
                             <label htmlFor="path">Wallet File</label>
-                            <input name="filepath" value={this.props.filepath} readOnly />
+                            <input name="filepath" value={this.props.filepath} placeholder="Wallet File" readOnly />
 
                             <label htmlFor="path">Wallet Password</label>
                             <input type="password" name="pass" placeholder="Wallet Password" />
