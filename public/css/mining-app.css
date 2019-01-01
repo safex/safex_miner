@@ -17,6 +17,9 @@
   justify-content: center;
   align-items: center;
 }
+.mining-bg-wrap.fadeIn {
+  animation-delay: .3s;
+}
 .mining-bg-wrap img {
   position: absolute;
   width: 100%;
