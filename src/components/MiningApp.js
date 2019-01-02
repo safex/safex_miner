@@ -1094,7 +1094,9 @@ export default class MiningApp extends React.Component {
                             ?
                             <div className="wallet-exists">
                                 <div className="btns-wrap">
-                                    <button className={this.state.wallet_connected ? "signal connected" : "signal"}>
+                                    <button className={this.state.wallet_connected ? "signal connected" : "signal"}
+                                        title="Status"
+                                    >
                                         <img src={this.state.wallet_connected ? "images/connected-blue.png" : "images/connected-white.png"} alt="connected" />
                                         <p>
                                             {
