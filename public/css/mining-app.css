@@ -50,8 +50,8 @@ header .close.fadeIn {
 }
 header .close:focus,
 header .close:hover {
-  transform: translate(0,-2px);
-  color: #fff;
+  color: #54BCD9;
+  text-shadow: 0 1px 0 #54BCD9;
   opacity: 1;
 }
 header img.fadeIn {

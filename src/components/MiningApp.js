@@ -957,7 +957,7 @@ export default class MiningApp extends React.Component {
                 <header>
                     <img src="images/logo.png" className={this.state.exiting ? "animated fadeOut" : "animated fadeIn"} alt="Logo" />
                     <button className={this.state.exiting ? "close animated fadeOut " : "close animated fadeIn"}
-                    title={this.state.starting || this.state.stopping ? "Please wait" : "Close App"}
+                    title={this.state.starting || this.state.stopping ? "Please wait" : "Exit"}
                     onClick={this.openExitModal}>
                         X
                     </button>
