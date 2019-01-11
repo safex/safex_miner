@@ -301,7 +301,18 @@ export default class MiningApp extends React.Component {
                                     console.log('wallet address  ' + this.state.mining_address);
                                     console.log('wallet spend private key  ' + this.state.spend_key);
                                     console.log('wallet view private key  ' + this.state.view_key);
-                                    this.closeModal();
+                                    wallet.on("refreshed", () => {
+                                        console.log("Wallet File successfully created!");
+                                        this.closeModal();
+                                        wallet
+                                            .store()
+                                            .then(() => {
+                                                console.log("Wallet stored");
+                                            })
+                                            .catch(e => {
+                                                console.log("Unable to store wallet: " + e);
+                                            });
+                                    });
                                 })
                                 .catch((err) => {
                                     this.setOpenBalanceAlert('error with the creation of the wallet ' + err, 'create_new_wallet_alert', false);
@@ -363,7 +374,7 @@ export default class MiningApp extends React.Component {
                                     wallet_exists: false,
                                     modal_close_disabled: true
                                 }));
-                                this.setOpenBalanceAlert('Please wait while your wallet file is being created', 'create_from_keys_alert', true);
+                                this.setOpenBalanceAlert('Please wait while your wallet file is being created. This may take some time, please be patient.', 'create_from_keys_alert', true);
                                 console.log("wallet doesn't exist. creating new one: " + this.state.wallet_path);
 
                                 safex.createWalletFromKeys(args)
@@ -381,8 +392,19 @@ export default class MiningApp extends React.Component {
                                         console.log('wallet address  ' + this.state.mining_address);
                                         console.log('wallet spend private key  ' + this.state.spend_key);
                                         console.log('wallet view private key  ' + this.state.view_key);
-                                        this.closeModal();
                                         console.log("create_new_wallet_from_keys checkpoint 1");
+                                        wallet.on("refreshed", () => {
+                                            console.log("Wallet File successfully created!");
+                                            this.closeModal();
+                                            wallet
+                                                .store()
+                                                .then(() => {
+                                                    console.log("Wallet stored");
+                                                })
+                                                .catch(e => {
+                                                    console.log("Unable to store wallet: " + e);
+                                                });
+                                        });
                                     })
                                     .catch((err) => {
                                         console.log("Create wallet form keys failed!");
