@@ -137,8 +137,9 @@
   cursor: initial;
 }
 .balance-modal .btns-wrap .blockheight {
-  margin-left: 15px;
-  min-width: 75px;
+  margin-left: 10px;
+  min-width: 65px;
+  text-align: left;
 }
 .balance-modal .btns-wrap .blockheight img {
   opacity: 1;
@@ -162,7 +163,7 @@
   letter-spacing: 0px;
 }
 .balance-modal .btns-wrap .refresh {
-  margin-left: 15px;
+  margin-left: 10px;
 }
 .balance-modal .btns-wrap .refresh img {
   max-height: 18px;
