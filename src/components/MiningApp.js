@@ -374,7 +374,7 @@ export default class MiningApp extends React.Component {
                                     wallet_exists: false,
                                     modal_close_disabled: true
                                 }));
-                                this.setOpenBalanceAlert('Please wait while your wallet file is being created. This may take some time, please be patient.', 'create_from_keys_alert', true);
+                                this.setOpenBalanceAlert('Please wait while your wallet file is being created. Do not close the application until the process is complete. This may take some time, please be patient.', 'create_from_keys_alert', true);
                                 console.log("wallet doesn't exist. creating new one: " + this.state.wallet_path);
 
                                 safex.createWalletFromKeys(args)
