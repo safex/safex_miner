@@ -9,7 +9,7 @@ function verify_safex_address(spend, view, address) {
 
     var _address = swg.pubkeys_to_string(spend_pub, view_pub);
 
-    if (_address == address) {
+    if (_address === address) {
         return true;
     } else {
         return false;
