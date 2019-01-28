@@ -658,105 +658,91 @@ export default class MiningApp extends React.Component {
         let sendingAddress = e.target.send_to.value;
         let amount = e.target.amount.value * 10000000000;
         let paymentid = e.target.paymentid.value;
-        let wallet = this.state.wallet_meta;
+        this.setState(() => ({
+            cash_or_token: cash_or_token
+        }));
 
-        if (sendingAddress === '') {
-            this.setOpenBalanceAlert('Fill out all the fields', 'balance_alert', false);
+        if (sendingAddress === "") {
+            this.setOpenBalanceAlert("Fill out all the fields", 'balance_alert', false);
             return false;
         }
-        if (amount === '') {
-            this.setOpenBalanceAlert('Enter Amount', 'balance_alert', false);
+        if (amount === "") {
+            this.setOpenBalanceAlert("Enter Amount", 'balance_alert', false);
             return false;
         }
-        if (paymentid !== '') {
+        if (paymentid !== "") {
             console.log("amount " + amount);
+            console.log("paymentid " + paymentid);
             this.setState(() => ({
-                tx_being_sent: true,
-                send_cash_or_token: cash_or_token
+                tx_being_sent: true
             }));
-            wallet.createTransaction({
-                'address': sendingAddress,
-                'amount': amount,
-                'paymentId': paymentid,
-                'tx_type': cash_or_token // cash transaction: 0; token transaction: 1
-            }).then((tx) => {
-                let txId = tx.transactionsIds();
-                if (cash_or_token === 0) {
-                    console.log("Cash transaction created: " + txId);
-                } else {
-                    console.log("Token transaction created: " + txId);
-                }
-                tx.commit().then(() => {
-                    console.log("Transaction committed successfully");
-                    if (cash_or_token === 0) {
-                        this.setOpenBalanceAlert('Transaction committed successfully, Your cash transaction ID is: ' + txId, 'balance_alert', false);
-                    } else {
-                        this.setOpenBalanceAlert('Transaction committed successfully, Your token transaction ID is: ' + txId, 'balance_alert', false);
-                    }
-                    this.setState(() => ({
-                        tx_being_sent: false
-                    }));
-                    setTimeout(() => {
-                        this.sendAmountOnChange();
-                    }, 300);
-                }).catch((e) => {
-                    console.log("Error on committing transaction: " + e);
-                    this.setOpenBalanceAlert("Error on committing transaction: " + e, 'balance_alert', false);
-                });
-            }).catch((e) => {
-                console.log("Couldn't create transaction: " + e);
-                this.setOpenBalanceAlert("Couldn't create transaction: " + e, 'balance_alert', false);
+            this.sendTransaction({
+                address: sendingAddress,
+                amount: amount,
+                paymentId: paymentid,
+                tx_type: cash_or_token
             });
         } else {
             console.log("amount " + amount);
-            wallet.createTransaction({
-                'address': sendingAddress,
-                'amount': amount,
-                'tx_type': cash_or_token // cash transaction: 0; token transaction: 1
-            }).then((tx) => {
+            this.setState(() => ({
+                tx_being_sent: true
+            }));
+            this.sendTransaction({
+                address: sendingAddress,
+                amount: amount,
+                tx_type: cash_or_token
+            });
+        }
+    };
+
+    sendTransaction = args => {
+        let wallet = this.state.wallet_meta;
+
+        wallet
+            .createTransaction(args)
+            .then(tx => {
                 let txId = tx.transactionsIds();
-                if (cash_or_token === 0) {
+                if (this.state.cash_or_token === 0) {
                     console.log("Cash transaction created: " + txId);
                 } else {
                     console.log("Token transaction created: " + txId);
                 }
-                tx.commit().then(() => {
-                    console.log("Transaction committed successfully");
-                    if (cash_or_token === 0) {
-                        this.setOpenBalanceAlert('Transaction committed successfully, Your cash transaction ID is: ' + txId, 'balance_alert', false);
-                    } else {
-                        this.setOpenBalanceAlert('Transaction committed successfully, Your token transaction ID is: ' + txId, 'balance_alert', false);
-                    }
-                    this.setState(() => ({
-                        tx_being_sent: false
-                    }));
-                    setTimeout(() => {
-                        this.sendAmountOnChange();
-                    }, 300);
-                }).catch((e) => {
-                    console.log("Error on committing transaction: " + e);
-                    this.setOpenBalanceAlert("Error on committing transaction: " + e, 'balance_alert', false);
-                });
-            }).catch((e) => {
-                console.log("Couldn't create transaction: " + e);
+                tx.commit()
+                    .then(() => {
+                        console.log("Transaction commited successfully");
+                        if (this.state.cash_or_token === 0) {
+                            this.setOpenBalanceAlert(
+                                "Transaction commited successfully, Your cash transaction ID is: " +
+                                txId, 'balance_alert', false
+                            );
+                        } else {
+                            this.setOpenBalanceAlert(
+                                "Transaction commited successfully, Your token transaction ID is: " +
+                                txId, 'balance_alert', false
+                            );
+                        }
+                        this.setState(() => ({ tx_being_sent: false }));
+                        setTimeout(() => {
+                            this.setState({
+                                wallet: {
+                                    balance: this.roundBalanceAmount(wallet.unlockedBalance() - wallet.balance()),
+                                    unlocked_balance: this.roundBalanceAmount(wallet.unlockedBalance()),
+                                    tokens: this.roundBalanceAmount(wallet.unlockedTokenBalance() - wallet.tokenBalance()),
+                                    unlocked_tokens: this.roundBalanceAmount(wallet.unlockedTokenBalance())
+                                }
+                            })
+                        }, 300);
+                    })
+                    .catch(e => {
+                        this.setState(() => ({ tx_being_sent: false }));
+                        this.setOpenBalanceAlert("Error on commiting transaction: " + e, 'balance_alert', false);
+                    });
+            })
+            .catch(e => {
+                this.setState(() => ({ tx_being_sent: false }));
                 this.setOpenBalanceAlert("Couldn't create transaction: " + e, 'balance_alert', false);
             });
-        }
-    }
-
-    //This is fired when amount is changed
-    sendAmountOnChange = () => {
-        let wallet = this.state.wallet_meta;
-
-        this.setState({
-            wallet: {
-                balance: this.roundBalanceAmount(wallet.unlockedBalance() - wallet.balance()),
-                unlocked_balance: this.roundBalanceAmount(wallet.unlockedBalance()),
-                tokens: this.roundBalanceAmount(wallet.unlockedTokenBalance() - wallet.tokenBalance()),
-                unlocked_tokens: this.roundBalanceAmount(wallet.unlockedTokenBalance())
-            }
-        })
-    }
+    };
 
     changeInstructionLang = (lang) => {
         this.setState(() => ({
