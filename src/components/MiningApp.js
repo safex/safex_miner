@@ -789,30 +789,30 @@ export default class MiningApp extends React.Component {
         e.preventDefault();
         let miningAddress = e.target.mining_address.value;
 
-        if (miningAddress !== '') {
-            if (this.inputValidate(miningAddress))
-                if (this.checkInputValueLenght(miningAddress)) {
-                    if (this.checkInputValuePrefix(miningAddress)) {
-                        if (safex.addressValid(miningAddress, 'mainnet')) {
-                            if (this.state.active) {
-                                this.stopMining();
-                            } else {
-                                this.startMining();
-                            }
-                        } else {
-                            this.openInfoPopup('Address is not valid');
-                        }
-                    } else {
-                        this.openInfoPopup('Your address must start with Safex or SFXt');
-                    }
-                } else {
-                    console.log('Address length is not valid')
-                }
-            else {
-                this.openInfoPopup('Please enter valid address');
-            }
-        } else {
+        if (miningAddress === '') {
+            this.openInfoPopup('Please enter Safex address');
+            return false;
+        }
+        if (!this.inputValidate(miningAddress)) {
+            this.openInfoPopup('Please enter valid Safex address');
+            return false;
+        }
+        if (!this.checkInputValueLenght(miningAddress)) {
             this.openInfoPopup('Please enter valid address');
+            return false;
+        }
+        if (!this.checkInputValuePrefix(miningAddress)) {
+            this.openInfoPopup('Your address must start with Safex or SFXt');
+            return false;
+        }
+        if (!safex.addressValid(miningAddress, 'mainnet')) {
+            this.openInfoPopup('Address is not valid');
+            return false;
+        }
+        if (this.state.active) {
+            this.stopMining();
+        } else {
+            this.startMining();
         }
     }
 
