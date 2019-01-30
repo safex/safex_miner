@@ -953,25 +953,25 @@ export default class MiningApp extends React.Component {
                             title="Generate New Wallet Address">
                             <img src="images/new.png" alt="new-wallet" />
                         </button>
-                        <button className="modal-btn" 
+                        <button className="modal-btn"
                             onClick={this.openCreateWalletModal}
                             title="Create New Wallet File"
                             disabled={this.state.wallet_loaded || this.state.active || this.state.stopping ? "disabled" : ""}>
                             <img src="images/new-wallet.png" alt="new-wallet" />
                         </button>
-                        <button className="modal-btn" 
+                        <button className="modal-btn"
                             onClick={this.openFromExistingModal}
                             title="Open Wallet File"
                             disabled={this.state.wallet_loaded || this.state.active || this.state.stopping ? "disabled" : ""}>
                             <img src="images/open-logo.png" alt="open-logo" />
                         </button>
-                        <button className="modal-btn" 
+                        <button className="modal-btn"
                             onClick={this.openCreateFromKeysModal}
                             title="Create New Wallet From Keys"
                             disabled={this.state.wallet_loaded || this.state.active || this.state.stopping ? "disabled" : ""}>
                             <img src="images/create-from-keys.png" alt="create-from-keys" />
                         </button>
-                        <button className="balance-wallet-btn modal-btn" 
+                        <button className="balance-wallet-btn modal-btn"
                             onClick={this.openBalanceModal}
                             title="Check Balance">
                             <img src="images/key.png" alt="key" />
@@ -989,7 +989,7 @@ export default class MiningApp extends React.Component {
                                 value={this.state.wallet.address}
                                 onChange={this.addressChange}
                                 placeholder="Safex Address"
-                                name="mining_address" 
+                                name="mining_address"
                                 id="mining_address"
                                 disabled={this.state.active || this.state.stopping ? "disabled" : ""}
                                 title={this.state.mining_address === '' ? "Your Safex Address will be shown here" : "Your Safex Address"}
@@ -998,7 +998,7 @@ export default class MiningApp extends React.Component {
                             <img src="images/line-right.png" alt="Line Right" />
                         </div>
 
-                        <select className="button-shine pool-url" name="pool" id="pool" 
+                        <select className="button-shine pool-url" name="pool" id="pool"
                             disabled={this.state.active || this.state.stopping ? "disabled" : ""}
                             title={this.state.active || this.state.stopping ? "Choose the pool you want to connect to (disabled while mining)" : "Choose the pool you want to connect to"}
                         >
@@ -1082,7 +1082,7 @@ export default class MiningApp extends React.Component {
                                         <img src={this.state.wallet.wallet_connected ? "images/connected-blue.png" : "images/connected-white.png"} alt="connected" />
                                         <p>
                                             {
-                                                this.state.wallet.wallet_connected 
+                                                this.state.wallet.wallet_connected
                                                     ?
                                                     <span>Connected</span>
                                                     :
@@ -1151,7 +1151,7 @@ export default class MiningApp extends React.Component {
                     />
                 </div>
 
-                <NewWalletModal 
+                <NewWalletModal
                     newWalletModal={this.state.new_wallet_modal}
                     closeNewWalletModal={this.closeModal}
                 />

@@ -115,6 +115,12 @@
   -moz-transition: all ease 0.3s;
   -webkit-transition: all ease 0.3s;
   resize: none;
+  -webkit-touch-callout: initial /* iOS Safari */
+  -webkit-user-select: initial; /* Safari */
+  -khtml-user-select: initial; /* Konqueror HTML */
+  -moz-user-select: initial; /* Firefox */
+  -ms-user-select: initial; /* Internet Explorer/Edge */
+  user-select: initial; /* Non-prefixed version, currently supported by Chrome and Opera */
 }
 .modal textarea:hover,
 .modal textarea:active,
@@ -168,6 +174,12 @@
   -o-transition: all ease 0.3s;
   -moz-transition: all ease 0.3s;
   -webkit-transition: all ease 0.3s;
+  -webkit-touch-callout: initial /* iOS Safari */
+  -webkit-user-select: initial; /* Safari */
+  -khtml-user-select: initial; /* Konqueror HTML */
+  -moz-user-select: initial; /* Firefox */
+  -ms-user-select: initial; /* Internet Explorer/Edge */
+  user-select: initial; /* Non-prefixed version, currently supported by Chrome and Opera */
 }
 .modal input.yellow-field {
   background: rgba(221, 201, 144, .6);

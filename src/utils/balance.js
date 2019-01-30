@@ -78,12 +78,12 @@ function openSendCashPopup(target) {
 }
 
 /**
- * Open Send Token Popup
+ * Open Send Cash Popup
  */
-function openSendTokenPopup(target) {
+function openSendPopup(target, send_cash_or_token) {
     target.setState({
-        send_token: true,
-        send_cash: false
+        send_modal: true,
+        send_cash_or_token: send_cash_or_token
     });
 }
 
@@ -92,9 +92,13 @@ function openSendTokenPopup(target) {
  */
 function closeSendPopup(target) {
     target.setState({
-        send_cash: false,
-        send_token: false,
+        send_modal: false
     });
+    setTimeout(() => {
+        target.setState({
+            send_cash_or_token: false
+        });
+    }, 300);
 }
 
 module.exports = {
@@ -102,7 +106,6 @@ module.exports = {
     structureSafexKeys,
     openBalanceAlert,
     closeBalanceAlert,
-    openSendCashPopup,
-    openSendTokenPopup,
+    openSendPopup,
     closeSendPopup
 };
