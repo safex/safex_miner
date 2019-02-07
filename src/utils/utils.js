@@ -70,16 +70,6 @@ function closeBalanceAlert(target) {
 /**
  * Open Send Cash Popup
  */
-function openSendCashPopup(target) {
-    target.setState({
-        send_cash: true,
-        send_token: false
-    });
-}
-
-/**
- * Open Send Cash Popup
- */
 function openSendPopup(target, send_cash_or_token) {
     target.setState({
         send_modal: true,
@@ -101,11 +91,24 @@ function closeSendPopup(target) {
     }, 300);
 }
 
-module.exports = {
+/**
+ * Parse env object
+ */
+function parseEnv() {
+    const env_obj = {};
+
+    for (let key in process.env)
+        env_obj[key.replace("REACT_APP_", "")] = process.env[key];
+
+    return env_obj;
+}
+
+export {
     verify_safex_address,
     structureSafexKeys,
     openBalanceAlert,
     closeBalanceAlert,
     openSendPopup,
-    closeSendPopup
+    closeSendPopup,
+    parseEnv
 };

@@ -49,6 +49,7 @@
   bottom: 0;
   right: 0;
   z-index: 100002;
+  -webkit-app-region: no-drag;
 }
 .modal.active {
   visibility: visible;

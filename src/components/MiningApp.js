@@ -1,18 +1,12 @@
 import React from 'react';
-
-const { shell } = window.require('electron')
-const xmrigCpu = window.require('node-xmrig-cpu');
-const safex = window.require('safex-nodejs-libwallet');
-const { dialog } = window.require('electron').remote;
-const remote = window.require('electron').remote;
-
 import {
     verify_safex_address,
     openBalanceAlert,
     closeBalanceAlert,
     openSendPopup,
-    closeSendPopup
-} from '../utils/balance';
+    closeSendPopup,
+    parseEnv
+} from '../utils/utils';
 
 import NewWalletModal from './partials/NewWalletModal';
 import BalanceAlert from './partials/BalanceAlert';
@@ -21,13 +15,19 @@ import CreateNewWalletModal from './partials/CreateNewWalletModal';
 import OpenExistingWalletModal from './partials/OpenExistingWalletModal';
 import CreateFromKeysModal from './partials/CreateFromKeysModal';
 import InstructionsModal from './partials/InstructionsModal';
-import ExitModal from './partials/ExitModal';
 import Header from './partials/Header';
+
+const { shell } = window.require('electron')
+const xmrigCpu = window.require('node-xmrig-cpu');
+const safex = window.require('safex-nodejs-libwallet');
+const { dialog } = window.require('electron').remote;
+const remote = window.require('electron').remote;
 
 export default class MiningApp extends React.Component {
     constructor(props) {
         super(props);
         this.miner = null;
+        this.env = parseEnv();
         this.state = {
             //mining settings
             active: false,
@@ -892,7 +892,6 @@ export default class MiningApp extends React.Component {
 
     closeApp = () => {
         let window = remote.getCurrentWindow();
-        this.closeModal();
 
         if (this.state.active) {
             this.stopMining();
@@ -941,267 +940,263 @@ export default class MiningApp extends React.Component {
                     <img className={this.state.active || this.state.stopping ? "rotatingRight" : ""} src="images/circle-inner.png" alt="Circle-inner" />
                 </div>
 
-                <Header
-                    exiting={this.state.exiting}
-                    openExitModal={this.openExitModal}
-                />
+                <div className="mining-app-inner">
+                    <Header
+                        exiting={this.state.exiting}
+                        closeApp={this.closeApp}
+                    />
 
-                <div className={this.state.exiting ? "main animated fadeOut" : "main animated fadeIn"}>
-                    <div className="btns-wrap">
-                        <button className="modal-btn"
-                            onClick={this.openNewWalletModal}
-                            title="Generate New Wallet Address">
-                            <img src="images/new.png" alt="new-wallet" />
+                    <div className={this.state.exiting ? "main animated fadeOut" : "main animated fadeIn"}>
+                        <div className="btns-wrap">
+                            <button className="modal-btn"
+                                onClick={this.openNewWalletModal}
+                                title="Generate New Wallet Address">
+                                <img src="images/new.png" alt="new-wallet" />
+                            </button>
+                            <button className="modal-btn"
+                                onClick={this.openCreateWalletModal}
+                                title="Create New Wallet File"
+                                disabled={this.state.wallet_loaded || this.state.active || this.state.stopping ? "disabled" : ""}>
+                                <img src="images/new-wallet.png" alt="new-wallet" />
+                            </button>
+                            <button className="modal-btn"
+                                onClick={this.openFromExistingModal}
+                                title="Open Wallet File"
+                                disabled={this.state.wallet_loaded || this.state.active || this.state.stopping ? "disabled" : ""}>
+                                <img src="images/open-logo.png" alt="open-logo" />
+                            </button>
+                            <button className="modal-btn"
+                                onClick={this.openCreateFromKeysModal}
+                                title="Create New Wallet From Keys"
+                                disabled={this.state.wallet_loaded || this.state.active || this.state.stopping ? "disabled" : ""}>
+                                <img src="images/create-from-keys.png" alt="create-from-keys" />
+                            </button>
+                            <button className="balance-wallet-btn modal-btn"
+                                onClick={this.openBalanceModal}
+                                title="Check Balance">
+                                <img src="images/key.png" alt="key" />
+                            </button>
+                            <button className="instructions-btn modal-btn" onClick={this.openInstructionsModal}
+                                title="Instructions">
+                                ?
                         </button>
-                        <button className="modal-btn"
-                            onClick={this.openCreateWalletModal}
-                            title="Create New Wallet File"
-                            disabled={this.state.wallet_loaded || this.state.active || this.state.stopping ? "disabled" : ""}>
-                            <img src="images/new-wallet.png" alt="new-wallet" />
-                        </button>
-                        <button className="modal-btn"
-                            onClick={this.openFromExistingModal}
-                            title="Open Wallet File"
-                            disabled={this.state.wallet_loaded || this.state.active || this.state.stopping ? "disabled" : ""}>
-                            <img src="images/open-logo.png" alt="open-logo" />
-                        </button>
-                        <button className="modal-btn"
-                            onClick={this.openCreateFromKeysModal}
-                            title="Create New Wallet From Keys"
-                            disabled={this.state.wallet_loaded || this.state.active || this.state.stopping ? "disabled" : ""}>
-                            <img src="images/create-from-keys.png" alt="create-from-keys" />
-                        </button>
-                        <button className="balance-wallet-btn modal-btn"
-                            onClick={this.openBalanceModal}
-                            title="Check Balance">
-                            <img src="images/key.png" alt="key" />
-                        </button>
-                        <button className="instructions-btn modal-btn" onClick={this.openInstructionsModal}
-                            title="Instructions">
-                            ?
-                        </button>
+                        </div>
+
+                        <form onSubmit={this.handleSubmit}>
+                            <div className="address-wrap">
+                                <img src="images/line-left.png" alt="Line Left" />
+                                <input type="text"
+                                    value={this.state.wallet.address}
+                                    onChange={this.addressChange}
+                                    placeholder="Safex Address"
+                                    name="mining_address"
+                                    id="mining_address"
+                                    disabled={this.state.active || this.state.stopping ? "disabled" : ""}
+                                    title={this.state.mining_address === '' ? "Your Safex Address will be shown here" : "Your Safex Address"}
+                                    readOnly={this.state.wallet_loaded ? "readOnly" : ""}
+                                />
+                                <img src="images/line-right.png" alt="Line Right" />
+                            </div>
+
+                            <select className="button-shine pool-url" name="pool" id="pool"
+                                disabled={this.state.active || this.state.stopping ? "disabled" : ""}
+                                title={this.state.active || this.state.stopping ? "Choose the pool you want to connect to (disabled while mining)" : "Choose the pool you want to connect to"}
+                            >
+                                {pools_list}
+                            </select>
+
+                            <div className="options">
+                                <div className="input-group">
+                                    <p># CPU</p>
+                                    <select name="cores" id="cpuUsage"
+                                        disabled={this.state.active || this.state.stopping ? "disabled" : ""}
+                                        title={this.state.active || this.state.stopping ? "Choose how much CPU power you want to use for mining (disabled while mining)" : "Choose how much CPU power you want to use for mining"}
+                                    >
+                                        {cpu_options}
+                                    </select>
+                                </div>
+                            </div>
+                            {
+                                this.state.active
+                                    ?
+                                    <div>
+                                        {
+                                            this.state.starting
+                                                ?
+                                                <button type="submit" className="submit button-shine active" disabled>
+                                                    Starting
+                                            </button>
+                                                :
+                                                <button type="submit" className="submit button-shine active">
+                                                    Stop
+                                            </button>
+                                        }
+                                    </div>
+
+                                    :
+                                    <div>
+                                        {
+                                            this.state.stopping
+                                                ?
+                                                <button type="submit" className="submit button-shine active"
+                                                    disabled={this.state.active || this.state.stopping ? "disabled" : ""}>
+                                                    <span>Stopping</span>
+                                                </button>
+                                                :
+                                                <button type="submit" className="submit button-shine"
+                                                    disabled={this.state.active || this.state.stopping ? "disabled" : ""}>
+                                                    <span>Start</span>
+                                                </button>
+                                        }
+                                    </div>
+                            }
+                            <p className={this.state.mining_info ? "mining-info active" : "mining-info"}>
+                                {this.state.mining_info_text}
+                            </p>
+                        </form>
+
+                        <div className="hashrate">
+                            <p className="blue-text">hashrate:</p>
+                            <p className="white-text">{this.state.hashrate} H/s</p>
+                        </div>
+
+                        <footer className={this.state.exiting ? "animated fadeOut" : "animated fadeIn"}>
+                            <a onClick={this.footerLink} title="Visit our site">
+                                <img src="images/powered.png" alt="Balkaneum" />
+                            </a>
+                        </footer>
                     </div>
 
-                    <form onSubmit={this.handleSubmit}>
-                        <div className="address-wrap">
-                            <img src="images/line-left.png" alt="Line Left" />
-                            <input type="text"
-                                value={this.state.wallet.address}
-                                onChange={this.addressChange}
-                                placeholder="Safex Address"
-                                name="mining_address"
-                                id="mining_address"
-                                disabled={this.state.active || this.state.stopping ? "disabled" : ""}
-                                title={this.state.mining_address === '' ? "Your Safex Address will be shown here" : "Your Safex Address"}
-                                readOnly={this.state.wallet_loaded ? "readOnly" : ""}
-                            />
-                            <img src="images/line-right.png" alt="Line Right" />
-                        </div>
+                    <div className={this.state.balance_modal_active ? 'modal balance-modal active' : 'modal balance-modal'}>
+                        <span className="close" onClick={this.closeModal} disabled={this.state.wallet_sync ? "" : "disabled"}>X</span>
+                        <h3 className={this.state.wallet_loaded ? "wallet-loaded-h3" : ""}>Check Balance</h3>
 
-                        <select className="button-shine pool-url" name="pool" id="pool"
-                            disabled={this.state.active || this.state.stopping ? "disabled" : ""}
-                            title={this.state.active || this.state.stopping ? "Choose the pool you want to connect to (disabled while mining)" : "Choose the pool you want to connect to"}
-                        >
-                            {pools_list}
-                        </select>
-
-                        <div className="options">
-                            <div className="input-group">
-                                <p># CPU</p>
-                                <select name="cores" id="cpuUsage"
-                                    disabled={this.state.active || this.state.stopping ? "disabled" : ""}
-                                    title={this.state.active || this.state.stopping ? "Choose how much CPU power you want to use for mining (disabled while mining)" : "Choose how much CPU power you want to use for mining"}
-                                >
-                                    {cpu_options}
-                                </select>
-                            </div>
-                        </div>
                         {
-                            this.state.active
+                            this.state.wallet_loaded
                                 ?
-                                <div>
-                                    {
-                                        this.state.starting
-                                            ?
-                                            <button type="submit" className="submit button-shine active" disabled>
-                                                Starting
-                                            </button>
-                                            :
-                                            <button type="submit" className="submit button-shine active">
-                                                Stop
-                                            </button>
-                                    }
-                                </div>
+                                <div className="wallet-exists">
+                                    <div className="btns-wrap">
+                                        <button className={this.state.wallet.wallet_connected ? "signal connected" : "signal"}
+                                            title="Status"
+                                        >
+                                            <img src={this.state.wallet.wallet_connected ? "images/connected-blue.png" : "images/connected-white.png"} alt="connected" />
+                                            <p>
+                                                {
+                                                    this.state.wallet.wallet_connected
+                                                        ?
+                                                        <span>Connected</span>
+                                                        :
+                                                        <span>Connection error</span>
+                                                }
+                                            </p>
+                                        </button>
+                                        <button className="blockheight"
+                                            title="Blockchain Height">
+                                            <img src="images/blocks.png" alt="blocks" />
+                                            <span>
+                                                {this.state.wallet.blockchain_height}
+                                            </span>
+                                        </button>
+                                        <button className="button-shine refresh" onClick={this.rescanBalance} title="Rescan blockchain from scratch">
+                                            <img src="images/refresh.png" alt="rescan" />
+                                        </button>
+                                    </div>
+                                    <label htmlFor="selected_balance_address">Safex Wallet Address</label>
+                                    <textarea placeholder="Safex Wallet Address" name="selected_balance_address"
+                                        value={this.state.wallet.address} rows="2" readOnly />
 
+                                    <div className="groups-wrap">
+                                        <div className="form-group">
+                                            <label htmlFor="balance">Pending Safex Cash</label>
+                                            <input type="text" placeholder="Balance" name="balance" className="yellow-field"
+                                                value={this.state.wallet.balance} readOnly />
+                                            <label htmlFor="unlocked_balance">Available Safex Cash</label>
+                                            <input type="text" placeholder="Unlocked balance" name="unlocked_balance" className="green-field"
+                                                value={this.state.wallet.unlocked_balance} readOnly />
+                                            <button className="button-shine" onClick={this.setOpenSendPopup.bind(this, 0)}>Send Cash</button>
+                                        </div>
+
+                                        <div className="form-group">
+                                            <label htmlFor="tokens">Pending Safex Tokens</label>
+                                            <input type="text" className="yellow-field" placeholder="Tokens" value={this.state.wallet.tokens} readOnly />
+                                            <label htmlFor="unlocked_tokens">Available Safex Tokens</label>
+                                            <input type="text" className="green-field" placeholder="Unlocked Tokens" name="unlocked_tokens"
+                                                value={this.state.wallet.unlocked_tokens} readOnly />
+                                            <button className="button-shine" onClick={this.setOpenSendPopup.bind(this, 1)}>Send Tokens</button>
+                                        </div>
+                                    </div>
+                                </div>
                                 :
-                                <div>
-                                    {
-                                        this.state.stopping
-                                            ?
-                                            <button type="submit" className="submit button-shine active"
-                                                disabled={this.state.active || this.state.stopping ? "disabled" : ""}>
-                                                <span>Stopping</span>
-                                            </button>
-                                            :
-                                            <button type="submit" className="submit button-shine"
-                                                disabled={this.state.active || this.state.stopping ? "disabled" : ""}>
-                                                <span>Start</span>
-                                            </button>
-                                    }
+                                <div className="no-wallet">
+                                    <h4>Please load the wallet file</h4>
                                 </div>
                         }
-                        <p className={this.state.mining_info ? "mining-info active" : "mining-info"}>
-                            {this.state.mining_info_text}
-                        </p>
-                    </form>
 
-                    <div className="hashrate">
-                        <p className="blue-text">hashrate:</p>
-                        <p className="white-text">{this.state.hashrate} H/s</p>
+                        <BalanceAlert
+                            balanceAlert={this.state.balance_alert}
+                            balanceAlertText={this.state.balance_alert_text}
+                            closeBalanceAlert={this.setCloseBalanceAlert}
+                            walletSync={this.wallet_sync}
+                            balanceAlertCloseDisabled={this.state.balance_alert_close_disabled}
+                        />
+
+                        <SendModal
+                            sendModal={this.state.send_modal}
+                            send_cash_or_token={this.state.send_cash_or_token}
+                            sendCashOrToken={this.sendCashOrToken}
+                            closeSendPopup={this.setCloseSendPopup}
+                            txBeingSent={this.state.tx_being_sent}
+                            availableCash={this.state.wallet.unlocked_balance}
+                            availableTokens={this.state.wallet.unlocked_tokens}
+                        />
                     </div>
 
-                    <footer className={this.state.exiting ? "animated fadeOut" : "animated fadeIn"}>
-                        <a onClick={this.footerLink} title="Visit our site">
-                            <img src="images/powered.png" alt="Balkaneum" />
-                        </a>
-                    </footer>
-                </div>
+                    <NewWalletModal
+                        newWalletModal={this.state.new_wallet_modal}
+                        closeNewWalletModal={this.closeModal}
+                    />
 
-                <div className={this.state.balance_modal_active ? 'modal balance-modal active' : 'modal balance-modal'}>
-                    <span className="close" onClick={this.closeModal} disabled={this.state.wallet_sync ? "" : "disabled"}>X</span>
-                    <h3 className={this.state.wallet_loaded ? "wallet-loaded-h3" : ""}>Check Balance</h3>
+                    <InstructionsModal
+                        instructionsModalActive={this.state.instructions_modal_active}
+                        instructionsLang={this.state.instructions_lang}
+                        changeInstructionLangEn={this.changeInstructionLang.bind(this, 'english')}
+                        changeInstructionLangSrb={this.changeInstructionLang.bind(this, 'serbian')}
+                        closeInstructionsModal={this.closeModal}
+                    />
 
-                    {
-                        this.state.wallet_loaded
-                            ?
-                            <div className="wallet-exists">
-                                <div className="btns-wrap">
-                                    <button className={this.state.wallet.wallet_connected ? "signal connected" : "signal"}
-                                        title="Status"
-                                    >
-                                        <img src={this.state.wallet.wallet_connected ? "images/connected-blue.png" : "images/connected-white.png"} alt="connected" />
-                                        <p>
-                                            {
-                                                this.state.wallet.wallet_connected
-                                                    ?
-                                                    <span>Connected</span>
-                                                    :
-                                                    <span>Connection error</span>
-                                            }
-                                        </p>
-                                    </button>
-                                    <button className="blockheight"
-                                        title="Blockchain Height">
-                                        <img src="images/blocks.png" alt="blocks" />
-                                        <span>
-                                            {this.state.wallet.blockchain_height}
-                                        </span>
-                                    </button>
-                                    <button className="button-shine refresh" onClick={this.rescanBalance} title="Rescan blockchain from scratch">
-                                        <img src="images/refresh.png" alt="rescan" />
-                                    </button>
-                                </div>
-                                <label htmlFor="selected_balance_address">Safex Wallet Address</label>
-                                <textarea placeholder="Safex Wallet Address" name="selected_balance_address"
-                                    value={this.state.wallet.address} rows="2" readOnly />
-
-                                <div className="groups-wrap">
-                                    <div className="form-group">
-                                        <label htmlFor="balance">Pending Safex Cash</label>
-                                        <input type="text" placeholder="Balance" name="balance" className="yellow-field"
-                                            value={this.state.wallet.balance} readOnly />
-                                        <label htmlFor="unlocked_balance">Available Safex Cash</label>
-                                        <input type="text" placeholder="Unlocked balance" name="unlocked_balance" className="green-field"
-                                            value={this.state.wallet.unlocked_balance} readOnly />
-                                        <button className="button-shine" onClick={this.setOpenSendPopup.bind(this, 0)}>Send Cash</button>
-                                    </div>
-
-                                    <div className="form-group">
-                                        <label htmlFor="tokens">Pending Safex Tokens</label>
-                                        <input type="text" className="yellow-field" placeholder="Tokens" value={this.state.wallet.tokens} readOnly />
-                                        <label htmlFor="unlocked_tokens">Available Safex Tokens</label>
-                                        <input type="text" className="green-field" placeholder="Unlocked Tokens" name="unlocked_tokens"
-                                            value={this.state.wallet.unlocked_tokens} readOnly />
-                                        <button className="button-shine" onClick={this.setOpenSendPopup.bind(this, 1)}>Send Tokens</button>
-                                    </div>
-                                </div>
-                            </div>
-                            :
-                            <div className="no-wallet">
-                                <h4>Please load the wallet file</h4>
-                            </div>
-                    }
-
-                    <BalanceAlert
-                        balanceAlert={this.state.balance_alert}
+                    <CreateNewWalletModal
+                        createNewWalletModal={this.state.create_new_wallet_modal}
+                        closeNewWalletModal={this.closeModal}
+                        createNewWallet={this.create_new_wallet}
+                        balanceAlert={this.state.create_new_wallet_alert}
                         balanceAlertText={this.state.balance_alert_text}
                         closeBalanceAlert={this.setCloseBalanceAlert}
-                        walletSync={this.wallet_sync}
-                        balanceAlertCloseDisabled={this.state.balance_alert_close_disabled}
                     />
 
-                    <SendModal
-                        sendModal={this.state.send_modal}
-                        send_cash_or_token={this.state.send_cash_or_token}
-                        sendCashOrToken={this.sendCashOrToken}
-                        closeSendPopup={this.setCloseSendPopup}
-                        txBeingSent={this.state.tx_being_sent}
-                        availableCash={this.state.wallet.unlocked_balance}
-                        availableTokens={this.state.wallet.unlocked_tokens}
+                    <OpenExistingWalletModal
+                        browseFile={this.browseFile}
+                        openFromExistingModal={this.state.open_from_existing_modal}
+                        closeFromExistingModal={this.closeModal}
+                        openFromWalletFile={this.open_from_wallet_file}
+                        balanceAlert={this.state.open_file_alert}
+                        balanceAlertText={this.state.balance_alert_text}
+                        filepath={this.state.wallet_path}
+                        closeBalanceAlert={this.setCloseBalanceAlert}
                     />
-                </div>
 
-                <NewWalletModal
-                    newWalletModal={this.state.new_wallet_modal}
-                    closeNewWalletModal={this.closeModal}
-                />
+                    <CreateFromKeysModal
+                        openCreateFromKeysModal={this.state.create_from_keys_modal}
+                        closeCreateFromKeysModal={this.closeModal}
+                        createNewWalletFromKeys={this.create_new_wallet_from_keys}
+                        balanceAlert={this.state.create_from_keys_alert}
+                        balanceAlertText={this.state.balance_alert_text}
+                        closeBalanceAlert={this.setCloseBalanceAlert}
+                    />
 
-                <InstructionsModal
-                    instructionsModalActive={this.state.instructions_modal_active}
-                    instructionsLang={this.state.instructions_lang}
-                    changeInstructionLangEn={this.changeInstructionLang.bind(this, 'english')}
-                    changeInstructionLangSrb={this.changeInstructionLang.bind(this, 'serbian')}
-                    closeInstructionsModal={this.closeModal}
-                />
-
-                <CreateNewWalletModal
-                    createNewWalletModal={this.state.create_new_wallet_modal}
-                    closeNewWalletModal={this.closeModal}
-                    createNewWallet={this.create_new_wallet}
-                    balanceAlert={this.state.create_new_wallet_alert}
-                    balanceAlertText={this.state.balance_alert_text}
-                    closeBalanceAlert={this.setCloseBalanceAlert}
-                />
-
-                <OpenExistingWalletModal
-                    browseFile={this.browseFile}
-                    openFromExistingModal={this.state.open_from_existing_modal}
-                    closeFromExistingModal={this.closeModal}
-                    openFromWalletFile={this.open_from_wallet_file}
-                    balanceAlert={this.state.open_file_alert}
-                    balanceAlertText={this.state.balance_alert_text}
-                    filepath={this.state.wallet_path}
-                    closeBalanceAlert={this.setCloseBalanceAlert}
-                />
-
-                <CreateFromKeysModal
-                    openCreateFromKeysModal={this.state.create_from_keys_modal}
-                    closeCreateFromKeysModal={this.closeModal}
-                    createNewWalletFromKeys={this.create_new_wallet_from_keys}
-                    balanceAlert={this.state.create_from_keys_alert}
-                    balanceAlertText={this.state.balance_alert_text}
-                    closeBalanceAlert={this.setCloseBalanceAlert}
-                />
-
-                <ExitModal
-                    exitModal={this.state.exit_modal}
-                    closeExitModal={this.closeModal}
-                    closeApp={this.closeApp}
-                />
-
-                <div
-                    className={this.state.modal_active || this.state.instructions_modal_active || this.state.balance_modal_active ? 'backdrop active' : 'backdrop'}
-                    onClick={this.closeModal}>
+                    <div
+                        className={this.state.modal_active || this.state.instructions_modal_active || this.state.balance_modal_active ? 'backdrop active' : 'backdrop'}
+                        onClick={this.closeModal}>
+                    </div>
                 </div>
             </div>
         );
