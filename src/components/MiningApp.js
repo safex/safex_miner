@@ -732,7 +732,7 @@ export default class MiningApp extends React.Component {
   closeApp = () => {
     let window = remote.getCurrentWindow();
     if (this.state.active) {
-      this.stopMining();
+      miningStop(this);
       this.closeWallet();
       setTimeout(() => {
         this.setState({
