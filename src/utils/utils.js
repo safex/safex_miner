@@ -1,19 +1,19 @@
-var swg = window.require('safex-addressjs');
+var swg = window.require("safex-addressjs");
 
 /**
  * Verify Safex Address
  */
 function verify_safex_address(spend, view, address) {
-    var spend_pub = swg.sec_key_to_pub(spend);
-    var view_pub = swg.sec_key_to_pub(view);
+  var spend_pub = swg.sec_key_to_pub(spend);
+  var view_pub = swg.sec_key_to_pub(view);
 
-    var _address = swg.pubkeys_to_string(spend_pub, view_pub);
+  var _address = swg.pubkeys_to_string(spend_pub, view_pub);
 
-    if (_address === address) {
-        return true;
-    } else {
-        return false;
-    }
+  if (_address === address) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 /**
@@ -33,11 +33,11 @@ function verify_safex_address(spend, view, address) {
  * }
  */
 function structureSafexKeys(spend, view) {
-    const keys = swg.structure_keys(spend, view);
-    const checksum = swg.address_checksum(keys.spend.pub, keys.view.pub);
-    keys["checksum"] = checksum;
+  const keys = swg.structure_keys(spend, view);
+  const checksum = swg.address_checksum(keys.spend.pub, keys.view.pub);
+  keys["checksum"] = checksum;
 
-    return keys;
+  return keys;
 }
 
 /**
@@ -47,115 +47,148 @@ function structureSafexKeys(spend, view) {
  * @param disabled
  */
 function openBalanceAlert(target, alert, alert_state, disabled) {
-    target.setState({
-        [alert_state]: true,
-        balance_alert_text: alert,
-        balance_alert_close_disabled: disabled
-    });
+  target.setState({
+    [alert_state]: true,
+    balance_alert_text: alert,
+    balance_alert_close_disabled: disabled
+  });
 }
 
 /**
  * Close Balance Alert Popup
  */
 function closeBalanceAlert(target) {
-    target.setState({
-        balance_alert: false,
-        open_file_alert: false,
-        create_new_wallet_alert: false,
-        create_from_keys_alert: false,
-        balance_alert_close_disabled: false
-    });
+  target.setState({
+    balance_alert: false,
+    open_file_alert: false,
+    create_new_wallet_alert: false,
+    create_from_keys_alert: false,
+    balance_alert_close_disabled: false
+  });
 }
 
 /**
  * Open Send Cash Popup
  */
 function openSendPopup(target, send_cash_or_token) {
-    target.setState({
-        send_modal: true,
-        send_cash_or_token: send_cash_or_token
-    });
+  target.setState({
+    send_modal: true,
+    send_cash_or_token: send_cash_or_token
+  });
 }
 
 /**
  * Close Send Popup
  */
 function closeSendPopup(target) {
+  target.setState({
+    send_modal: false
+  });
+  setTimeout(() => {
     target.setState({
-        send_modal: false
+      send_cash_or_token: false
     });
-    setTimeout(() => {
-        target.setState({
-            send_cash_or_token: false
-        });
-    }, 300);
+  }, 300);
 }
 
 /**
  * Parse env object
  */
 function parseEnv() {
-    const env_obj = {};
+  const env_obj = {};
 
-    for (let key in process.env)
-        env_obj[key.replace("REACT_APP_", "")] = process.env[key];
+  for (let key in process.env)
+    env_obj[key.replace("REACT_APP_", "")] = process.env[key];
 
-    return env_obj;
+  return env_obj;
+}
+
+/**
+ * Close All Modals
+ */
+function closeAllModals(target) {
+  if (target.state.modal_close_disabled === false) {
+    target.setState(() => ({
+      new_wallet_modal: false,
+      instructions_modal_active: false,
+      balance_modal_active: false,
+      balance_alert: false,
+      open_file_alert: false,
+      create_new_wallet_alert: false,
+      create_from_keys_alert: false,
+      send_cash: false,
+      send_token: false,
+      create_new_wallet_modal: false,
+      open_from_existing_modal: false,
+      create_from_keys_modal: false,
+      exit_modal: false
+    }));
+  }
 }
 
 /**
  * Validate input
  */
 function inputValidate(inputValue) {
-    let inputRegex = /^[a-zA-Z0-9]/;
-    return inputRegex.test(inputValue);
+  let inputRegex = /^[a-zA-Z0-9]/;
+  return inputRegex.test(inputValue);
 }
 
 /**
  * Check input length (must be between 95 and 105 characters)
  */
 function checkInputValueLenght(inputValue) {
-    let inputValueLength = inputValue.length;
-    if (inputValueLength <= 95) {
-        console.log('Safex hash address length is too short');
-        this.openInfoPopup('Address length is too short');
-        return false;
-    } else if (inputValueLength >= 105) {
-        console.log('Safex hash address length is too long');
-        this.openInfoPopup('Address length is too long');
-        return false;
-    } else {
-        return true;
-    }
+  let inputValueLength = inputValue.length;
+  if (inputValueLength <= 95) {
+    console.log("Safex hash address length is too short");
+    this.openInfoPopup("Address length is too short");
+    return false;
+  } else if (inputValueLength >= 105) {
+    console.log("Safex hash address length is too long");
+    this.openInfoPopup("Address length is too long");
+    return false;
+  } else {
+    return true;
+  }
 }
 
 /**
  * Check Input Prefix
  */
 function checkInputValuePrefix(inputValue) {
-    let userInputValue = inputValue;
-    if (userInputValue.startsWith("SFXt") || userInputValue.startsWith("Safex")) {
-        if (!userInputValue.startsWith("SFXts") || !userInputValue.startsWith("SFXti")) {
-            return true;
-        } else {
-            console.log('Suffix is invalid');
-            return false;
-        }
+  let userInputValue = inputValue;
+  if (userInputValue.startsWith("SFXt") || userInputValue.startsWith("Safex")) {
+    if (
+      !userInputValue.startsWith("SFXts") ||
+      !userInputValue.startsWith("SFXti")
+    ) {
+      return true;
     } else {
-        console.log('Suffix is invalid');
-        return false;
+      console.log("Suffix is invalid");
+      return false;
     }
+  } else {
+    console.log("Suffix is invalid");
+    return false;
+  }
 }
 
+/**
+ * Add class
+ */
+const addClass = (condition, className) => (condition ? ` ${className} ` : "");
+
 export {
-    verify_safex_address,
-    structureSafexKeys,
-    openBalanceAlert,
-    closeBalanceAlert,
-    openSendPopup,
-    closeSendPopup,
-    parseEnv,
-    inputValidate,
-    checkInputValueLenght,
-    checkInputValuePrefix
+  verify_safex_address,
+  structureSafexKeys,
+  openBalanceAlert,
+  closeBalanceAlert,
+  openSendPopup,
+  closeSendPopup,
+  parseEnv,
+  inputValidate,
+  checkInputValueLenght,
+  checkInputValuePrefix,
+  addClass,
+  closeAllModals
 };

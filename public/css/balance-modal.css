@@ -22,19 +22,23 @@
   border-radius: 5px;
 }
 .balance-modal textarea::-webkit-input-placeholder,
-.balance-modal input::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+.balance-modal input::-webkit-input-placeholder {
+  /* Chrome/Opera/Safari */
   text-transform: initial;
 }
 .balance-modal textarea::-moz-placeholder,
-.balance-modal input::-moz-placeholder { /* Firefox 19+ */
+.balance-modal input::-moz-placeholder {
+  /* Firefox 19+ */
   text-transform: initial;
 }
 .balance-modal textarea:-moz-placeholder,
-.balance-modal input:-moz-placeholder { /* Firefox 18- */
+.balance-modal input:-moz-placeholder {
+  /* Firefox 18- */
   text-transform: initial;
 }
 .balance-modal textarea:-ms-input-placeholder,
-.balance-modal input:-ms-input-placeholder { /* IE 10+ */
+.balance-modal input:-ms-input-placeholder {
+  /* IE 10+ */
   text-transform: initial;
 }
 .balance-modal label {
@@ -42,6 +46,11 @@
 }
 .balance-modal form button {
   margin-top: 10px;
+}
+.balance-modal form button:focus,
+.balance-modal form button:active {
+  outline: none !important;
+  color: #fff !important;
 }
 .balance-modal p {
   font-size: 14px;
@@ -57,7 +66,7 @@
   letter-spacing: 1.26px;
   line-height: 1.2;
   position: relative;
-  border: 2px solid #54BCD9;
+  border: 2px solid #54bcd9;
   margin: 4px 5px;
   padding: 6px 12px 5px;
   transition: none;
@@ -95,7 +104,7 @@
   border: 2px solid #0ec8c1;
 }
 .balance-modal .lang-bts-wrap button.active:hover {
-  box-shadow: 0 0 30px 0 rgba(14, 200, 193, .5) !important;
+  box-shadow: 0 0 30px 0 rgba(14, 200, 193, 0.5) !important;
 }
 .balance-modal p img {
   position: relative;
