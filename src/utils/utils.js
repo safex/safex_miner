@@ -146,7 +146,7 @@ function openModal(target, modal_type, alert, disabled) {
     target.startBalanceCheck();
     return false;
   }
-  if (target.state.balance_modal_active && target.state.balance_alert) {
+  if (target.state.balance_modal_active && target.state.alert) {
     target.setState({
       balance_modal_active: false
     });
@@ -156,8 +156,8 @@ function openModal(target, modal_type, alert, disabled) {
     target.setState({
       modal: true,
       [modal_type]: true,
-      balance_alert_text: alert,
-      balance_alert_close_disabled: disabled
+      alert_text: alert,
+      alert_close_disabled: disabled
     });
   }
 }
@@ -168,15 +168,15 @@ function openModal(target, modal_type, alert, disabled) {
 function closeAllModals(target) {
   if (target.state.modal_close_disabled === false) {
     if (
-      (target.state.new_wallet_modal && target.state.balance_alert) ||
-      (target.state.create_new_wallet_modal && target.state.balance_alert) ||
-      (target.state.create_from_keys_modal && target.state.balance_alert) ||
-      (target.state.balance_modal_active && target.state.balance_alert) ||
-      (target.state.open_from_existing_modal && target.state.balance_alert)
+      (target.state.new_wallet_modal && target.state.alert) ||
+      (target.state.create_new_wallet_modal && target.state.alert) ||
+      (target.state.create_from_keys_modal && target.state.alert) ||
+      (target.state.balance_modal_active && target.state.alert) ||
+      (target.state.open_from_existing_modal && target.state.alert)
     ) {
       target.setState({
-        balance_alert: false,
-        balance_alert_close_disabled: false
+        alert: false,
+        alert_close_disabled: false
       });
     } else if (target.state.send_modal) {
       target.setState({
@@ -192,8 +192,8 @@ function closeAllModals(target) {
           new_wallet_modal: false,
           instructions_modal_active: false,
           balance_modal_active: false,
-          balance_alert: false,
-          balance_alert_close_disabled: false,
+          alert: false,
+          alert_close_disabled: false,
           open_file_alert: false,
           create_new_wallet_alert: false,
           create_from_keys_alert: false,
