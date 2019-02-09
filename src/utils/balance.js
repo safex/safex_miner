@@ -14,18 +14,21 @@ function updatedCallback(target) {
 function refreshCallback(target) {
   console.log("wallet refreshed");
   let wallet = target.state.wallet_meta;
-  target.setState(() => ({
+  target.setState({
     modal_close_disabled: false,
     balance_alert_close_disabled: false,
     wallet: {
+      address: wallet.address(),
       balance: roundAmount(wallet.balance() - wallet.unlockedBalance()),
       unlocked_balance: roundAmount(wallet.unlockedBalance()),
-      tokens: roundAmount(wallet.tokenBalance() - wallet.unlockedTokenBalance()),
+      tokens: roundAmount(
+        wallet.tokenBalance() - wallet.unlockedTokenBalance()
+      ),
       unlocked_tokens: roundAmount(wallet.unlockedTokenBalance()),
       blockchain_height: wallet.blockchainHeight(),
       wallet_connected: wallet.connected() === "connected"
     }
-  }));
+  });
   wallet
     .store()
     .then(() => {
@@ -71,6 +74,7 @@ function balanceCheck(target) {
     let wallet = target.state.wallet_meta;
     console.log("daemon blockchain height: " + wallet.daemonBlockchainHeight());
     console.log("blockchain height: " + wallet.blockchainHeight());
+    target.setOpenBalanceAlert("Please wait while wallet file is loaded...", true);
     if (target.state.wallet_loaded) {
       target.setState(() => ({
         modal_close_disabled: false,
@@ -94,7 +98,7 @@ function balanceCheck(target) {
     console.log("balance address: " + wallet.address());
     target.setState(() => ({ wallet: { wallet_sync: false }}));
     if (wallet.daemonBlockchainHeight() - wallet.blockchainHeight() > 10) {
-      target.setOpenBalanceAlert("Please wait while blockchain is being updated...");
+      target.setOpenBalanceAlert("Please wait while blockchain is being updated...", true);
     }
     wallet.on("refreshed", target.startRefreshCallback);
     target.setState(() => ({ modal_close_disabled: false }));
@@ -121,7 +125,9 @@ function rescanBalance(target) {
           wallet_connected: wallet.connected() === "connected",
           balance: roundAmount(wallet.balance() - wallet.unlockedBalance()),
           unlocked_balance: roundAmount(wallet.unlockedBalance()),
-          tokens: roundAmount(wallet.tokenBalance() - wallet.unlockedTokenBalance()),
+          tokens: roundAmount(
+            wallet.tokenBalance() - wallet.unlockedTokenBalance()
+          ),
           unlocked_tokens: roundAmount(wallet.unlockedTokenBalance()),
           blockchain_height: wallet.blockchainHeight()
         }
