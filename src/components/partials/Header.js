@@ -26,39 +26,29 @@ export default class Header extends React.Component {
   render() {
     return (
       <header>
-        <img
-          src="images/logo.png"
-          className={`animated ${this.props.exiting ? "fadeOut" : "fadeIn"}`}
-          alt="Logo"
-        />
+        <img src="images/logo.png" className="animated fadeIn" alt="Logo" />
         <div className="win-buttons-wrap">
           <button
-            className={`minimize animated ${
-              this.props.exiting ? "fadeOut" : "fadeIn"
-            }`}
+            className="minimize animated fadeIn"
             title="Minimize"
             onClick={this.minimizeApp}
           >
             _
           </button>
           <button
-            className={`maximize animated ${
-              this.props.exiting ? "fadeOut " : "fadeIn"
-            }`}
+            className="maximize animated fadeIn"
             title="Maximize"
             onClick={this.maximizeApp}
           />
           <button
-            className={`close animated ${
-              this.props.exiting ? "fadeOut " : "fadeIn"
-            }`}
+            className="close animated fadeIn"
             title="Close App"
             onClick={this.props.closeApp}
           >
             X
           </button>
         </div>
-        <p className={`animated ${this.props.exiting ? "fadeOut" : "fadeIn"}`}>
+        <p className="animated fadeIn">
           {remote.app.getVersion()}
         </p>
       </header>

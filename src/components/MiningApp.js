@@ -100,8 +100,6 @@ export default class MiningApp extends React.Component {
       balance_alert_close_disabled: false,
       instructions_lang: "english",
       new_wallet_modal: false,
-      exit_modal: false,
-      exiting: false,
 
       //balance settings
       balance: 0,
@@ -406,20 +404,10 @@ export default class MiningApp extends React.Component {
       miningStop(this);
       this.closeWallet();
       setTimeout(() => {
-        this.setState({
-          exiting: true
-        });
-      }, 5000);
-      setTimeout(() => {
         window.close();
       }, 6000);
     } else {
-      this.setState({
-        exiting: true
-      });
-      setTimeout(() => {
-        window.close();
-      }, 1000);
+      window.close();
     }
   };
 
@@ -506,23 +494,29 @@ export default class MiningApp extends React.Component {
 
     return (
       <div className="mining-app-wrap">
-        <div className={`mining-bg-wrap animated ${this.state.exiting ? "fadeOut" : "fadeIn"}`}>
+        <div className="mining-bg-wrap animated fadeIn">
           <img
-            className={this.state.active || this.state.stopping ? "rotatingLeft" : ""}
+            className={
+              this.state.active || this.state.stopping ? "rotatingLeft" : ""
+            }
             src="images/circle-outer.png"
             alt="Circle-outer"
           />
           <img
-            className={this.state.active || this.state.stopping ? "rotatingRight" : ""}
+            className={
+              this.state.active || this.state.stopping
+                ? "rotatingRight"
+                : ""
+            }
             src="images/circle-inner.png"
             alt="Circle-inner"
           />
         </div>
 
         <div className="mining-app-inner">
-          <Header exiting={this.state.exiting} closeApp={this.closeApp} />
+          <Header closeApp={this.closeApp} />
 
-          <div className={`main animated ${ this.state.exiting ? "fadeOut" : "fadeIn" }`}>
+          <div className="main animated fadeIn">
             <div className="btns-wrap">
               {buttons.map(this.renderButton)}
             </div>
@@ -537,8 +531,16 @@ export default class MiningApp extends React.Component {
                   placeholder="Safex Address"
                   name="mining_address"
                   id="mining_address"
-                  disabled={this.state.active || this.state.stopping ? "disabled" : ""}
-                  title={this.state.mining_address === "" ? "Your Safex Address will be shown here" : "Your Safex Address"}
+                  disabled={
+                    this.state.active || this.state.stopping
+                      ? "disabled"
+                      : ""
+                  }
+                  title={
+                    this.state.mining_address === ""
+                      ? "Your Safex Address will be shown here"
+                      : "Your Safex Address"
+                  }
                   readOnly={this.state.wallet_loaded ? "readOnly" : ""}
                 />
                 <img src="images/line-right.png" alt="Line Right" />
@@ -548,7 +550,9 @@ export default class MiningApp extends React.Component {
                 className="button-shine pool-url"
                 name="pool"
                 id="pool"
-                disabled={this.state.active || this.state.stopping ? "disabled" : ""}
+                disabled={
+                  this.state.active || this.state.stopping ? "disabled" : ""
+                }
                 title={`Choose the pool you want to connect to 
                     ${
                       this.state.active || this.state.stopping
@@ -565,7 +569,11 @@ export default class MiningApp extends React.Component {
                   <select
                     name="cores"
                     id="cpuUsage"
-                    disabled={this.state.active || this.state.stopping ? "disabled" : ""}
+                    disabled={
+                      this.state.active || this.state.stopping
+                        ? "disabled"
+                        : ""
+                    }
                     title={`Choose how much CPU power you want to use for mining
                         ${
                           this.state.active || this.state.stopping
@@ -603,7 +611,11 @@ export default class MiningApp extends React.Component {
                     <button
                       type="submit"
                       className="submit button-shine active"
-                      disabled={this.state.active || this.state.stopping ? "disabled" : ""}
+                      disabled={
+                        this.state.active || this.state.stopping
+                          ? "disabled"
+                          : ""
+                      }
                     >
                       <span>Stopping</span>
                     </button>
@@ -611,14 +623,24 @@ export default class MiningApp extends React.Component {
                     <button
                       type="submit"
                       className="submit button-shine"
-                      disabled={this.state.active || this.state.stopping ? "disabled" : ""}
+                      disabled={
+                        this.state.active || this.state.stopping
+                          ? "disabled"
+                          : ""
+                      }
                     >
                       <span>Start</span>
                     </button>
                   )}
                 </div>
               )}
-              <p className={this.state.mining_info ? "mining-info active" : "mining-info"}>
+              <p
+                className={
+                  this.state.mining_info
+                    ? "mining-info active"
+                    : "mining-info"
+                }
+              >
                 {this.state.mining_info_text}
               </p>
             </form>
@@ -628,7 +650,7 @@ export default class MiningApp extends React.Component {
               <p className="white-text">{this.state.hashrate} H/s</p>
             </div>
 
-            <footer className={this.state.exiting ? "animated fadeOut" : "animated fadeIn"}>
+            <footer className="animated fadeIn">
               <a onClick={this.footerLink} title="Visit our site">
                 <img src="images/powered.png" alt="Balkaneum" />
               </a>
