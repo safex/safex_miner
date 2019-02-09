@@ -99,15 +99,15 @@ export default class Modal extends React.Component {
                                     <button>Copied Address</button>
                                 </CopyToClipboard>
                             ) : (
-                                    <CopyToClipboard
-                                        text={this.state.new_wallet}
-                                        onCopy={() => this.setState({ copied: true })}
-                                        className="button-shine copy-btn"
-                                        disabled={this.state.new_wallet === "" ? "disabled" : ""}
-                                    >
-                                        <button>Copy Address</button>
-                                    </CopyToClipboard>
-                                )}
+                                <CopyToClipboard
+                                    text={this.state.new_wallet}
+                                    onCopy={() => this.setState({ copied: true })}
+                                    className="button-shine copy-btn"
+                                    disabled={this.state.new_wallet === "" ? "disabled" : ""}
+                                >
+                                    <button>Copy Address</button>
+                                </CopyToClipboard>
+                            )}
                             {this.state.exported ? (
                                 <h5 className="warning green">
                                     Wallet keys have been successfuly saved. Please do not share
@@ -448,6 +448,207 @@ export default class Modal extends React.Component {
                   </p>
                 </div>
               )}
+            </div>
+          );
+        }
+        if (this.props.balanceModalActive) {
+          modal = (
+            <div
+              className={`balance-modal ${this.props.balanceModalActive ? "active" : ""}`}
+            >
+              <span
+                className="close"
+                onClick={this.props.closeModal}
+                disabled={this.props.wallet.wallet_sync ? "" : "disabled"}
+              >
+                X
+              </span>
+              <h3
+                className={
+                  this.props.walletLoaded ? "wallet-loaded-h3" : ""
+                }
+              >
+                Check Balance
+              </h3>
+
+              {this.props.walletLoaded ? (
+                <div className="wallet-exists">
+                  <div className="btns-wrap">
+                    <button
+                      className={`signal ${
+                        this.props.wallet.wallet_connected
+                          ? "connected"
+                          : ""
+                      }`}
+                      title="Status"
+                    >
+                      <img src={
+                        this.props.wallet.wallet_connected
+                        ? "images/connected-blue.png"
+                        : "images/connected-white.png"} 
+                        alt="connected" />
+                      <p>
+                        {this.props.wallet.wallet_connected ? (
+                          <span>Connected</span>
+                        ) : (
+                          <span>Connection error</span>
+                        )}
+                      </p>
+                    </button>
+                    <button
+                      className="blockheight"
+                      title="Blockchain Height"
+                    >
+                      <img src="images/blocks.png" alt="blocks" />
+                      <span>{this.props.wallet.blockchain_height}</span>
+                    </button>
+                    <button
+                      className="button-shine refresh"
+                      onClick={this.props.startRescanBalance}
+                      title="Rescan blockchain from scratch"
+                    >
+                      <img src="images/refresh.png" alt="refresh" />
+                    </button>
+                  </div>
+                  <label htmlFor="selected_balance_address">
+                    Safex Wallet Address
+                  </label>
+                  <textarea
+                    placeholder="Safex Wallet Address"
+                    name="selected_balance_address"
+                    defaultValue={this.props.wallet.address}
+                    rows="2"
+                    readOnly
+                  />
+
+                  <div className="groups-wrap">
+                    <div className="form-group">
+                      <label htmlFor="balance">
+                        Pending Safex Cash
+                      </label>
+                      <input
+                        type="text"
+                        className="yellow-field"
+                        placeholder="Balance"
+                        name="balance"
+                        value={this.props.wallet.balance}
+                        onChange={this.sendAmountOnChange}
+                        readOnly
+                      />
+                      <label htmlFor="unlocked_balance">
+                        Available Safex Cash
+                      </label>
+                      <input
+                        type="text"
+                        className="green-field"
+                        placeholder="Unlocked balance"
+                        name="unlocked_balance"
+                        value={this.props.wallet.unlocked_balance}
+                        onChange={this.sendAmountOnChange}
+                        readOnly
+                      />
+                      <button
+                        className="button-shine"
+                        onClick={this.props.setOpenSendPopup.bind(this, 0)}
+                      >
+                        Send Cash
+                      </button>
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="tokens">
+                        Pending Safex Tokens
+                      </label>
+                      <input
+                        type="text"
+                        className="yellow-field"
+                        placeholder="Tokens"
+                        value={this.props.wallet.tokens}
+                        onChange={this.sendAmountOnChange}
+                        readOnly
+                      />
+                      <label htmlFor="unlocked_tokens">
+                        Available Safex Tokens
+                      </label>
+                      <input
+                        className="green-field"
+                        type="text"
+                        placeholder="Unlocked Tokens"
+                        name="unlocked_tokens"
+                        value={this.props.wallet.unlocked_tokens}
+                        onChange={this.sendAmountOnChange}
+                        readOnly
+                      />
+                      <button
+                        className="button-shine"
+                        onClick={this.props.setOpenSendPopup.bind(this, 1)}
+                      >
+                        Send Tokens
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="no-wallet">
+                  <h4>Please load the wallet file</h4>
+                </div>
+              )}
+            </div>
+          );
+        }
+        if (this.props.sendModal) {
+          modal = (
+            <div
+              className={`sendModal ${
+                this.props.sendModal ? "active" : ""
+              }`}
+            >
+              <div className="sendModalInner">
+                <span
+                  className="close"
+                  onClick={this.props.closeModal}
+                >
+                  X
+                </span>
+                {this.props.send_cash_or_token === 0 ? (
+                  <h3>Send Cash</h3>
+                ) : (
+                  <h3>Send Tokens</h3>
+                )}
+                <form
+                  onSubmit={e => {
+                    this.props.sendCashOrToken(
+                      e,
+                      this.props.send_cash_or_token
+                    );
+                  }}
+                >
+                  <label htmlFor="send_to">Destination</label>
+                  <textarea
+                    name="send_to"
+                    placeholder="Enter Destination Address"
+                    rows="2"
+                  />
+
+                  <label htmlFor="amount">Amount</label>
+                  <input name="amount" placeholder="Enter Amount" />
+
+                  <label htmlFor="paymentid">
+                    (Optional) Payment ID
+                  </label>
+                  <input
+                    name="paymentid"
+                    placeholder="(optional) payment id"
+                  />
+                  <button
+                    className="btn button-shine"
+                    type="submit"
+                    disabled={this.props.txBeingSent ? "disabled" : ""}
+                  >
+                    Send
+                  </button>
+                </form>
+              </div>
             </div>
           );
         }

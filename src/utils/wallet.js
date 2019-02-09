@@ -1,8 +1,7 @@
-import {
-    verify_safex_address
-} from "../utils/utils";
+import { verify_safex_address, parseEnv } from "../utils/utils";
 const safex = window.require("safex-nodejs-libwallet");
 const { dialog } = window.require("electron").remote;
+const env = parseEnv();
 
 function create_new_wallet(target, e) {
     e.preventDefault();
@@ -44,10 +43,10 @@ function create_new_wallet(target, e) {
             modal_close_disabled: true
         }));
         var args = {
-            path: filepath,
-            password: pass1,
-            network: target.state.network,
-            daemonAddress: target.state.daemonHostPort
+          path: filepath,
+          password: pass1,
+          network: env.NETWORK,
+          daemonHostPort: env.ADDRESS
         };
         target.setOpenBalanceAlert(
             "Please wait while your wallet file is being created",
@@ -73,9 +72,7 @@ function create_new_wallet(target, e) {
                     mining_info: false
                 });
                 console.log("wallet address  " + target.state.wallet.address);
-                console.log(
-                    "wallet spend private key  " + target.state.wallet.spend_key
-                );
+                console.log("wallet spend private key  " + target.state.wallet.spend_key);
                 console.log("wallet view private key  " + target.state.wallet.view_key);
                 wallet.on("refreshed", () => {
                     console.log("Wallet File successfully created!");
@@ -155,8 +152,8 @@ function create_new_wallet_from_keys(target, e) {
         var args = {
             path: target.state.wallet_path,
             password: pass1,
-            network: target.state.network,
-            daemonAddress: target.state.daemonHostPort,
+            network: env.NETWORK,
+            daemonHostPort: env.ADDRESS,
             restoreHeight: 0,
             addressString: safex_address,
             viewKeyString: view_key,
@@ -166,10 +163,7 @@ function create_new_wallet_from_keys(target, e) {
             "Please wait while your wallet file is being created. Do not close the application until the process is complete. This may take some time, please be patient.",
             true
         );
-        console.log(
-            "wallet doesn't exist. creating new one: " + target.state.wallet_path
-        );
-
+        console.log("wallet doesn't exist. creating new one: " + target.state.wallet_path);
         safex
             .createWalletFromKeys(args)
             .then(wallet => {
@@ -186,9 +180,7 @@ function create_new_wallet_from_keys(target, e) {
                     mining_info: false
                 });
                 console.log("wallet address  " + target.state.wallet.address);
-                console.log(
-                    "wallet spend private key  " + target.state.wallet.spend_key
-                );
+                console.log("wallet spend private key  " + target.state.wallet.spend_key);
                 console.log("wallet view private key  " + target.state.wallet.view_key);
                 console.log("create_new_wallet_from_keys checkpoint 1");
                 wallet.on("refreshed", () => {
@@ -234,8 +226,8 @@ function open_from_wallet_file(target, e) {
     var args = {
         path: target.state.wallet_path,
         password: pass,
-        network: target.state.network,
-        daemonAddress: target.state.daemonHostPort
+        network: env.NETWORK,
+        daemonAddress: env.ADDRESS
     };
     target.setOpenBalanceAlert("Please wait while your wallet file is loaded", true);
     safex

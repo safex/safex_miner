@@ -81,8 +81,11 @@
 .modal button:hover {
   box-shadow: 0 0 30px 0 rgba(0, 199, 236, 0.5) !important;
 }
-.modal button:active {
+.modal button:active,
+.modal button:focus {
   box-shadow: none !important;
+  outline: 0px none !important;
+  color: #fff !important;
 }
 .modal .browse-btn {
   float: left;

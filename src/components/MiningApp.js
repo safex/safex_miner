@@ -10,7 +10,6 @@ import {
 import {
   openSendPopup,
   closeSendPopup,
-  parseEnv,
   inputValidate,
   checkInputValueLenght,
   checkInputValuePrefix,
@@ -24,7 +23,6 @@ import {
   open_from_wallet_file
 } from "../utils/wallet";
 import Header from "./partials/Header";
-import SendModal from "./partials/SendModal";
 import Modal from "./partials/Modal";
 
 const { shell } = window.require("electron");
@@ -35,7 +33,6 @@ const remote = window.require("electron").remote;
 export default class MiningApp extends React.Component {
   constructor(props) {
     super(props);
-    this.env = parseEnv();
     this.state = {
       //mining settings
       active: false,
@@ -126,6 +123,7 @@ export default class MiningApp extends React.Component {
       //wallet state settings
       wallet_meta: null,
       wallet: {
+        wallet_sync: false,
         address: "",
         spend_key: "",
         view_key: "",
@@ -144,9 +142,7 @@ export default class MiningApp extends React.Component {
       wallet_loaded: false,
       wallet_exists: false,
       wallet_password: "",
-      wallet_path: "",
-      network: "mainnet",
-      daemonHostPort: "rpc.safex.io:17402"
+      wallet_path: ""
     };
   }
 
@@ -510,22 +506,14 @@ export default class MiningApp extends React.Component {
 
     return (
       <div className="mining-app-wrap">
-        <div
-          className={`mining-bg-wrap animated ${
-            this.state.exiting ? "fadeOut" : "fadeIn"
-          }`}
-        >
+        <div className={`mining-bg-wrap animated ${this.state.exiting ? "fadeOut" : "fadeIn"}`}>
           <img
-            className={
-              this.state.active || this.state.stopping ? "rotatingLeft" : ""
-            }
+            className={this.state.active || this.state.stopping ? "rotatingLeft" : ""}
             src="images/circle-outer.png"
             alt="Circle-outer"
           />
           <img
-            className={
-              this.state.active || this.state.stopping ? "rotatingRight" : ""
-            }
+            className={this.state.active || this.state.stopping ? "rotatingRight" : ""}
             src="images/circle-inner.png"
             alt="Circle-inner"
           />
@@ -534,10 +522,10 @@ export default class MiningApp extends React.Component {
         <div className="mining-app-inner">
           <Header exiting={this.state.exiting} closeApp={this.closeApp} />
 
-          <div
-            className={`main animated ${this.state.exiting ? "fadeOut" : "fadeIn"}`}
-          >
-            <div className="btns-wrap">{buttons.map(this.renderButton)}</div>
+          <div className={`main animated ${ this.state.exiting ? "fadeOut" : "fadeIn" }`}>
+            <div className="btns-wrap">
+              {buttons.map(this.renderButton)}
+            </div>
 
             <form onSubmit={this.handleSubmit}>
               <div className="address-wrap">
@@ -549,14 +537,8 @@ export default class MiningApp extends React.Component {
                   placeholder="Safex Address"
                   name="mining_address"
                   id="mining_address"
-                  disabled={
-                    this.state.active || this.state.stopping ? "disabled" : ""
-                  }
-                  title={
-                    this.state.mining_address === ""
-                      ? "Your Safex Address will be shown here"
-                      : "Your Safex Address"
-                  }
+                  disabled={this.state.active || this.state.stopping ? "disabled" : ""}
+                  title={this.state.mining_address === "" ? "Your Safex Address will be shown here" : "Your Safex Address"}
                   readOnly={this.state.wallet_loaded ? "readOnly" : ""}
                 />
                 <img src="images/line-right.png" alt="Line Right" />
@@ -566,9 +548,7 @@ export default class MiningApp extends React.Component {
                 className="button-shine pool-url"
                 name="pool"
                 id="pool"
-                disabled={
-                  this.state.active || this.state.stopping ? "disabled" : ""
-                }
+                disabled={this.state.active || this.state.stopping ? "disabled" : ""}
                 title={`Choose the pool you want to connect to 
                     ${
                       this.state.active || this.state.stopping
@@ -585,9 +565,7 @@ export default class MiningApp extends React.Component {
                   <select
                     name="cores"
                     id="cpuUsage"
-                    disabled={
-                      this.state.active || this.state.stopping ? "disabled" : ""
-                    }
+                    disabled={this.state.active || this.state.stopping ? "disabled" : ""}
                     title={`Choose how much CPU power you want to use for mining
                         ${
                           this.state.active || this.state.stopping
@@ -625,11 +603,7 @@ export default class MiningApp extends React.Component {
                     <button
                       type="submit"
                       className="submit button-shine active"
-                      disabled={
-                        this.state.active || this.state.stopping
-                          ? "disabled"
-                          : ""
-                      }
+                      disabled={this.state.active || this.state.stopping ? "disabled" : ""}
                     >
                       <span>Stopping</span>
                     </button>
@@ -637,22 +611,14 @@ export default class MiningApp extends React.Component {
                     <button
                       type="submit"
                       className="submit button-shine"
-                      disabled={
-                        this.state.active || this.state.stopping
-                          ? "disabled"
-                          : ""
-                      }
+                      disabled={this.state.active || this.state.stopping ? "disabled" : ""}
                     >
                       <span>Start</span>
                     </button>
                   )}
                 </div>
               )}
-              <p
-                className={
-                  this.state.mining_info ? "mining-info active" : "mining-info"
-                }
-              >
+              <p className={this.state.mining_info ? "mining-info active" : "mining-info"}>
                 {this.state.mining_info_text}
               </p>
             </form>
@@ -662,151 +628,11 @@ export default class MiningApp extends React.Component {
               <p className="white-text">{this.state.hashrate} H/s</p>
             </div>
 
-            <footer
-              className={
-                this.state.exiting ? "animated fadeOut" : "animated fadeIn"
-              }
-            >
+            <footer className={this.state.exiting ? "animated fadeOut" : "animated fadeIn"}>
               <a onClick={this.footerLink} title="Visit our site">
                 <img src="images/powered.png" alt="Balkaneum" />
               </a>
             </footer>
-          </div>
-            
-          <div className={`modal ${this.state.balance_modal_active ? "active" : ""}`}>
-            <div className={`balance-modal ${this.state.balance_modal_active ? "active" : ""}`}>
-              <span
-                className="close"
-                onClick={this.closeModal}
-                disabled={this.state.wallet_sync ? "" : "disabled"}
-              >
-                X
-            </span>
-              <h3 className={this.state.wallet_loaded ? "wallet-loaded-h3" : ""}>
-                Check Balance
-            </h3>
-
-              {this.state.wallet_loaded ? (
-                <div className="wallet-exists">
-                  <div className="btns-wrap">
-                    <button
-                      className={`signal ${this.state.wallet.wallet_connected ? "connected" : ""}`}
-                      title="Status"
-                    >
-                      <img
-                        src={
-                          this.state.wallet.wallet_connected
-                            ? "images/connected-blue.png"
-                            : "images/connected-white.png"
-                        }
-                        alt="connected"
-                      />
-                      <p>
-                        {this.state.wallet.wallet_connected ? (
-                          <span>Connected</span>
-                        ) : (
-                            <span>Connection error</span>
-                          )}
-                      </p>
-                    </button>
-                    <button className="blockheight" title="Blockchain Height">
-                      <img src="images/blocks.png" alt="blocks" />
-                      <span>{this.state.wallet.blockchain_height}</span>
-                    </button>
-                    <button
-                      className="button-shine refresh"
-                      onClick={this.startRescanBalance}
-                      title="Rescan blockchain from scratch"
-                    >
-                      <img src="images/refresh.png" alt="rescan" />
-                    </button>
-                  </div>
-                  <label htmlFor="selected_balance_address">
-                    Safex Wallet Address
-                </label>
-                  <textarea
-                    placeholder="Safex Wallet Address"
-                    name="selected_balance_address"
-                    value={this.state.wallet.address}
-                    rows="2"
-                    readOnly
-                  />
-
-                  <div className="groups-wrap">
-                    <div className="form-group">
-                      <label htmlFor="balance">Pending Safex Cash</label>
-                      <input
-                        type="text"
-                        placeholder="Balance"
-                        name="balance"
-                        className="yellow-field"
-                        value={this.state.wallet.balance}
-                        readOnly
-                      />
-                      <label htmlFor="unlocked_balance">
-                        Available Safex Cash
-                    </label>
-                      <input
-                        type="text"
-                        placeholder="Unlocked balance"
-                        name="unlocked_balance"
-                        className="green-field"
-                        value={this.state.wallet.unlocked_balance}
-                        readOnly
-                      />
-                      <button
-                        className="button-shine"
-                        onClick={this.setOpenSendPopup.bind(this, 0)}
-                      >
-                        Send Cash
-                    </button>
-                    </div>
-
-                    <div className="form-group">
-                      <label htmlFor="tokens">Pending Safex Tokens</label>
-                      <input
-                        type="text"
-                        className="yellow-field"
-                        placeholder="Tokens"
-                        value={this.state.wallet.tokens}
-                        readOnly
-                      />
-                      <label htmlFor="unlocked_tokens">
-                        Available Safex Tokens
-                    </label>
-                      <input
-                        type="text"
-                        className="green-field"
-                        placeholder="Unlocked Tokens"
-                        name="unlocked_tokens"
-                        value={this.state.wallet.unlocked_tokens}
-                        readOnly
-                      />
-                      <button
-                        className="button-shine"
-                        onClick={this.setOpenSendPopup.bind(this, 1)}
-                      >
-                        Send Tokens
-                    </button>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                  <div className="no-wallet">
-                    <h4>Please load the wallet file</h4>
-                  </div>
-                )}
-
-              <SendModal
-                sendModal={this.state.send_modal}
-                send_cash_or_token={this.state.send_cash_or_token}
-                sendCashOrToken={this.sendCashOrToken}
-                closeSendPopup={this.setCloseSendPopup}
-                txBeingSent={this.state.tx_being_sent}
-                availableCash={this.state.wallet.unlocked_balance}
-                availableTokens={this.state.wallet.unlocked_tokens}
-              />
-            </div>
           </div>
 
           <Modal
@@ -825,13 +651,20 @@ export default class MiningApp extends React.Component {
             openCreateFromKeysModal={this.state.create_from_keys_modal}
             closeCreateFromKeysModal={this.closeModal}
             createNewWalletFromKeys={this.createNewWalletFromKeys}
+            wallet={this.state.wallet}
+            balanceModalActive={this.state.balance_modal_active}
+            walletLoaded={this.state.wallet_loaded}
+            startRescanBalance={this.startRescanBalance}
+            setOpenSendPopup={this.setOpenSendPopup}
+            sendModal={this.state.send_modal}
+            send_cash_or_token={this.state.send_cash_or_token}
+            sendCashOrToken={this.sendCashOrToken}
+            closeSendPopup={this.setCloseSendPopup}
+            txBeingSent={this.state.tx_being_sent}
+            availableCash={this.state.wallet.unlocked_balance}
+            availableTokens={this.state.wallet.unlocked_tokens}
             balanceAlert={this.state.balance_alert}
             balanceAlertText={this.state.balance_alert_text}
-          />
-
-          <div
-            className={`backdrop ${this.state.balance_modal_active ? "active" : ""}`}
-            onClick={this.closeModal}
           />
         </div>
       </div>

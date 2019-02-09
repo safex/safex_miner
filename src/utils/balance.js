@@ -20,15 +20,12 @@ function refreshCallback(target) {
     wallet: {
       balance: roundAmount(wallet.balance() - wallet.unlockedBalance()),
       unlocked_balance: roundAmount(wallet.unlockedBalance()),
-      tokens: roundAmount(
-        wallet.tokenBalance() - wallet.unlockedTokenBalance()
-      ),
+      tokens: roundAmount(wallet.tokenBalance() - wallet.unlockedTokenBalance()),
       unlocked_tokens: roundAmount(wallet.unlockedTokenBalance()),
       blockchain_height: wallet.blockchainHeight(),
       wallet_connected: wallet.connected() === "connected"
     }
   }));
-
   wallet
     .store()
     .then(() => {
@@ -39,9 +36,7 @@ function refreshCallback(target) {
       console.log("Unable to store wallet: " + e);
       target.setOpenBalanceAlert("Unable to store wallet: " + e);
     });
-
   wallet.off("refreshed");
-
   setTimeout(() => {
     wallet.on("newBlock", target.startNewBlockCallback);
     wallet.on("updated", target.startUpdatedCallback);
@@ -56,15 +51,13 @@ function newBlockCallback(target, height) {
     if (wallet.synchronized()) {
       console.log("newBlock wallet synchronized, setting state...");
       target.setState(() => ({
-        wallet_sync: true,
         modal_close_disabled: false,
         balance_alert_close_disabled: false,
         wallet: {
+          wallet_sync: true,
           balance: roundAmount(wallet.balance() - wallet.unlockedBalance()),
           unlocked_balance: roundAmount(wallet.unlockedBalance()),
-          tokens: roundAmount(
-            wallet.tokenBalance() - wallet.unlockedTokenBalance()
-          ),
+          tokens: roundAmount(wallet.tokenBalance() - wallet.unlockedTokenBalance()),
           unlocked_tokens: roundAmount(wallet.unlockedTokenBalance()),
           blockchain_height: wallet.blockchainHeight()
         }
@@ -78,7 +71,6 @@ function balanceCheck(target) {
     let wallet = target.state.wallet_meta;
     console.log("daemon blockchain height: " + wallet.daemonBlockchainHeight());
     console.log("blockchain height: " + wallet.blockchainHeight());
-
     if (target.state.wallet_loaded) {
       target.setState(() => ({
         modal_close_disabled: false,
@@ -86,9 +78,7 @@ function balanceCheck(target) {
         wallet: {
           balance: roundAmount(wallet.balance() - wallet.unlockedBalance()),
           unlocked_balance: roundAmount(wallet.unlockedBalance()),
-          tokens: roundAmount(
-            wallet.tokenBalance() - wallet.unlockedTokenBalance()
-          ),
+          tokens: roundAmount(wallet.tokenBalance() - wallet.unlockedTokenBalance()),
           unlocked_tokens: roundAmount(wallet.unlockedTokenBalance()),
           blockchain_height: wallet.blockchainHeight(),
           wallet_connected: wallet.connected() === "connected"
@@ -96,47 +86,28 @@ function balanceCheck(target) {
       }));
       console.log("balance: " + roundAmount(wallet.balance()));
       console.log("unlocked balance: " + roundAmount(wallet.unlockedBalance()));
-      console.log(
-        "token balance: " +
-          roundAmount(wallet.tokenBalance() - wallet.unlockedTokenBalance())
-      );
-      console.log(
-        "unlocked token balance: " + roundAmount(wallet.unlockedTokenBalance())
-      );
+      console.log("token balance: " + roundAmount(wallet.tokenBalance() - wallet.unlockedTokenBalance()));
+      console.log("unlocked token balance: " + roundAmount(wallet.unlockedTokenBalance()));
       console.log("blockchain height " + wallet.blockchainHeight());
       console.log("connected: " + wallet.connected());
     }
     console.log("balance address: " + wallet.address());
-    target.setState(() => ({
-      wallet_sync: false
-    }));
+    target.setState(() => ({ wallet: { wallet_sync: false }}));
     if (wallet.daemonBlockchainHeight() - wallet.blockchainHeight() > 10) {
-      target.setOpenBalanceAlert(
-        "Please wait while blockchain is being updated...",
-        "balance_alert",
-        true
-      );
+      target.setOpenBalanceAlert("Please wait while blockchain is being updated...");
     }
     wallet.on("refreshed", target.startRefreshCallback);
-    target.setState(() => ({
-      modal_close_disabled: false
-    }));
+    target.setState(() => ({ modal_close_disabled: false }));
   }
 }
 
 function rescanBalance(target) {
-  var wallet = target.state.wallet_meta;
-  target.setOpenBalanceAlert(
-    "Rescanning, this may take some time, please wait ",
-    "balance_alert",
-    true
-  );
+  let wallet = target.state.wallet_meta;
+  target.setOpenBalanceAlert("Rescanning, this may take some time, please wait ");
   wallet.off("updated");
   wallet.off("newBlock");
   wallet.off("refreshed");
-  target.setState(() => ({
-    modal_close_disabled: true
-  }));
+  target.setState({ modal_close_disabled: true });
   setTimeout(() => {
     console.log("Starting blockchain rescan sync...");
     wallet.rescanBlockchain();
@@ -150,9 +121,7 @@ function rescanBalance(target) {
           wallet_connected: wallet.connected() === "connected",
           balance: roundAmount(wallet.balance() - wallet.unlockedBalance()),
           unlocked_balance: roundAmount(wallet.unlockedBalance()),
-          tokens: roundAmount(
-            wallet.tokenBalance() - wallet.unlockedTokenBalance()
-          ),
+          tokens: roundAmount(wallet.tokenBalance() - wallet.unlockedTokenBalance()),
           unlocked_tokens: roundAmount(wallet.unlockedTokenBalance()),
           blockchain_height: wallet.blockchainHeight()
         }
@@ -160,16 +129,10 @@ function rescanBalance(target) {
       target.setCloseBalanceAlert();
       wallet
         .store()
-        .then(() => {
-          console.log("Wallet stored");
-        })
+        .then(() => { console.log("Wallet stored") })
         .catch(e => {
           console.log("Unable to store wallet: " + e);
-          target.setOpenBalanceAlert(
-            "Unable to store wallet: " + e,
-            "balance_alert",
-            false
-          );
+          target.setOpenBalanceAlert("Unable to store wallet: " + e);
         });
       wallet.on("newBlock", target.newBlockCallback);
       wallet.on("updated", target.updatedCallback);

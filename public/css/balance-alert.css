@@ -56,48 +56,21 @@
 
 /* Send Popup */
 .sendModal {
-  display: table;
-  border: 1px solid #327a9b;
-  border-radius: 8px;
-  background: #000;
   color: #fff;
   text-transform: uppercase;
   font-size: 17px;
-  padding: 12px 15px 15px;
-  width: 700px;
   visibility: hidden;
+  min-height: 286px;
   opacity: 0;
   transition: all ease 0.3s;
   -o-transition: all ease 0.3s;
   -moz-transition: all ease 0.3s;
   -webkit-transition: all ease 0.3s;
   margin: auto;
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  z-index: 100002;
 }
 .sendModal.active {
   visibility: visible;
   opacity: 1;
-}
-.sendModal:hover {
-  outline: 0px none;
-  -webkit-box-shadow: 0 0 20px 0 rgba(0, 199, 236, 0.5);
-  box-shadow: 0 0 20px 0 rgba(0, 199, 236, 0.5);
-  border: 1px solid #00e7ff;
-}
-.sendModal .close {
-  width: auto;
-  position: absolute;
-  right: 15px;
-  top: 14px;
-  color: #fff;
-  opacity: 1;
-  font-size: 19px;
-  font-family: "Brandon Grotesque Bold", Helvetica, Arial, sans-serif;
 }
 .sendModal p {
   background: transparent;

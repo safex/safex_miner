@@ -45,6 +45,7 @@ function structureSafexKeys(spend, view) {
  */
 function openSendPopup(target, send_cash_or_token) {
   target.setState({
+    modal: true,
     send_modal: true,
     send_cash_or_token: send_cash_or_token
   });
@@ -55,10 +56,11 @@ function openSendPopup(target, send_cash_or_token) {
  */
 function closeSendPopup(target) {
   target.setState({
-    send_modal: false
+    modal: false
   });
   setTimeout(() => {
     target.setState({
+      send_modal: false,
       send_cash_or_token: false
     });
   }, 300);
@@ -138,16 +140,19 @@ const addClass = (condition, className) => (condition ? ` ${className} ` : "");
 function openModal(target, modal_type, alert, disabled) {
   if (modal_type === "balance_modal_active" && target.state.wallet_loaded) {
     target.setState({
+      modal: true,
       balance_modal_active: true
     });
     target.startBalanceCheck();
     return false;
   }
-  if (modal_type === "balance_modal_active") {
+  if (target.state.balance_modal_active && target.state.balance_alert) {
     target.setState({
-      balance_modal_active: true
+      balance_modal_active: false
     });
-  } else {
+    return false;
+  }
+  else {
     target.setState({
       modal: true,
       [modal_type]: true,
@@ -166,16 +171,18 @@ function closeAllModals(target) {
       (target.state.new_wallet_modal && target.state.balance_alert) ||
       (target.state.create_new_wallet_modal && target.state.balance_alert) ||
       (target.state.create_from_keys_modal && target.state.balance_alert) ||
+      (target.state.balance_modal_active && target.state.balance_alert) ||
       (target.state.open_from_existing_modal && target.state.balance_alert)
     ) {
       target.setState({
         balance_alert: false,
         balance_alert_close_disabled: false
       });
-    } else if (target.state.balance_modal_active) {
+    } else if (target.state.send_modal) {
       target.setState({
-        balance_modal_active: false
+        send_modal: false
       });
+      return false;
     } else {
       target.setState({
         modal: false
