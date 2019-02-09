@@ -37,11 +37,7 @@ function refreshCallback(target) {
     })
     .catch(e => {
       console.log("Unable to store wallet: " + e);
-      target.setOpenBalanceAlert(
-        "Unable to store wallet: " + e,
-        "balance_alert",
-        false
-      );
+      target.setOpenBalanceAlert("Unable to store wallet: " + e);
     });
 
   wallet.off("refreshed");

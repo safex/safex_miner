@@ -41,33 +41,6 @@ function structureSafexKeys(spend, view) {
 }
 
 /**
- * Open Balance Alert Popup
- * @param alert
- * @param alert_state
- * @param disabled
- */
-function openBalanceAlert(target, alert, alert_state, disabled) {
-  target.setState({
-    [alert_state]: true,
-    balance_alert_text: alert,
-    balance_alert_close_disabled: disabled
-  });
-}
-
-/**
- * Close Balance Alert Popup
- */
-function closeBalanceAlert(target) {
-  target.setState({
-    balance_alert: false,
-    open_file_alert: false,
-    create_new_wallet_alert: false,
-    create_from_keys_alert: false,
-    balance_alert_close_disabled: false
-  });
-}
-
-/**
  * Open Send Cash Popup
  */
 function openSendPopup(target, send_cash_or_token) {
@@ -101,29 +74,6 @@ function parseEnv() {
     env_obj[key.replace("REACT_APP_", "")] = process.env[key];
 
   return env_obj;
-}
-
-/**
- * Close All Modals
- */
-function closeAllModals(target) {
-  if (target.state.modal_close_disabled === false) {
-    target.setState(() => ({
-      new_wallet_modal: false,
-      instructions_modal_active: false,
-      balance_modal_active: false,
-      balance_alert: false,
-      open_file_alert: false,
-      create_new_wallet_alert: false,
-      create_from_keys_alert: false,
-      send_cash: false,
-      send_token: false,
-      create_new_wallet_modal: false,
-      open_from_existing_modal: false,
-      create_from_keys_modal: false,
-      exit_modal: false
-    }));
-  }
 }
 
 /**
@@ -178,11 +128,82 @@ function checkInputValuePrefix(inputValue) {
  */
 const addClass = (condition, className) => (condition ? ` ${className} ` : "");
 
+/**
+ * Open Modal
+ * @param target
+ * @param modal_type
+ * @param alert
+ * @param disabled
+ */
+function openModal(target, modal_type, alert, disabled) {
+  if (modal_type === "balance_modal_active" && target.state.wallet_loaded) {
+    target.setState({
+      balance_modal_active: true
+    });
+    target.startBalanceCheck();
+    return false;
+  }
+  if (modal_type === "balance_modal_active") {
+    target.setState({
+      balance_modal_active: true
+    });
+  } else {
+    target.setState({
+      modal: true,
+      [modal_type]: true,
+      balance_alert_text: alert,
+      balance_alert_close_disabled: disabled
+    });
+  }
+}
+
+/**
+ * Close All Modals
+ */
+function closeAllModals(target) {
+  if (target.state.modal_close_disabled === false) {
+    if (
+      (target.state.new_wallet_modal && target.state.balance_alert) ||
+      (target.state.create_new_wallet_modal && target.state.balance_alert) ||
+      (target.state.create_from_keys_modal && target.state.balance_alert) ||
+      (target.state.open_from_existing_modal && target.state.balance_alert)
+    ) {
+      target.setState({
+        balance_alert: false,
+        balance_alert_close_disabled: false
+      });
+    } else if (target.state.balance_modal_active) {
+      target.setState({
+        balance_modal_active: false
+      });
+    } else {
+      target.setState({
+        modal: false
+      });
+      setTimeout(() => {
+        target.setState({
+          new_wallet_modal: false,
+          instructions_modal_active: false,
+          balance_modal_active: false,
+          balance_alert: false,
+          balance_alert_close_disabled: false,
+          open_file_alert: false,
+          create_new_wallet_alert: false,
+          create_from_keys_alert: false,
+          send_cash: false,
+          send_token: false,
+          create_new_wallet_modal: false,
+          open_from_existing_modal: false,
+          create_from_keys_modal: false
+        });
+      }, 300);
+    }
+  }
+}
+
 export {
   verify_safex_address,
   structureSafexKeys,
-  openBalanceAlert,
-  closeBalanceAlert,
   openSendPopup,
   closeSendPopup,
   parseEnv,
@@ -190,5 +211,6 @@ export {
   checkInputValueLenght,
   checkInputValuePrefix,
   addClass,
+  openModal,
   closeAllModals
 };
