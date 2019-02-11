@@ -5,6 +5,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  -webkit-app-region: drag;
 }
 .mining-app-inner {
   width: 100%;
@@ -25,7 +26,7 @@
   align-items: center;
 }
 .mining-bg-wrap.fadeIn {
-  animation-delay: .3s;
+  animation-delay: 0.3s;
 }
 .mining-bg-wrap img {
   position: absolute;
@@ -43,7 +44,7 @@
   top: 0;
 }
 .main.fadeIn {
-  animation-delay: .3s;
+  animation-delay: 0.3s;
 }
 .btns-wrap {
   margin-bottom: 8px;
@@ -55,7 +56,7 @@
   font-weight: 600;
   font-size: 23px;
   line-height: 1;
-  color: rgba(255,255,255,1);
+  color: rgba(255, 255, 255, 1);
   position: relative;
   top: 4px;
 }
@@ -68,13 +69,14 @@
   -webkit-transition: all 0.2s ease-in;
   -moz-transition: all 0.2s ease-in;
   transition: all 0.2s ease-in;
+  -webkit-app-region: no-drag;
 }
 .modal-btn:first-of-type {
   padding: 0;
 }
 .modal-btn:hover {
   cursor: pointer;
-  transform: translate(0,-2px);
+  transform: translate(0, -2px);
 }
 .modal-btn:active {
   box-shadow: none !important;
@@ -87,7 +89,7 @@
   -webkit-transition: all ease 0.2s;
 }
 .modal-btn[disabled] img {
-  opacity: .5;
+  opacity: 0.5;
 }
 .modal-btn[disabled]:hover {
   transform: none;
@@ -127,12 +129,13 @@
   -o-transition: all ease 0.3s;
   -moz-transition: all ease 0.3s;
   -webkit-transition: all ease 0.3s;
-  -webkit-touch-callout: initial /* iOS Safari */
+  -webkit-touch-callout: initial; /* iOS Safari */
   -webkit-user-select: initial; /* Safari */
   -khtml-user-select: initial; /* Konqueror HTML */
   -moz-user-select: initial; /* Firefox */
   -ms-user-select: initial; /* Internet Explorer/Edge */
   user-select: initial; /* Non-prefixed version, currently supported by Chrome and Opera */
+  -webkit-app-region: no-drag;
 }
 .main form input:hover,
 .main form input:active,
@@ -140,37 +143,41 @@
   box-shadow: 0 0 30px 0 rgba(0, 199, 236, 0.5) !important;
 }
 .main form input[disabled] {
-  color: rgba(255,255,255,.7);
+  color: rgba(255, 255, 255, 0.7);
 }
 .main form input[disabled]:hover {
   box-shadow: none !important;
 }
-.main form input::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+.main form input::-webkit-input-placeholder {
+  /* Chrome/Opera/Safari */
   opacity: 1;
   color: #fff;
   font-size: 11px;
   text-transform: uppercase;
 }
-.main form input::-moz-placeholder { /* Firefox 19+ */
+.main form input::-moz-placeholder {
+  /* Firefox 19+ */
   opacity: 1;
   color: #fff;
   font-size: 11px;
   text-transform: uppercase;
 }
-.main form input:-moz-placeholder { /* Firefox 18- */
+.main form input:-moz-placeholder {
+  /* Firefox 18- */
   opacity: 1;
   color: #fff;
   font-size: 11px;
   text-transform: uppercase;
 }
-.main form input:-ms-input-placeholder { /* IE 10+ */
+.main form input:-ms-input-placeholder {
+  /* IE 10+ */
   opacity: 1;
   color: #fff;
   font-size: 11px;
   text-transform: uppercase;
 }
 .main form .pool-url {
-  background: rgba(10, 26, 45, .2);
+  background: rgba(10, 26, 45, 0.2);
   padding: 7px 10px 6px;
   color: #fff;
   border-radius: 8px;
@@ -178,9 +185,10 @@
   font-size: 14px;
   font-weight: 600;
   line-height: 1;
-  border: 1px solid rgba(255,255,255,.85);
+  border: 1px solid rgba(255, 255, 255, 0.85);
   text-align-last: center;
   height: 30px;
+  -webkit-app-region: no-drag;
 }
 .main form .pool-url:hover {
   cursor: pointer;
@@ -189,7 +197,7 @@
   outline: none;
 }
 .main form .pool-url[disabled] {
-  color: rgba(255,255,255,.7);
+  color: rgba(255, 255, 255, 0.7);
 }
 .main form .pool-url[disabled]:hover {
   box-shadow: none !important;
@@ -201,7 +209,7 @@
   justify-content: center;
   padding: 12px 0 20px;
 }
-.custom-checkbox input[type=checkbox]{
+.custom-checkbox input[type="checkbox"] {
   display: none;
 }
 .custom-checkbox {
@@ -216,7 +224,7 @@
   display: inline-block;
   width: auto;
 }
-.custom-checkbox:before{
+.custom-checkbox:before {
   content: "";
   background: url(../images/check-off.png);
   background-size: 100% 100%;
@@ -227,8 +235,8 @@
   left: 0;
   top: 4px;
 }
-.custom-checkbox.checked:before{
-  background: url('../images/check-on.png');
+.custom-checkbox.checked:before {
+  background: url("../images/check-on.png");
   background-size: 100% 100%;
 }
 .main form #cpuUsage {
@@ -236,8 +244,8 @@
   font-weight: 600;
   line-height: 1;
   padding: 2px 29px 3px 12px;
-  border: 1px solid rgba(255,255,255,.85);
-  background-color: rgba(28, 170, 203, .35);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  background-color: rgba(28, 170, 203, 0.35);
   color: #fff;
   border-radius: 10px;
   text-align-last: center;
@@ -255,17 +263,17 @@
 }
 .main form #cpuUsage:focus {
   outline: none;
-  border: 1px solid rgba(255,255,255,.85);
+  border: 1px solid rgba(255, 255, 255, 0.85);
 }
 .main form #cpuUsage[disabled] {
-  color: rgba(255,255,255,.7);
+  color: rgba(255, 255, 255, 0.7);
 }
 .main form #cpuUsage[disabled]:hover {
   box-shadow: none !important;
   cursor: initial;
 }
 .main form .input-group p {
-  font-family: 'Avenir Bold', sans-serif;
+  font-family: "Avenir Bold", sans-serif;
   text-transform: uppercase;
   color: #fff;
   margin-bottom: 0;
@@ -279,6 +287,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  -webkit-app-region: no-drag;
 }
 .submit {
   border-radius: 7px;
@@ -297,6 +306,7 @@
   -webkit-transition: all 0.2s ease-in;
   -moz-transition: all 0.2s ease-in;
   transition: all 0.2s ease-in;
+  -webkit-app-region: no-drag;
 }
 .submit:hover {
   box-shadow: 0 0 30px 0 rgba(0, 199, 236, 0.5) !important;
@@ -335,7 +345,7 @@
 .block,
 .hashrate,
 .balance {
-  font-family: 'Courier New', Helvetica, Arial, sans-serif;
+  font-family: "Courier New", Helvetica, Arial, sans-serif;
   font-size: 18px;
 }
 .block,
@@ -374,15 +384,7 @@
   width: 100%;
 }
 .main footer.fadeIn {
-  animation-delay: 0.8s;  
-}
-.main footer a {
-  display: inline-block;
-  position: absolute;
-  right: 15px;
-  bottom: -35px;
-  text-align: right;
-  z-index: 2;
+  animation-delay: 0.8s;
 }
 .main footer p {
   font-family: "Rift Soft", Helvetica, Arial, sans-serif;
@@ -404,15 +406,27 @@
   right: -5px;
   font-weight: 600;
 }
-.main footer a:hover {
+.main footer button {
+  display: inline-block;
+  position: absolute;
+  right: 15px;
+  bottom: -35px;
+  text-align: right;
+  z-index: 2;
+  border: none;
+  background: transparent;
+  padding: 0px;
+  -webkit-app-region: no-drag;
+}
+.main footer button:hover {
   cursor: pointer;
 }
-.main footer a:hover img {
-  opacity: .9;
+.main footer button:hover img {
+  opacity: 0.9;
 }
 .main footer img {
   width: 130px;
-  opacity: .6;
+  opacity: 0.6;
   transition: all ease 0.3s;
   -o-transition: all ease 0.3s;
   -moz-transition: all ease 0.3s;

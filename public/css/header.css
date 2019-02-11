@@ -5,7 +5,6 @@ header {
   z-index: 1;
   margin: 0px 0 35px;
   position: relative;
-  -webkit-app-region: drag;
   padding: 25px 0 0;
 }
 header .win-buttons-wrap {
@@ -22,7 +21,7 @@ header .close {
   color: #fff;
   opacity: 1;
   font-size: 19px;
-  font-family: "Brandon Grotesque Bold", Helvetica, Arial,sans-serif;
+  font-family: "Brandon Grotesque Bold", Helvetica, Arial, sans-serif;
   -webkit-transition: all 0.2s ease-in;
   -moz-transition: all 0.2s ease-in;
   transition: all 0.2s ease-in;
@@ -30,13 +29,13 @@ header .close {
 header .close.fadeIn,
 header .minimize.fadeIn,
 header .maximize.fadeIn {
-  animation-delay: .8s;
+  animation-delay: 0.8s;
 }
 header .close:focus,
 header .close:hover,
 header .minimize:hover {
-  color: #54BCD9;
-  text-shadow: 0 1px 0 #54BCD9;
+  color: #54bcd9;
+  text-shadow: 0 1px 0 #54bcd9;
   opacity: 1;
 }
 header .minimize {
@@ -51,7 +50,7 @@ header .minimize {
   position: relative;
   top: -8px;
   /* height: 20px; */
-  font-family: "Brandon Grotesque Bold", Helvetica, Arial,sans-serif;
+  font-family: "Brandon Grotesque Bold", Helvetica, Arial, sans-serif;
   -webkit-transition: all 0.2s ease-out;
   -moz-transition: all 0.2s ease-out;
   transition: all 0.2s ease-out;
@@ -71,17 +70,17 @@ header .maximize {
   line-height: 1;
   position: relative;
   top: -6.5px;
-  font-family: "Brandon Grotesque Bold", Helvetica, Arial,sans-serif;
+  font-family: "Brandon Grotesque Bold", Helvetica, Arial, sans-serif;
   -webkit-transition: all 0.2s ease-out;
   -moz-transition: all 0.2s ease-out;
   transition: all 0.2s ease-out;
 }
 header .maximize:hover {
-  border: 2px solid #54BCD9;
-  border-top: 4px solid #54BCD9;
+  border: 2px solid #54bcd9;
+  border-top: 4px solid #54bcd9;
 }
 header img.fadeIn {
-  animation-delay: .3s;
+  animation-delay: 0.3s;
 }
 header p {
   color: #fff;
@@ -91,5 +90,5 @@ header p {
   margin-bottom: 0;
 }
 header p.fadeIn {
-  animation-delay: .8s;
+  animation-delay: 0.8s;
 }

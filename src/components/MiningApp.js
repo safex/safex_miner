@@ -5,7 +5,7 @@ import {
   newBlockCallback,
   balanceCheck,
   rescanBalance,
-  roundAmount
+  walletData
 } from "../utils/balance";
 import {
   openSendPopup,
@@ -14,6 +14,7 @@ import {
   checkInputValueLenght,
   checkInputValuePrefix,
   openModal,
+  closeModal,
   closeAllModals
 } from "../utils/utils";
 import { miningStart, miningStop } from "../utils/mining";
@@ -93,13 +94,18 @@ export default class MiningApp extends React.Component {
       },
 
       //UI settings
-      modal_active: false,
-      modal_close_disabled: false,
-      instructions_modal_active: false,
-      balance_modal_active: false,
-      alert_close_disabled: false,
-      instructions_lang: "english",
+      modal: false,
       new_wallet_modal: false,
+      create_new_wallet_modal: false,
+      create_from_keys_modal: false,
+      open_from_existing_modal: false,
+      balance_modal_active: false,
+      send_modal: false,
+      instructions_modal_active: false,
+      instructions_lang: "english",
+      alert: false,
+      alert_text: "",
+      alert_close_disabled: false,
 
       //balance settings
       balance: 0,
@@ -109,19 +115,13 @@ export default class MiningApp extends React.Component {
       balance_wallet: "",
       balance_view_key: "",
       balance_spend_key: "",
-      alert: false,
-      open_file_alert: false,
-      create_new_wallet_alert: false,
-      create_from_keys_alert: false,
-      alert_text: "",
-      send_cash_or_token: false,
+      send_cash_or_token: null,
       tick_handle: null,
       tx_being_sent: false,
 
       //wallet state settings
       wallet_meta: null,
       wallet: {
-        wallet_sync: false,
         address: "",
         spend_key: "",
         view_key: "",
@@ -132,13 +132,8 @@ export default class MiningApp extends React.Component {
         unlocked_tokens: 0,
         blockchain_height: 0
       },
-      wallet_sync: false,
       wallet_being_created: false,
-      create_new_wallet_modal: false,
-      open_from_existing_modal: false,
-      create_from_keys_modal: false,
       wallet_loaded: false,
-      wallet_exists: false,
       wallet_password: "",
       wallet_path: ""
     };
@@ -154,31 +149,24 @@ export default class MiningApp extends React.Component {
   browseFile = () => {
     var filepath = "";
     filepath = dialog.showOpenDialog({});
-    console.log("filename " + filepath);
-
-    this.setState(() => ({
-      wallet_path: filepath
-    }));
+    this.setState({ filepath });
   };
 
-  createNewWallet = (e) => {
-    create_new_wallet(this, e)
-  }
+  createNewWallet = e => {
+    create_new_wallet(this, e);
+  };
 
-  createNewWalletFromKeys = (e) => {
+  createNewWalletFromKeys = e => {
     create_new_wallet_from_keys(this, e);
-  }
+  };
 
-  openWalletFile = (e) => {
+  openWalletFile = e => {
     open_from_wallet_file(this, e);
-  }
+  };
 
   addressChange = e => {
     let address = e.target.value;
-    this.setState({
-      mining_info: false,
-      wallet: { address }
-    });
+    this.setState({ mining_info: false, wallet: { address } });
   };
 
   closeWallet = () => {
@@ -186,12 +174,8 @@ export default class MiningApp extends React.Component {
       this.state.wallet_meta.pauseRefresh();
       this.state.wallet_meta.off();
       this.state.wallet_meta.close(true);
-      this.setState({
-        wallet_loaded: false
-      });
+      this.setState({ wallet_loaded: false });
       clearTimeout(this.state.tick_handle);
-
-      console.log("wallet closed");
     }
   };
 
@@ -214,7 +198,7 @@ export default class MiningApp extends React.Component {
     this.setState({
       alert: false,
       alert_close_disabled: false
-    })
+    });
   };
 
   setOpenSendPopup = send_cash_or_token => {
@@ -226,6 +210,10 @@ export default class MiningApp extends React.Component {
   };
 
   closeModal = () => {
+    closeModal(this);
+  };
+
+  closeAllModals = () => {
     closeAllModals(this);
   };
 
@@ -249,17 +237,18 @@ export default class MiningApp extends React.Component {
     rescanBalance(this);
   };
 
+  setWalletData = () => {
+    walletData(this);
+  };
+
   sendCashOrToken = (e, cash_or_token) => {
     e.preventDefault();
     let sendingAddress = e.target.send_to.value;
     let amount = e.target.amount.value * 10000000000;
     let paymentid = e.target.paymentid.value;
-    this.setState(() => ({
-      cash_or_token: cash_or_token
-    }));
-
+    this.setState({ cash_or_token });
     if (sendingAddress === "") {
-      this.setOpenAlert("Fill out all the fields");
+      this.setOpenAlert("Enter destination address");
       return false;
     }
     if (amount === "") {
@@ -267,8 +256,6 @@ export default class MiningApp extends React.Component {
       return false;
     }
     if (paymentid !== "") {
-      console.log("amount " + amount);
-      console.log("paymentid " + paymentid);
       this.setState(() => ({
         tx_being_sent: true
       }));
@@ -279,7 +266,6 @@ export default class MiningApp extends React.Component {
         tx_type: cash_or_token
       });
     } else {
-      console.log("amount " + amount);
       this.setState(() => ({
         tx_being_sent: true
       }));
@@ -293,73 +279,49 @@ export default class MiningApp extends React.Component {
 
   sendTransaction = args => {
     let wallet = this.state.wallet_meta;
-
     wallet
       .createTransaction(args)
       .then(tx => {
         let txId = tx.transactionsIds();
-        if (this.state.cash_or_token === 0) {
-          console.log("Cash transaction created: " + txId);
-        } else {
-          console.log("Token transaction created: " + txId);
-        }
         tx.commit()
           .then(() => {
-            console.log("Transaction commited successfully");
             if (this.state.cash_or_token === 0) {
-              this.setOpenAlert("Transaction commited successfully, Your cash transaction ID is: " + txId);
+              this.setOpenAlert(
+                "Transaction commited successfully, Your cash transaction ID is: " +
+                  txId
+              );
             } else {
-              this.setOpenAlert("Transaction commited successfully, Your token transaction ID is: " + txId);
+              this.setOpenAlert(
+                "Transaction commited successfully, Your token transaction ID is: " +
+                  txId
+              );
             }
-            this.setState(() => ({
-              tx_being_sent: false
-            }));
+            this.setState(() => ({ tx_being_sent: false }));
             setTimeout(() => {
-              this.setState({
-                wallet: {
-                  balance: roundAmount(
-                    wallet.unlockedBalance() - wallet.balance()
-                  ),
-                  unlocked_balance: roundAmount(wallet.unlockedBalance()),
-                  tokens: roundAmount(
-                    wallet.unlockedTokenBalance() - wallet.tokenBalance()
-                  ),
-                  unlocked_tokens: roundAmount(wallet.unlockedTokenBalance())
-                }
-              });
+              this.setWalletData();
             }, 300);
           })
           .catch(e => {
-            this.setState(() => ({
-              tx_being_sent: false
-            }));
+            this.setState(() => ({ tx_being_sent: false }));
             this.setOpenAlert("Error on commiting transaction: " + e);
           });
       })
       .catch(e => {
-        this.setState(() => ({
-          tx_being_sent: false
-        }));
+        this.setState(() => ({ tx_being_sent: false }));
         this.setOpenAlert("Couldn't create transaction: " + e);
       });
   };
 
   changeInstructionLang = () => {
-    if (this.state.instructions_lang === "english") {
-      this.setState({
-        instructions_lang: "serbian"
-      });
-    } else {
-      this.setState({
-        instructions_lang: "english"
-      });
-    }
+    this.setState({
+      instructions_lang:
+        this.state.instructions_lang === "english" ? "serbian" : "english"
+    });
   };
 
   handleSubmit = e => {
     e.preventDefault();
     let miningAddress = e.target.mining_address.value;
-
     if (miningAddress === "") {
       this.openInfoPopup("Please enter Safex address");
       return false;
@@ -376,7 +338,10 @@ export default class MiningApp extends React.Component {
       this.openInfoPopup("Your address must start with Safex or SFXt");
       return false;
     }
-    if (!safex.addressValid(miningAddress, "mainnet")) {
+    if (
+      process.env.NODE_ENV !== "development" &&
+      !safex.addressValid(miningAddress, "mainnet")
+    ) {
       this.openInfoPopup("Address is not valid");
       return false;
     }
@@ -388,9 +353,7 @@ export default class MiningApp extends React.Component {
   };
 
   checkStatus = () => {
-    this.setState({
-      hashrate: this.miner.getStatus().split(" ")[2]
-    });
+    this.setState({ hashrate: this.miner.getStatus().split(" ")[2] });
     console.log(this.miner.getStatus(), this.state.hashrate);
   };
 
@@ -405,7 +368,7 @@ export default class MiningApp extends React.Component {
       this.closeWallet();
       setTimeout(() => {
         window.close();
-      }, 6000);
+      }, 5000);
     } else {
       window.close();
     }
@@ -422,8 +385,8 @@ export default class MiningApp extends React.Component {
       {content.startsWith("images/") ? (
         <img src={content} alt={content} />
       ) : (
-          content
-        )}
+        content
+      )}
     </button>
   );
 
@@ -504,9 +467,7 @@ export default class MiningApp extends React.Component {
           />
           <img
             className={
-              this.state.active || this.state.stopping
-                ? "rotatingRight"
-                : ""
+              this.state.active || this.state.stopping ? "rotatingRight" : ""
             }
             src="images/circle-inner.png"
             alt="Circle-inner"
@@ -517,9 +478,7 @@ export default class MiningApp extends React.Component {
           <Header closeApp={this.closeApp} />
 
           <div className="main animated fadeIn">
-            <div className="btns-wrap">
-              {buttons.map(this.renderButton)}
-            </div>
+            <div className="btns-wrap">{buttons.map(this.renderButton)}</div>
 
             <form onSubmit={this.handleSubmit}>
               <div className="address-wrap">
@@ -532,9 +491,7 @@ export default class MiningApp extends React.Component {
                   name="mining_address"
                   id="mining_address"
                   disabled={
-                    this.state.active || this.state.stopping
-                      ? "disabled"
-                      : ""
+                    this.state.active || this.state.stopping ? "disabled" : ""
                   }
                   title={
                     this.state.mining_address === ""
@@ -570,9 +527,7 @@ export default class MiningApp extends React.Component {
                     name="cores"
                     id="cpuUsage"
                     disabled={
-                      this.state.active || this.state.stopping
-                        ? "disabled"
-                        : ""
+                      this.state.active || this.state.stopping ? "disabled" : ""
                     }
                     title={`Choose how much CPU power you want to use for mining
                         ${
@@ -636,9 +591,7 @@ export default class MiningApp extends React.Component {
               )}
               <p
                 className={
-                  this.state.mining_info
-                    ? "mining-info active"
-                    : "mining-info"
+                  this.state.mining_info ? "mining-info active" : "mining-info"
                 }
               >
                 {this.state.mining_info_text}
@@ -651,9 +604,9 @@ export default class MiningApp extends React.Component {
             </div>
 
             <footer className="animated fadeIn">
-              <a onClick={this.footerLink} title="Visit our site">
+              <button onClick={this.footerLink} title="Visit our site">
                 <img src="images/powered.png" alt="Balkaneum" />
-              </a>
+              </button>
             </footer>
           </div>
 
@@ -669,15 +622,15 @@ export default class MiningApp extends React.Component {
             browseFile={this.browseFile}
             openFromExistingModal={this.state.open_from_existing_modal}
             openWalletFile={this.openWalletFile}
-            filepath={this.state.wallet_path}
+            filepath={this.state.filepath}
             openCreateFromKeysModal={this.state.create_from_keys_modal}
-            closeCreateFromKeysModal={this.closeModal}
             createNewWalletFromKeys={this.createNewWalletFromKeys}
             wallet={this.state.wallet}
             balanceModalActive={this.state.balance_modal_active}
             walletLoaded={this.state.wallet_loaded}
             startRescanBalance={this.startRescanBalance}
             setOpenSendPopup={this.setOpenSendPopup}
+            setCloseSendPopup={this.setCloseSendPopup}
             sendModal={this.state.send_modal}
             send_cash_or_token={this.state.send_cash_or_token}
             sendCashOrToken={this.sendCashOrToken}

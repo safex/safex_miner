@@ -8,25 +8,23 @@ function create_new_wallet(target, e) {
   const pass1 = e.target.pass1.value;
   const pass2 = e.target.pass2.value;
   console.log("new wallet password " + e.target.pass1.value);
-  if (pass1 === "" || pass2 === "") {
-    target.setOpenAlert("Fill out all the fields");
+  if (pass1 === "") {
+    target.setOpenAlert("Enter password");
+    return false;
+  }
+  if (pass2 === "") {
+    target.setOpenAlert("Enter repeated password");
     return false;
   }
   if (pass1 !== pass2) {
     target.setOpenAlert("Repeated password does not match");
     return false;
   }
-  if (target.state.wallet_loaded) {
-    target.closeWallet();
-  }
   dialog.showSaveDialog(filepath => {
     if (!filepath) {
       return false;
     }
     if (safex.walletExists(filepath)) {
-      target.setState(() => ({
-        modal_close_disabled: false
-      }));
       target.setOpenAlert(
         `Wallet already exists. Please choose a different file name.
         This application does not enable overwriting an existing wallet file
@@ -34,38 +32,41 @@ function create_new_wallet(target, e) {
       );
       return false;
     }
-    target.setState(() => ({
-      wallet_path: filepath,
-      wallet_exists: false,
-      modal_close_disabled: true
-    }));
+    target.setState(() => ({ filepath }));
     var args = {
       path: filepath,
       password: pass1,
       network: env.NETWORK,
-      daemonHostPort: env.ADDRESS
+      daemonAddress: env.ADDRESS
     };
-    target.setOpenAlert("Please wait while your wallet file is being created", true);
-    console.log("wallet doesn't exist. creating new one: " + target.state.wallet_path);
-    safex.createWallet(args)
+    target.setOpenAlert(
+      "Please wait while your wallet file is being created",
+      true
+    );
+    console.log(
+      "wallet doesn't exist. creating new one: " + target.state.filepath
+    );
+    safex
+      .createWallet(args)
       .then(wallet => {
         target.setState({
           wallet_loaded: true,
           wallet_meta: wallet,
+          mining_info: false,
           wallet: {
             address: wallet.address(),
             spend_key: wallet.secretSpendKey(),
             view_key: wallet.secretViewKey()
-          },
-          modal_close_disabled: false,
-          mining_info: false
+          }
         });
         console.log("wallet address  " + target.state.wallet.address);
-        console.log("wallet spend private key  " + target.state.wallet.spend_key);
+        console.log(
+          "wallet spend private key  " + target.state.wallet.spend_key
+        );
         console.log("wallet view private key  " + target.state.wallet.view_key);
         wallet.on("refreshed", () => {
           console.log("Wallet File successfully created!");
-          target.closeModal();
+          target.closeAllModals();
           wallet
             .store()
             .then(() => {
@@ -111,21 +112,18 @@ function create_new_wallet_from_keys(target, e) {
     target.setOpenAlert("Passwords do not match");
     return false;
   }
-  if (verify_safex_address(spend_key, view_key, safex_address) === false) {
+  if (
+    process.env.NODE_ENV !== "development" &&
+    verify_safex_address(spend_key, view_key, safex_address) === false
+  ) {
     target.setOpenAlert("Incorrect keys");
     return false;
-  }
-  if (target.state.wallet_loaded) {
-    target.closeWallet();
   }
   dialog.showSaveDialog(filepath => {
     if (!filepath) {
       return false;
     }
     if (safex.walletExists(filepath)) {
-      target.setState(() => ({
-        modal_close_disabled: false
-      }));
       target.setOpenAlert(
         `Wallet already exists. Please choose a different file name.
         This application does not enable overwriting an existing wallet file
@@ -133,16 +131,12 @@ function create_new_wallet_from_keys(target, e) {
       );
       return false;
     }
-    target.setState({
-      wallet_path: filepath,
-      wallet_exists: false,
-      modal_close_disabled: true
-    });
+    target.setState({ filepath });
     var args = {
-      path: target.state.wallet_path,
+      path: target.state.filepath,
       password: pass1,
       network: env.NETWORK,
-      daemonHostPort: env.ADDRESS,
+      daemonAddress: env.ADDRESS,
       restoreHeight: 0,
       addressString: safex_address,
       viewKeyString: view_key,
@@ -152,28 +146,31 @@ function create_new_wallet_from_keys(target, e) {
       "Please wait while your wallet file is being created. Do not close the application until the process is complete. This may take some time, please be patient.",
       true
     );
-    console.log("wallet doesn't exist. creating new one: " + target.state.wallet_path);
-    safex.createWalletFromKeys(args)
+    console.log(
+      "wallet doesn't exist. creating new one: " + target.state.filepath
+    );
+    safex
+      .createWalletFromKeys(args)
       .then(wallet => {
-        console.log("Create wallet form keys performed!");
+        console.log("Create wallet from keys performed!");
         target.setState({
           wallet_loaded: true,
           wallet_meta: wallet,
+          mining_info: false,
           wallet: {
             address: wallet.address(),
             spend_key: wallet.secretSpendKey(),
             view_key: wallet.secretViewKey()
-          },
-          modal_close_disabled: false,
-          mining_info: false
+          }
         });
-        console.log("wallet address  " + target.state.wallet.address);
-        console.log("wallet spend private key  " + target.state.wallet.spend_key);
-        console.log("wallet view private key  " + target.state.wallet.view_key);
-        console.log("create_new_wallet_from_keys checkpoint 1");
+        console.log("wallet address: " + target.state.wallet.address);
+        console.log(
+          "wallet spend private key: " + target.state.wallet.spend_key
+        );
+        console.log("wallet view private key: " + target.state.wallet.view_key);
         wallet.on("refreshed", () => {
           console.log("Wallet File successfully created!");
-          target.closeModal();
+          target.closeAllModals();
           wallet
             .store()
             .then(() => {
@@ -189,7 +186,6 @@ function create_new_wallet_from_keys(target, e) {
         target.setOpenAlert("Error with the creation of the wallet " + err);
       });
   });
-  console.log("create_new_wallet_from_keys checkpoint 2");
 }
 
 function open_from_wallet_file(target, e) {
@@ -208,23 +204,19 @@ function open_from_wallet_file(target, e) {
   if (target.state.wallet_loaded) {
     target.closeWallet();
   }
-  target.setState({
-    modal_close_disabled: true
-  });
   var args = {
-    path: target.state.wallet_path,
+    path: target.state.filepath,
     password: pass,
     network: env.NETWORK,
     daemonAddress: env.ADDRESS
   };
   target.setOpenAlert("Please wait while your wallet file is loaded", true);
-  safex.openWallet(args)
+  safex
+    .openWallet(args)
     .then(wallet => {
       target.setState({
         wallet_loaded: true,
         wallet_meta: wallet,
-        modal_close_disabled: false,
-        alert_close_disabled: true,
         mining_info: false,
         wallet: {
           address: wallet.address(),
@@ -232,21 +224,9 @@ function open_from_wallet_file(target, e) {
           view_key: wallet.secretViewKey()
         }
       });
-      target.setState({
-        modal: false
-      });
-      setTimeout(() => {
-        target.setState({
-          open_from_existing_modal: false,
-          alert: false,
-          alert_close_disabled: false
-        });
-      }, 300);
+      target.closeAllModals();
     })
     .catch(err => {
-      target.setState(() => ({
-        modal_close_disabled: false
-      }));
       target.setOpenAlert("Error opening the wallet: " + err, false);
     });
 }

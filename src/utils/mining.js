@@ -38,9 +38,7 @@ function miningStart(target) {
   console.log("Native mining started!");
 
   let checkStatusInterval = setInterval(target.checkStatus, 2000);
-  target.setState({
-    checkStatusInterval: checkStatusInterval
-  });
+  target.setState({ checkStatusInterval });
 }
 
 function miningStop(target) {
