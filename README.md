@@ -17,9 +17,11 @@ To start project backend
 #### Windows
 
 Run Command Prompt as Administrator
+
 ```
 $ npm install --global --production windows-build-tools
 $ npm install
+$ .\node_modules\.bin\electron-rebuild.cmd
 $ npm run dev
 ```
 
@@ -31,6 +33,7 @@ $ sudo apt update && sudo apt install build-essential cmake pkg-config \
     libunwind8-dev liblzma-dev libreadline6-dev libldns-dev libexpat1-dev \
     libgtest-dev doxygen graphviz libpcsclite-dev
 $ npm install
+$ ./node_modules/.bin/electron-rebuild
 $ npm run dev
 ```
 
@@ -62,6 +65,7 @@ npm run make-win-installer
 npm run make-mac-installer
 npm run make-linux-installer
 ```
+
 separately.
 
 For linux builds, you will need to have `rpmbuild` available on system (`apt-get install rpm`).

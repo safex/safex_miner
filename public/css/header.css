@@ -11,10 +11,9 @@ header .win-buttons-wrap {
   position: absolute;
   right: 10px;
   top: 10px;
-  -webkit-app-region: no-drag;
 }
 header .win-buttons-wrap button {
-  margin-left: 10px;
+  -webkit-app-region: no-drag;
 }
 header .close {
   display: inline-block;
@@ -40,24 +39,30 @@ header .minimize:hover {
 }
 header .minimize {
   background: none;
+  position: relative;
+  top: 0px;
   border: 0px;
   display: inline-block;
-  font-size: 25px;
-  color: #fff;
+  font-size: 28px;
   opacity: 1;
   padding: 0;
+  height: 16.5px;
+  width: 13.5px;
+  margin-right: 10px;
   line-height: 1;
-  position: relative;
-  top: -8px;
-  /* height: 20px; */
-  font-family: "Brandon Grotesque Bold", Helvetica, Arial, sans-serif;
+  border-bottom: 3px solid #fff;
   -webkit-transition: all 0.2s ease-out;
   -moz-transition: all 0.2s ease-out;
   transition: all 0.2s ease-out;
 }
+header .minimize:hover {
+  border-bottom: 3px solid #54bcd9;
+}
 header .maximize {
   background: none;
-  border: 0px;
+  position: relative;
+  top: 2px;
+  margin-right: 10px;
   display: inline-block;
   font-size: 25px;
   color: #fff;
@@ -68,9 +73,6 @@ header .maximize {
   width: 12px;
   padding: 0;
   line-height: 1;
-  position: relative;
-  top: -6.5px;
-  font-family: "Brandon Grotesque Bold", Helvetica, Arial, sans-serif;
   -webkit-transition: all 0.2s ease-out;
   -moz-transition: all 0.2s ease-out;
   transition: all 0.2s ease-out;

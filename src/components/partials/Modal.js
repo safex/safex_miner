@@ -12,14 +12,12 @@ export default class Modal extends React.Component {
       new_wallet_generated: false,
       spendkey_sec: "",
       viewkey_sec: "",
-      exported: false
+      exported: false,
+      instructions_lang: "english"
     };
-
-    this.newWallet = this.newWallet.bind(this);
-    this.exportWallet = this.exportWallet.bind(this);
   }
 
-  newWallet() {
+  newWallet = () => {
     const seed = sa.sc_reduce32(sa.rand_32());
     const keys = sa.create_address(seed);
     const pubkey = sa.pubkeys_to_string(keys.spend.pub, keys.view.pub);
@@ -33,9 +31,9 @@ export default class Modal extends React.Component {
       spendkey_sec: keys.spend.sec,
       viewkey_sec: keys.view.sec
     });
-  }
+  };
 
-  exportWallet() {
+  exportWallet = () => {
     var wallet_data = JSON.parse(localStorage.getItem("wallet"));
     var keys = "";
 
@@ -62,7 +60,13 @@ export default class Modal extends React.Component {
     var date = Date.now();
 
     fileDownload(keys, date + "unsafex.txt");
-  }
+  };
+
+  changeInstructionLang = lang => {
+    this.setState({
+      instructions_lang: lang
+    });
+  };
 
   render() {
     let modal;
@@ -280,22 +284,22 @@ export default class Modal extends React.Component {
           <div className="lang-bts-wrap">
             <button
               className={`button-shine ${
-                this.props.instructionsLang === "english" ? "active" : ""
+                this.state.instructions_lang === "english" ? "active" : ""
               }`}
-              onClick={this.props.changeInstructionLang}
+              onClick={this.changeInstructionLang.bind(this, "english")}
             >
               EN
             </button>
             <button
               className={`button-shine ${
-                this.props.instructionsLang === "serbian" ? "active" : ""
+                this.state.instructions_lang === "serbian" ? "active" : ""
               }`}
-              onClick={this.props.changeInstructionLang}
+              onClick={this.changeInstructionLang.bind(this, "serbian")}
             >
               SRB
             </button>
           </div>
-          {this.props.instructionsLang === "english" ? (
+          {this.state.instructions_lang === "english" ? (
             <div>
               <h3>Instructions</h3>
               <p>
