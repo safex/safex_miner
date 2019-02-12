@@ -25,8 +25,9 @@
 }
 .modal {
   background: url(../images/modal-bg.png);
-  background-size: 100% 100%;
+  background-size: 102% 100%;
   background-repeat: repeat-y;
+  background-position: -1% 0%;
   display: table;
   border: 1px solid #327a9b;
   border-radius: 8px;
@@ -364,4 +365,7 @@
 .sendModal .form-group-wrap .form-group {
   margin-top: 0;
   width: calc(50% - 7.5px);
+}
+.sendModal .btn {
+  margin: 5px 0 0;
 }

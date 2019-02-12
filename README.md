@@ -1,6 +1,6 @@
 # SAFEX 1 CLICK MINIG APP
 
-Official repository for SAFEX 1 click cpu mining app.
+Official repository for SAFEX 1 Click CPU mining app.
 
 ## Releases
 
