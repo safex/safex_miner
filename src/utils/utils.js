@@ -165,49 +165,51 @@ function openModal(target, modal_type, alert, disabled) {
 }
 
 /**
+ * Close Modal
+ */
+function closeModal(target) {
+  if (target.state.alert_close_disabled) {
+    return false;
+  }
+  if (
+    (target.state.new_wallet_modal && target.state.alert) ||
+    (target.state.create_new_wallet_modal && target.state.alert) ||
+    (target.state.create_from_keys_modal && target.state.alert) ||
+    (target.state.balance_modal_active && target.state.alert) ||
+    (target.state.open_from_existing_modal && target.state.alert)
+  ) {
+    target.setState({
+      alert: false,
+      alert_close_disabled: false
+    });
+  } else if (target.state.send_modal) {
+    target.setState({
+      send_modal: false
+    });
+  } else {
+    target.closeAllModals();
+  }
+}
+
+/**
  * Close All Modals
  */
 function closeAllModals(target) {
-  if (target.state.modal_close_disabled === false) {
-    if (
-      (target.state.new_wallet_modal && target.state.alert) ||
-      (target.state.create_new_wallet_modal && target.state.alert) ||
-      (target.state.create_from_keys_modal && target.state.alert) ||
-      (target.state.balance_modal_active && target.state.alert) ||
-      (target.state.open_from_existing_modal && target.state.alert)
-    ) {
-      target.setState({
-        alert: false,
-        alert_close_disabled: false
-      });
-    } else if (target.state.send_modal) {
-      target.setState({
-        send_modal: false
-      });
-      return false;
-    } else {
-      target.setState({
-        modal: false
-      });
-      setTimeout(() => {
-        target.setState({
-          new_wallet_modal: false,
-          instructions_modal_active: false,
-          balance_modal_active: false,
-          alert: false,
-          alert_close_disabled: false,
-          open_file_alert: false,
-          create_new_wallet_alert: false,
-          create_from_keys_alert: false,
-          send_cash: false,
-          send_token: false,
-          create_new_wallet_modal: false,
-          open_from_existing_modal: false,
-          create_from_keys_modal: false
-        });
-      }, 300);
-    }
-  }
+  target.setState({
+    modal: false
+  });
+  setTimeout(() => {
+    target.setState({
+      new_wallet_modal: false,
+      create_new_wallet_modal: false,
+      create_from_keys_modal: false,
+      open_from_existing_modal: false,
+      balance_modal_active: false,
+      instructions_modal_active: false,
+      alert: false,
+      alert_close_disabled: false
+    });
+  }, 300);
 }
 
 export {
@@ -221,5 +223,6 @@ export {
   checkInputValuePrefix,
   addClass,
   openModal,
+  closeModal,
   closeAllModals
 };

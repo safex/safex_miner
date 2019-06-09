@@ -15,6 +15,7 @@ import {
   checkInputValueLenght,
   checkInputValuePrefix,
   openModal,
+  closeModal,
   closeAllModals
 } from "../utils/utils";
 import { miningStart, miningStop } from "../utils/mining";
@@ -231,6 +232,10 @@ export default class MiningApp extends React.Component {
   };
 
   closeModal = () => {
+    closeModal(this);
+  };
+
+  closeAllModals = () => {
     closeAllModals(this);
   };
 
