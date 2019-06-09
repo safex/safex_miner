@@ -4,12 +4,13 @@ Official repository for SAFEX 1 click cpu mining app.
 
 ## Releases
 
-You can download the latest release from (https://github.com/safex/safex_miner/releases).
+You can download the latest release from (https://github.com/safex/safex_miner/releases). </br>
 Available for Mac, Windows (64, 32) and Linux.
 
 ## Development
 
-Node v10.13.0 is required when installing dependencies. For easily switching between Node versions, we suggest using [nvm](https://github.com/creationix/nvm).
+Node v10.13.0 is required when installing dependencies. </br> 
+For easily switching between Node versions, we suggest using [nvm](https://github.com/creationix/nvm).
 
 ### Backend:
 
@@ -28,7 +29,10 @@ $ npm run dev
 #### Linux
 
 ```
-$ sudo apt update && sudo apt install build-essential cmake pkg-config libboost-all-dev libssl-dev libzmq3-dev libunbound-dev libminiupnpc-dev libunwind8-dev liblzma-dev libreadline6-dev libldns-dev libexpat1-dev libgtest-dev doxygen graphviz libpcsclite-dev
+$ sudo apt update && sudo apt install build-essential cmake pkg-config \
+  libboost-all-dev libssl-dev libzmq3-dev libunbound-dev libminiupnpc-dev \
+  libunwind8-dev liblzma-dev libreadline6-dev libldns-dev libexpat1-dev \
+  libgtest-dev doxygen graphviz libpcsclite-dev
 $ npm install
 $ ./node_modules/.bin/electron-rebuild
 $ npm run dev
@@ -68,7 +72,7 @@ $ npm run make-linux-installer
 Log in the Apple Developer website https://developer.apple.com/.  
 Install Developer Tools v10.1  
 https://download.developer.apple.com/Developer_Tools/Command_Line_Tools_macOS_10.13_for_Xcode_10.1/Command_Line_Tools_macOS_10.13_for_Xcode_10.1.dmg  
-If you previousely exported open ssl flags, open new terminal window.
+If you previousely exported open ssl flags, open new terminal window. </br>
 Make sure you are using Node v10.13.0.
 
 Then run:
