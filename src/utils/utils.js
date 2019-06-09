@@ -139,27 +139,29 @@ const addClass = (condition, className) => (condition ? ` ${className} ` : "");
  */
 function openModal(target, modal_type, alert, disabled) {
   if (modal_type === "balance_modal_active" && target.state.wallet_loaded) {
-    target.setState({
+    target.setState(() => ({
       modal: true,
-      balance_modal_active: true
-    });
+      balance_modal_active: true,
+      alert_text: alert,
+      alert_close_disabled: disabled
+    }));
     target.startBalanceCheck();
     return false;
   }
   if (target.state.balance_modal_active && target.state.alert) {
     target.setState({
-      balance_modal_active: false
-    });
-    return false;
-  }
-  else {
-    target.setState({
-      modal: true,
-      [modal_type]: true,
+      balance_modal_active: false,
       alert_text: alert,
       alert_close_disabled: disabled
     });
+    return false;
   }
+  target.setState({
+    modal: true,
+    [modal_type]: true,
+    alert_text: alert,
+    alert_close_disabled: disabled
+  });
 }
 
 /**

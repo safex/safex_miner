@@ -49,7 +49,6 @@
   bottom: 0;
   right: 0;
   z-index: 100002;
-  -webkit-app-region: no-drag;
 }
 .modal.active {
   visibility: visible;
@@ -57,9 +56,9 @@
 }
 .modal:hover {
   outline: 0px none;
-  -webkit-box-shadow: 0 0 20px 0 rgba(0, 199, 236, 0.5);
-  box-shadow: 0 0 20px 0 rgba(0, 199, 236, 0.5);
-  border: 1px solid #00e7ff;
+}
+.modal form {
+  text-align: center;
 }
 .modal button {
   border-radius: 7px;
@@ -72,7 +71,7 @@
   line-height: 1.2;
   position: relative;
   border: 2px solid #54BCD9;
-  margin: 0;
+  margin: 5px 0 0;
   padding: 6px 12px 5px;
   -webkit-transition: all 0.2s ease-in;
   -moz-transition: all 0.2s ease-in;
@@ -87,8 +86,11 @@
   outline: 0px none !important;
   color: #fff !important;
 }
+.modal #new-wallet {
+  margin-bottom: 10px;
+}
 .modal .browse-btn {
-  float: left;
+  display: inline-block;
   margin: 0 0 10px;
 }
 .modal .form-group {
@@ -98,7 +100,7 @@
 .modal label {
   width: 100%;
   text-transform: capitalize;
-  font-size: 14px;
+  font-size: 15px;
   margin-bottom: 0;
 }
 .modal textarea {
@@ -108,23 +110,18 @@
   border-radius: 5px;
   padding: 5px 10px;
   margin: 0;
-  font-size: 14px;
+  font-size: 15px;
   background: url(../images/input-bg.png) repeat-y top left;
   background-size: 100% 100%;
   color: #fff;
   width: 100%;
+  text-align: center;
   max-height: 90px;
   transition: all ease 0.3s;
   -o-transition: all ease 0.3s;
   -moz-transition: all ease 0.3s;
   -webkit-transition: all ease 0.3s;
   resize: none;
-  -webkit-touch-callout: initial /* iOS Safari */
-  -webkit-user-select: initial; /* Safari */
-  -khtml-user-select: initial; /* Konqueror HTML */
-  -moz-user-select: initial; /* Firefox */
-  -ms-user-select: initial; /* Internet Explorer/Edge */
-  user-select: initial; /* Non-prefixed version, currently supported by Chrome and Opera */
 }
 .modal textarea:hover,
 .modal textarea:active,
@@ -138,68 +135,93 @@
 .modal input::-webkit-input-placeholder { /* Chrome/Opera/Safari */
   opacity: 1;
   color: #fff;
-  font-size: 14px;
-  text-align: left;
+  font-size: 15px;
+  text-align: center;
 }
 .modal textarea::-moz-placeholder,
 .modal input::-moz-placeholder { /* Firefox 19+ */
   opacity: 1;
   color: #fff;
-  font-size: 14px;
-  text-align: left;
+  font-size: 15px;
+  text-align: center;
 }
 .modal textarea:-moz-placeholder,
 .modal input:-moz-placeholder { /* Firefox 18- */
   opacity: 1;
   color: #fff;
-  font-size: 14px;
-  text-align: left;
+  font-size: 15px;
+  text-align: center;
 }
 .modal textarea:-ms-input-placeholder,
 .modal input:-ms-input-placeholder { /* IE 10+ */
   opacity: 1;
   color: #fff;
-  font-size: 14px;
-  text-align: left;
+  font-size: 15px;
+  text-align: center;
 }
 .modal input {
   display: inline-block;
   border: 0px none;
   border-radius: 5px;
   padding: 5px 10px;
-  margin: 0 0 8px;
-  font-size: 14px;
+  margin: 0 0 15px;
+  font-size: 15px;
   background: url(../images/input-bg.png) repeat-y top left;
   background-size: 100% 100%;
   color: #fff;
   width: 100%;
   max-height: 90px;
+  text-align: center;
   transition: all ease 0.3s;
   -o-transition: all ease 0.3s;
   -moz-transition: all ease 0.3s;
   -webkit-transition: all ease 0.3s;
-  -webkit-touch-callout: initial /* iOS Safari */
-  -webkit-user-select: initial; /* Safari */
-  -khtml-user-select: initial; /* Konqueror HTML */
-  -moz-user-select: initial; /* Firefox */
-  -ms-user-select: initial; /* Internet Explorer/Edge */
-  user-select: initial; /* Non-prefixed version, currently supported by Chrome and Opera */
 }
-.modal input.yellow-field {
-  background: rgba(221, 201, 144, .6);
-  border: 2px solid rgba(221, 201, 144, .8);
+.modal #filepath {
+  background: transparent;
+  padding: 5px 10px 5px 0;
+}
+.modal #filepath:hover,
+.modal #filepath:focus {
+  box-shadow: none !important;
+}
+.modal .yellow-field {
+  background: rgba(223, 201, 131, 0.5);
+  border: 2px solid #dfc983;
+  text-align: left;
+  margin: 0 0 10px;
+  border-radius: 6px;
+  padding: 4px 10px 3px;
+  transition: all ease 0.3s;
+  -o-transition: all ease 0.3s;
+  -moz-transition: all ease 0.3s;
+  -webkit-transition: all ease 0.3s;
 }
 .modal input.yellow-field:hover,
 .modal input.yellow-field:focus {
   box-shadow: 0 0 25px 0 rgba(255, 214, 22, 0.8) !important;
 }
-.modal input.green-field {
-  background: rgba(14, 200, 193, .65);
-  border: 2px solid rgba(14, 200, 193, .95);
+.modal .green-field {
+  background: rgba(14, 200, 193, 0.5);
+  border: 2px solid #0ec8c1;
+  text-align: left;
+  margin: 0 0 10px;
+  border-radius: 6px;
+  padding: 4px 10px 3px;
+  transition: all ease 0.3s;
+  -o-transition: all ease 0.3s;
+  -moz-transition: all ease 0.3s;
+  -webkit-transition: all ease 0.3s;
 }
 .modal input.green-field:hover,
 .modal input.green-field:active {
   box-shadow: 0 0 30px 0 rgba(14, 200, 193, .5) !important;
+}
+.modal .green-field span,
+.modal .yellow-field span {
+  font-size: 14px;
+  line-height: 1.2;
+  margin-right: 15px;
 }
 .modal .close {
   position: absolute;
@@ -307,12 +329,12 @@
 .createNewWalletModal form label,
 .openFromExistingModal form label,
 .openCreateFromKeysModal form label {
-  text-align: left;
+  text-align: center;
 }
 .createNewWalletModal form button,
 .openFromExistingModal form button,
 .openCreateFromKeysModal form button {
-  margin-top: 10px;
+  margin-bottom: 5px;
 }
 
 .openCreateFromKeysModal .form-wrap {
@@ -323,4 +345,189 @@
 .openCreateFromKeysModal .form-group {
   margin-top: 0;
   width: calc(50% - 7.5px);
+}
+
+/* Send Modal */
+.sendModal {
+  border-radius: 8px;
+  color: #fff;
+  text-transform: uppercase;
+  font-size: 17px;
+  visibility: hidden;
+  opacity: 0;
+  transition: all ease 0.3s;
+  -o-transition: all ease 0.3s;
+  -moz-transition: all ease 0.3s;
+  -webkit-transition: all ease 0.3s;
+  margin: auto;
+}
+.sendModal.active {
+  visibility: visible;
+  opacity: 1;
+}
+.sendModal h3 {
+  margin: 10px 0 8px;
+}
+.sendModal #available-wrap {
+  position: absolute;
+  left: 15px;
+  top: 15px;
+}
+.sendModal #available-wrap span {
+  margin-right: 15px;
+}
+.sendModal p {
+  background: transparent;
+  border: 0px none;
+  margin-right: 0;
+  font-size: 17px;
+  margin-bottom: 0;
+  text-transform: initial;
+  line-height: 1.2;
+  text-align: center;
+}
+.sendModal .form-group-wrap {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.sendModal .form-group-wrap .form-group {
+  margin-top: 0;
+  width: calc(50% - 7.5px);
+}
+.sendModal .form-group {
+  display: flex;
+  align-items: center;
+  position: relative;
+  min-height: 31px;
+  margin-bottom: 16px;
+}
+.sendModal form {
+  margin-top: 20px;
+}
+.sendModal label {
+  width: 200px;
+  text-align: left;
+}
+.sendModal .btn {
+  margin: 0;
+}
+.sendModal input {
+  width: 65%;
+  margin: 0;
+  text-align: left;
+}
+.sendModal textarea {
+  width: calc(100% - 200px);
+  margin: 0;
+  text-align: left;
+}
+.sendModal input:hover,
+.sendModal input:active,
+.sendModal input:focus {
+  -webkit-box-shadow: 0 0 30px 0 rgba(0, 199, 236, 0.5) !important;
+  box-shadow: 0 0 30px 0 rgba(0, 199, 236, 0.5) !important;
+}
+.sendModal .form-group .question-wrap {
+  position: absolute;
+  top: -1px;
+  right: 0;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #60c9e6;
+  border-radius: 50%;
+  transition: all ease 0.3s;
+  -o-transition: all ease 0.3s;
+  -moz-transition: all ease 0.3s;
+  -webkit-transition: all ease 0.3s;
+}
+.sendModal .form-group .question-wrap:hover {
+  -webkit-box-shadow: 0 0 30px 0 rgba(0, 199, 236, 0.5) !important;
+  box-shadow: 0 0 30px 0 rgba(0, 199, 236, 0.5) !important;
+  cursor: pointer;
+}
+.sendModal .form-group .question-wrap:active {
+  -webkit-box-shadow: 0 0 30px 0 rgba(0, 199, 236, 0.5) !important;
+  box-shadow: 0 0 30px 0 rgba(0, 199, 236, 0.5) !important;
+}
+.sendModal .form-group .question-wrap:focus {
+  outline: 0px none;
+}
+.sendModal #mixin-label {
+  position: relative;
+  z-index: initial;
+  text-align: left;
+  width: 250px;
+}
+.sendModal .form-group .question-wrap span {
+  position: relative;
+  top: -7px;
+  left: -0px;
+  color: #fff;
+  font-size: 19px;
+  transition: all ease 0.3s;
+  -o-transition: all ease 0.3s;
+  -moz-transition: all ease 0.3s;
+  -webkit-transition: all ease 0.3s;
+  font-family: "Atrament", Helvetica, Arial, sans-serif;
+  pointer-events: none;
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+}
+.sendModal select {
+  /* background: rgba(255, 255, 255, 0.24) url(../images/select-bg.png) no-repeat top 10px right 3px / contain; */
+  background: url(../images/input-bg.png) repeat-y top left;
+  background-size: 100% 100%;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  width: 65%;
+  left: 200px;
+  top: 0;
+  text-align-last: left;
+  border: 0px none;
+  border-radius: 5px !important;
+  display: inline-block;
+  font-size: 15px;
+  position: absolute;
+  height: 31px;
+  z-index: 2;
+  margin: 0;
+  padding: 0 10px;
+  color: #fff;
+  -webkit-appearance: none;
+  -webkit-border-radius: 0px;
+  transition: all ease 0.3s;
+  -o-transition: all ease 0.3s;
+  -moz-transition: all ease 0.3s;
+  -webkit-transition: all ease 0.3s;
+}
+.sendModal select:hover {
+  -webkit-box-shadow: 0 0 30px 0 rgba(0, 199, 236, 0.5) !important;
+  box-shadow: 0 0 30px 0 rgba(0, 199, 236, 0.5) !important;
+}
+.sendModal select:focus {
+  outline: 0px none;
+}
+.sendModal textarea::-webkit-input-placeholder,
+.sendModal input::-webkit-input-placeholder {
+  /* Chrome/Opera/Safari */
+  text-align: left;
+}
+.sendModal textarea::-moz-placeholder,
+.sendModal input::-moz-placeholder {
+  /* Firefox 19+ */
+  text-align: left;
+}
+.sendModal textarea:-moz-placeholder,
+.sendModal input:-moz-placeholder {
+  /* Firefox 18- */
+  text-align: left;
+}
+.sendModal textarea:-ms-input-placeholder,
+.sendModal input:-ms-input-placeholder {
+  /* IE 10+ */
+  text-align: left;
 }

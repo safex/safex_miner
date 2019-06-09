@@ -1,6 +1,8 @@
 import React from "react";
 import { addClass } from "../../utils/utils";
 import { CopyToClipboard } from "react-copy-to-clipboard";
+import ReactTooltip from "react-tooltip";
+
 const fileDownload = window.require("js-file-download");
 const sa = window.require("safex-addressjs");
 
@@ -12,7 +14,8 @@ export default class Modal extends React.Component {
             new_wallet_generated: false,
             spendkey_sec: "",
             viewkey_sec: "",
-            exported: false
+            exported: false,
+            mixin: 6
         };
 
         this.newWallet = this.newWallet.bind(this);
@@ -39,20 +42,49 @@ export default class Modal extends React.Component {
         var wallet_data = JSON.parse(localStorage.getItem("wallet"));
         var keys = "";
 
-        keys += "Public address: " + wallet_data.public_addr + "\n";
-        keys += "Spendkey " + "\n";
-        keys += "pub: " + wallet_data.spend.pub + "\n";
-        keys += "sec: " + wallet_data.spend.sec + "\n";
-        keys += "Viewkey " + "\n";
-        keys += "pub: " + wallet_data.view.pub + "\n";
-        keys += "sec: " + wallet_data.view.sec + "\n";
+        keys +=
+          "Public address: " +
+          wallet_data.public_addr +
+          "\n" +
+          "Spendkey " +
+          "\n" +
+          "pub: " +
+          wallet_data.spend.pub +
+          "\n" +
+          "sec: " +
+          wallet_data.spend.sec +
+          "\n" +
+          "Viewkey " +
+          "\n" +
+          "pub: " +
+          wallet_data.view.pub +
+          "\n" +
+          "sec: " +
+          wallet_data.view.sec +
+          "\n";
         var date = Date.now();
 
         fileDownload(keys, date + "unsafex.txt");
     }
 
+    inputOnChange = (target, e) => {
+      this.setState({
+        [target]: e.target.value
+      });
+    };
+
     render() {
-        let modal;
+      let modal;
+      let mixinArray = [];
+
+      for (var i = 0; i <= 8; i++) {
+        mixinArray.push(
+          <option key={i} value={i}>
+            {i}
+          </option>
+        );
+      }
+      mixinArray.reverse();
 
         if (this.props.newWalletModal) {
             modal = (
@@ -217,11 +249,11 @@ export default class Modal extends React.Component {
                                 this.props.openWalletFile(e);
                             }}
                         >
-                            <label htmlFor="path">Wallet File</label>
+                            <label htmlFor="path">Wallet File:</label>
                             <input
                                 name="filepath"
-                                value={this.props.filepath}
-                                placeholder="Wallet File Path"
+                                value={this.props.filepath ? this.props.filepath : "N/A"}
+                                id="filepath"
                                 readOnly
                             />
 
@@ -454,12 +486,16 @@ export default class Modal extends React.Component {
         if (this.props.balanceModalActive) {
           modal = (
             <div
-              className={`balance-modal ${this.props.balanceModalActive ? "active" : ""}`}
+              className={`balance-modal ${
+                this.props.balanceModalActive ? "active" : ""
+              }`}
             >
               <span
                 className="close"
                 onClick={this.props.closeModal}
-                disabled={this.props.wallet.wallet_sync ? "" : "disabled"}
+                disabled={
+                  this.props.wallet.wallet_sync ? "" : "disabled"
+                }
               >
                 X
               </span>
@@ -480,13 +516,17 @@ export default class Modal extends React.Component {
                           ? "connected"
                           : ""
                       }`}
-                      title="Status"
+                      data-tip
+                      data-for="status-tooltip"
                     >
-                      <img src={
-                        this.props.wallet.wallet_connected
-                        ? "images/connected-blue.png"
-                        : "images/connected-white.png"} 
-                        alt="connected" />
+                      <img
+                        src={
+                          this.props.wallet.wallet_connected
+                            ? "images/connected-blue.png"
+                            : "images/connected-white.png"
+                        }
+                        alt="connected"
+                      />
                       <p>
                         {this.props.wallet.wallet_connected ? (
                           <span>Connected</span>
@@ -495,61 +535,88 @@ export default class Modal extends React.Component {
                         )}
                       </p>
                     </button>
+                    <ReactTooltip place="right" id="status-tooltip">
+                      <p>Status</p>
+                    </ReactTooltip>
                     <button
                       className="blockheight"
-                      title="Blockchain Height"
+                      data-tip
+                      data-for="blockchain-tooltip"
                     >
                       <img src="images/blocks.png" alt="blocks" />
-                      <span>{this.props.wallet.blockchain_height}</span>
+                      <span>
+                        {this.props.wallet.blockchain_height}
+                      </span>
                     </button>
+                    <ReactTooltip id="blockchain-tooltip">
+                      <p>Blockchain Height</p>
+                    </ReactTooltip>
                     <button
                       className="button-shine refresh"
                       onClick={this.props.startRescanBalance}
-                      title="Rescan blockchain from scratch"
+                      data-tip
+                      data-for="rescan-tooltip"
                     >
-                      <img src="images/refresh.png" alt="refresh" />
+                      <img src="images/refresh.png" alt="rescan" />
                     </button>
+                    <ReactTooltip place="right" id="rescan-tooltip">
+                      <p><span className="blue-text">Rescan</span> blockchain from the begining.</p>
+                      <p>This is performed when your wallet file is created.</p>
+                      <p>Use this if you suspect your wallet file is corrupted or missing data.</p>
+                      <p>It may take a lot of time to complete.</p>
+                    </ReactTooltip>
                   </div>
-                  <label htmlFor="selected_balance_address">
-                    Safex Wallet Address
-                  </label>
-                  <textarea
-                    placeholder="Safex Wallet Address"
-                    name="selected_balance_address"
-                    defaultValue={this.props.wallet.address}
-                    rows="2"
-                    readOnly
-                  />
-
+                  
+                  <div className="address-group">
+                    <label htmlFor="selected_balance_address" id="wallet-label">
+                      Safex Address
+                    </label>
+                    <textarea
+                      placeholder="Safex Wallet Address"
+                      name="selected_balance_address"
+                      defaultValue={this.props.wallet.address}
+                      rows="2"
+                      readOnly
+                    />
+                    <div
+                      data-tip
+                      data-for="address-tooptip"
+                      className="button-shine question-wrap"
+                    >
+                      <span>?</span>
+                    </div>
+                    <ReactTooltip place="left" id="address-tooptip">
+                      <p>This is <span className="yellow-text">Public Address</span> of your wallet.</p>
+                      <p>Public Address starts with Safex and contains between <span className="yellow-text">95 and 105</span> characters.</p>
+                      <p>This is address where you can receive <span className="yellow-text">Safex Cash (SFX)</span> or <span className="yellow-text">Safex Tokens (SFT)</span>.</p>
+                    </ReactTooltip>
+                  </div>
+                  
+                  <ReactTooltip id="address-tooptip">
+                    <p>This is <span className="blue-text">Public Address</span> of your wallet.</p>
+                    <p>Public Address starts with Safex and contains between <span className="blue-text">95</span> and <span className="blue-text">105</span> characters.</p>
+                    <p>This is address where you can receive <span className="blue-text">Safex Cash (SFX)</span> or <span className="blue-text">Safex Tokens (SFT)</span>.</p>
+                    <p>This is address where all your <span className="blue-text">Safex Cash (SFX)</span> you mined will be available.</p>
+                  </ReactTooltip>
                   <div className="groups-wrap">
                     <div className="form-group">
                       <label htmlFor="balance">
-                        Pending Safex Cash
+                        Pending Cash
                       </label>
-                      <input
-                        type="text"
-                        className="yellow-field"
-                        placeholder="Balance"
-                        name="balance"
-                        value={this.props.wallet.balance}
-                        onChange={this.sendAmountOnChange}
-                        readOnly
-                      />
-                      <label htmlFor="unlocked_balance">
-                        Available Safex Cash
-                      </label>
-                      <input
-                        type="text"
-                        className="green-field"
-                        placeholder="Unlocked balance"
-                        name="unlocked_balance"
-                        value={this.props.wallet.unlocked_balance}
-                        onChange={this.sendAmountOnChange}
-                        readOnly
-                      />
+                      <div className="yellow-field">
+                        <span>SFX {this.props.wallet.balance}</span>
+                      </div>
+                      <label htmlFor="unlocked_balance">Available Cash</label>
+                      <div className="green-field">
+                        <span>SFX {this.props.wallet.unlocked_balance}</span>
+                        <span>{this.props.sfxPrice ? "$" + parseFloat(this.props.wallet.unlocked_balance * this.props.sfxPrice).toFixed(2) : "Loading..."}</span>
+                      </div>
                       <button
                         className="button-shine"
-                        onClick={this.props.setOpenSendPopup.bind(this, 0)}
+                        onClick={this.props.setOpenSendPopup.bind(
+                          this,
+                          0
+                        )}
                       >
                         Send Cash
                       </button>
@@ -557,31 +624,24 @@ export default class Modal extends React.Component {
 
                     <div className="form-group">
                       <label htmlFor="tokens">
-                        Pending Safex Tokens
+                        Pending Tokens
                       </label>
-                      <input
-                        type="text"
-                        className="yellow-field"
-                        placeholder="Tokens"
-                        value={this.props.wallet.tokens}
-                        onChange={this.sendAmountOnChange}
-                        readOnly
-                      />
+                      <div className="yellow-field">
+                        <span>SFT {this.props.wallet.tokens}</span>
+                      </div>
                       <label htmlFor="unlocked_tokens">
-                        Available Safex Tokens
+                        Available Tokens
                       </label>
-                      <input
-                        className="green-field"
-                        type="text"
-                        placeholder="Unlocked Tokens"
-                        name="unlocked_tokens"
-                        value={this.props.wallet.unlocked_tokens}
-                        onChange={this.sendAmountOnChange}
-                        readOnly
-                      />
+                      <div className="green-field">
+                        <span>SFT {this.props.wallet.unlocked_tokens}</span>
+                        <span>{this.props.sftPrice ? "$" + parseFloat(this.props.wallet.unlocked_tokens * this.props.sftPrice).toFixed(2) : "Loading..."}</span>
+                      </div>
                       <button
                         className="button-shine"
-                        onClick={this.props.setOpenSendPopup.bind(this, 1)}
+                        onClick={this.props.setOpenSendPopup.bind(
+                          this,
+                          1
+                        )}
                       >
                         Send Tokens
                       </button>
@@ -596,62 +656,145 @@ export default class Modal extends React.Component {
             </div>
           );
         }
-        if (this.props.sendModal) {
-          modal = (
-            <div
-              className={`sendModal ${
-                this.props.sendModal ? "active" : ""
-              }`}
-            >
-              <div className="sendModalInner">
-                <span
-                  className="close"
-                  onClick={this.props.closeModal}
-                >
-                  X
-                </span>
-                {this.props.send_cash_or_token === 0 ? (
-                  <h3>Send Cash</h3>
-                ) : (
-                  <h3>Send Tokens</h3>
-                )}
-                <form
-                  onSubmit={e => {
-                    this.props.sendCashOrToken(
-                      e,
-                      this.props.send_cash_or_token
-                    );
-                  }}
-                >
-                  <label htmlFor="send_to">Destination</label>
+      if (this.props.sendModal) {
+        modal = (
+          <div className={`sendModal ${this.props.sendModal ? "active" : ""}`}>
+            <div className="sendModalInner">
+              <span className="close" onClick={this.props.setCloseSendPopup}>
+                X
+            </span>
+              <h3>
+                {this.props.send_cash_or_token === 0
+                  ? "Send Cash"
+                  : "Send Tokens"}
+              </h3>
+              <div id="available-wrap">
+                <span>{this.props.send_cash_or_token === 0 ? "SFX " + this.props.wallet.unlocked_balance : "SFT " + this.props.wallet.unlocked_tokens}</span>
+                <span>{this.props.send_cash_or_token === 0
+                  ?
+                  "$" + parseFloat(this.props.wallet.unlocked_balance * this.props.sfxPrice).toFixed(2)
+                  :
+                  "$" + parseFloat(this.props.wallet.unlocked_tokens * this.props.sftPrice).toFixed(2)
+                }</span>
+              </div>
+              <form
+                onSubmit={e => {
+                  this.props.sendCashOrToken(e, this.props.send_cash_or_token);
+                }}
+              >
+                <div className="form-group">
+                  <label htmlFor="send_to">Destination Address</label>
                   <textarea
                     name="send_to"
                     placeholder="Enter Destination Address"
                     rows="2"
                   />
+                </div>
 
+                <div className="form-group">
                   <label htmlFor="amount">Amount</label>
                   <input name="amount" placeholder="Enter Amount" />
+                  {this.props.send_cash_or_token === 0 ? (
+                    <div
+                      data-tip
+                      data-for="cash-amount-tooptip"
+                      className="button-shine question-wrap"
+                    >
+                      <span>?</span>
+                    </div>
+                  ) : (
+                      <div
+                        data-tip
+                        data-for="token-amount-tooptip"
+                        className="button-shine question-wrap"
+                      >
+                        <span>?</span>
+                      </div>
+                    )}
+                  <ReactTooltip id="cash-amount-tooptip">
+                    <p><span className="blue-text">Safex Cash fee</span> will be added to sending amount.</p>
+                  </ReactTooltip>
+                  <ReactTooltip id="token-amount-tooptip">
+                    <p className="mb-10">Token transaction does not accept decimal values.</p>
+                    <p>Token transaction requires <span className="blue-text">Safex Cash fee</span>.</p>
+                  </ReactTooltip>
+                </div>
 
-                  <label htmlFor="paymentid">
-                    (Optional) Payment ID
-                  </label>
+                <div className="form-group">
+                  <label id="mixin-label" htmlFor="mixin">
+                    Transaction Mixin (Optional)
+                </label>
+                  <select
+                    name="mixin"
+                    value={this.state.mixin}
+                    onChange={this.inputOnChange.bind(this, "mixin")}
+                  >
+                    {mixinArray}
+                  </select>
+                  <div
+                    data-tip
+                    data-for="mixin-tooptip"
+                    className="button-shine question-wrap"
+                    id="mixin-question-wrap"
+                  >
+                    <span>?</span>
+                  </div>
+                  <ReactTooltip id="mixin-tooptip">
+                    <p><span className="blue-text">Transaction Mixin</span>{" "} determines how many outputs transaction is going to have.</p>
+                    <p>Lower mixin will result in smaller fees. For large transactions we recommend</p>
+                    <p className="mb-10">lowering the transaction mixin. Default network mixin is{" "}
+                      <span className="blue-text">6</span>.
+                  </p>
+                    <p className="blue-text">
+                      *Consistent use of low ring sizes may affect your traceability.
+                  </p>
+                  </ReactTooltip>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="paymentid">Payment ID (Optional)</label>
                   <input
                     name="paymentid"
-                    placeholder="(optional) payment id"
+                    placeholder="Enter Payment ID"
                   />
-                  <button
-                    className="btn button-shine"
-                    type="submit"
-                    disabled={this.props.txBeingSent ? "disabled" : ""}
+                  <div
+                    data-tip
+                    data-for="paymentid-tooptip"
+                    className="button-shine question-wrap"
                   >
-                    Send
-                  </button>
-                </form>
-              </div>
+                    <span>?</span>
+                  </div>
+                  <ReactTooltip id="paymentid-tooptip">
+                    <p><span className="blue-text">Payment ID</span> is additional reference number attached to the transaction.</p>
+                    <p>It is given by exchanges and web shops to differentiate and track</p>
+                    <p className="mb-10">particular deposits and purchases.</p>
+                    <p className="mb-10">
+                      <span className="blue-text">Payment ID</span> format should be <span className="blue-text">16 or 64 digit Hex</span> character string.
+                  </p>
+                    <p>Payment ID is <span className="blue-text">not required</span> for regular user transactions.</p>
+                  </ReactTooltip>
+                </div>
+
+                <ReactTooltip id="payment-tooptip">
+                  <p><span className="blue-text">Payment ID</span> is additional reference number attached to the transaction.</p>
+                  <p>It is given by exchanges and web shops to differentiate and track</p>
+                  <p className="mb-10">particular deposits and purchases.</p>
+                  <p><span className="blue-text">Payment ID</span> format should be <span className="blue-text">16 or 64 digit Hex</span> character string.</p>
+                  <p>Payment ID is <span className="blue-text">not required</span> for regular user transactions.</p>
+                </ReactTooltip>
+
+                <button
+                  className="btn button-shine"
+                  type="submit"
+                  disabled={this.props.txBeingSent ? "disabled" : ""}
+                >
+                  Send
+              </button>
+              </form>
             </div>
-          );
-        }
+          </div>
+        );
+      }
         if (this.props.alert) {
             modal = (
                 <div
@@ -660,7 +803,7 @@ export default class Modal extends React.Component {
                     }`}
                 >
                     <div className="mainAlertPopupInner">
-                        <p>{this.props.alertText}</p>
+                        <p className={this.props.alertCloseDisabled ? "disabled" : ""}>{this.props.alertText}</p>
                         {this.props.alertCloseDisabled ? (
                             ""
                         ) : (

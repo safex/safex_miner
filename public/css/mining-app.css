@@ -7,8 +7,9 @@
   align-items: center;
 }
 .mining-app-inner {
+  position: relative;
   width: 100%;
-  height: 450px;
+  height: 500px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -46,7 +47,7 @@
   animation-delay: .3s;
 }
 .btns-wrap {
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   text-align: center;
 }
 .instructions-btn {
@@ -60,17 +61,21 @@
   top: 4px;
 }
 
+.button-wrap {
+  padding: 0 0 0 15px;
+  display: inline-block;
+}
+.button-wrap:first-of-type {
+  padding: 0;
+}
 .modal-btn {
-  padding: 0 0 0 12px;
-  z-index: 3;
+  position: relative;
   background-color: transparent;
   border: 0px;
+  padding: 0;
   -webkit-transition: all 0.2s ease-in;
   -moz-transition: all 0.2s ease-in;
   transition: all 0.2s ease-in;
-}
-.modal-btn:first-of-type {
-  padding: 0;
 }
 .modal-btn:hover {
   cursor: pointer;
@@ -78,6 +83,12 @@
 }
 .modal-btn:active {
   box-shadow: none !important;
+}
+.button-wrap .modal-btn span {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
 }
 .modal-btn img {
   max-height: 23px;
@@ -103,10 +114,20 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 12px;
+  margin-bottom: 15px;
+}
+#address-inner {
+  width: calc(100% - 390px);
+  display: inline-block;
+  overflow: hidden;
+  position: absolute;
+  left: 197px;
+  z-index: 1;
+  padding: 15px;
 }
 .address-wrap input {
-  width: calc(100% - 420px);
+  width: 100%;
+  text-align: center;
   z-index: 2;
   display: inline-block;
   border: 0px none;
@@ -115,9 +136,6 @@
   background: url(../images/input-bg.png) repeat-y top left;
   background-size: 100% 100%;
   color: #fff;
-  position: absolute;
-  left: 212px;
-  text-align: center;
 }
 .address-wrap img {
   width: 272px;
@@ -127,7 +145,7 @@
   -o-transition: all ease 0.3s;
   -moz-transition: all ease 0.3s;
   -webkit-transition: all ease 0.3s;
-  -webkit-touch-callout: initial /* iOS Safari */
+  -webkit-touch-callout: initial; /* iOS Safari */
   -webkit-user-select: initial; /* Safari */
   -khtml-user-select: initial; /* Konqueror HTML */
   -moz-user-select: initial; /* Firefox */
@@ -169,6 +187,9 @@
   font-size: 11px;
   text-transform: uppercase;
 }
+#select-inner {
+  display: inline-block;
+}
 .main form .pool-url {
   background: rgba(10, 26, 45, .2);
   padding: 7px 10px 6px;
@@ -181,6 +202,12 @@
   border: 1px solid rgba(255,255,255,.85);
   text-align-last: center;
   height: 30px;
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
 }
 .main form .pool-url:hover {
   cursor: pointer;
@@ -188,10 +215,11 @@
 .main form .pool-url:focus {
   outline: none;
 }
-.main form .pool-url[disabled] {
+.main form .pool-url.disabled {
+  pointer-events: none !important;
   color: rgba(255,255,255,.7);
 }
-.main form .pool-url[disabled]:hover {
+.main form .pool-url.disabled:hover {
   box-shadow: none !important;
   cursor: initial;
 }
@@ -199,7 +227,7 @@
   display: flex;
   flex-direction: row;
   justify-content: center;
-  padding: 12px 0 20px;
+  padding: 20px 0;
 }
 .custom-checkbox input[type=checkbox]{
   display: none;
@@ -248,6 +276,12 @@
   -o-transition: all ease 0.3s;
   -moz-transition: all ease 0.3s;
   -webkit-transition: all ease 0.3s;
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
 }
 .main form #cpuUsage:hover {
   cursor: pointer;
@@ -257,10 +291,11 @@
   outline: none;
   border: 1px solid rgba(255,255,255,.85);
 }
-.main form #cpuUsage[disabled] {
+.main form #cpuUsage.disabled {
+  pointer-events: none !important;
   color: rgba(255,255,255,.7);
 }
-.main form #cpuUsage[disabled]:hover {
+.main form #cpuUsage.disabled:hover {
   box-shadow: none !important;
   cursor: initial;
 }
@@ -297,6 +332,12 @@
   -webkit-transition: all 0.2s ease-in;
   -moz-transition: all 0.2s ease-in;
   transition: all 0.2s ease-in;
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
 }
 .submit:hover {
   box-shadow: 0 0 30px 0 rgba(0, 199, 236, 0.5) !important;
@@ -346,7 +387,9 @@
   align-items: center;
   justify-content: center;
 }
-.white-text {
+.block .white-text,
+.hashrate .white-text,
+.balance .white-text {
   font-size: 14px;
   color: #fff;
   margin-bottom: 0;
@@ -357,7 +400,9 @@
   width: 145px;
   text-align: left;
 }
-.blue-text {
+.block .blue-text,
+.hashrate .blue-text,
+.balance .blue-text {
   font-size: 14px;
   line-height: 1;
   color: #00deff;
@@ -369,22 +414,28 @@
 }
 
 /* Footer */
-.main footer {
-  position: relative;
+footer {
+  position: absolute;
   width: 100%;
+  overflow: hidden;
+  min-height: 38px;
+  bottom: 15px;
 }
-.main footer.fadeIn {
+footer.fadeIn {
   animation-delay: 0.8s;  
 }
-.main footer a {
+footer button {
   display: inline-block;
   position: absolute;
   right: 15px;
-  bottom: -35px;
+  bottom: 0;
   text-align: right;
   z-index: 2;
+  background: transparent;
+  border: 0px none;
+  padding: 0;
 }
-.main footer p {
+footer p {
   font-family: "Rift Soft", Helvetica, Arial, sans-serif;
   color: #1caacb;
   text-transform: uppercase;
@@ -394,7 +445,7 @@
   position: relative;
   right: -5px;
 }
-.main footer h3 {
+footer h3 {
   font-family: "Rift Soft", Helvetica, Arial, sans-serif;
   color: #1caacb;
   margin: 0;
@@ -404,13 +455,13 @@
   right: -5px;
   font-weight: 600;
 }
-.main footer a:hover {
+footer button:hover {
   cursor: pointer;
 }
-.main footer a:hover img {
+footer button:hover img {
   opacity: .9;
 }
-.main footer img {
+footer img {
   width: 130px;
   opacity: .6;
   transition: all ease 0.3s;

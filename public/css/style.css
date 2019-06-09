@@ -28,14 +28,13 @@
   font-style: normal;
   font-weight: 400;
 }
-* {
-  -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none; /* Safari */
-  -khtml-user-select: none; /* Konqueror HTML */
-  -moz-user-select: none; /* Firefox */
-  -ms-user-select: none; /* Internet Explorer/Edge */
-  user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+@font-face {
+  font-family: "Atrament";
+  src: url("../fonts/Atrament-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
 }
+
 textarea, input:focus, button {
   outline-color: transparent;
   outline-style: none;
@@ -53,8 +52,61 @@ body{
   background-position: top center;
   font-family: "Avenir", Helvetica, Arial, sans-serif;
 }
-body img {
+.__react_component_tooltip {
+  background-color: rgba(0, 0, 0, 0.95) !important;
+  /* background: url(../images/modal-bg.png); */
+  background-size: 100% 100%;
+  border: 1px solid #60c9e6;
+  padding: 10px 21px 8px;
+  opacity: 1;
+}
+.__react_component_tooltip.type-dark.place-top:after {
+  border-top-color: #60c9e6 !important;
+}
+.__react_component_tooltip.type-dark.place-right:after {
+  border-right-color: #60c9e6 !important;
+}
+.__react_component_tooltip.type-dark.place-bottom:after {
+  border-bottom-color: #60c9e6 !important;
+}
+.__react_component_tooltip.type-dark.place-left:after {
+  border-left-color: #60c9e6 !important;
+}
+.__react_component_tooltip p {
+  font-size: 15px !important;
+  margin-bottom: 0px !important;
+  font-family: "Avenir", sans-serif !important;
+  color: #fff;
+  text-transform: initial !important;
+  letter-spacing: 0 !important;
+  right: 0 !important;
+  line-height: 1.2;
+  right: 0;
+}
+.__react_component_tooltip .blue-text {
+  color: #60c9e6;
+  font-weight: 600;
+  text-transform: initial !important;
+  margin-right: 0 !important;
+}
+.__react_component_tooltip .word-break {
+  word-break: break-word;
+  width: 470px;
+}
+.__react_component_tooltip .mb-10 {
+  margin-bottom: 10px !important;
+}
+.__react_component_tooltip.type-dark.place-top:after {
+  border-top-color: rgba(0, 0, 0, 0.95);
+}
+img {
   pointer-events: none;
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
 }
 .button-shine {
   position: relative;

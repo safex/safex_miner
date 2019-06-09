@@ -7,6 +7,9 @@
   font-size: 20px;
   text-transform: initial;
 }
+.balance-modal .wallet-exists {
+  padding: 10px 0 0;
+}
 .balance-modal h3.wallet-loaded-h3 {
   margin: 10px 0;
 }
@@ -16,8 +19,11 @@
   background: url(../images/input-bg.png) repeat-y top left;
   background-size: 100% 100%;
   padding: 9px 0 7px;
-  margin: 0;
+  margin: 30px 0;
   border-radius: 5px;
+}
+.balance-modal textarea {
+  text-align: left;
 }
 .balance-modal textarea::-webkit-input-placeholder,
 .balance-modal input::-webkit-input-placeholder {
@@ -120,7 +126,7 @@
 }
 .balance-modal .btns-wrap {
   position: absolute;
-  top: 15px;
+  top: 10px;
 }
 .balance-modal .btns-wrap button {
   padding: 7px 9px 7px;
@@ -185,4 +191,64 @@
   float: left;
   margin-top: 0;
   text-align: left;
+}
+.balance-modal .address-group {
+  display: flex;
+  align-items: center;
+  position: relative;
+  min-height: 31px;
+  margin-bottom: 16px;
+}
+.balance-modal .address-group .question-wrap {
+  position: absolute;
+  top: 8px;
+  right: 0;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #54BCD9;
+  border-radius: 50%;
+  transition: all ease 0.3s;
+  -o-transition: all ease 0.3s;
+  -moz-transition: all ease 0.3s;
+  -webkit-transition: all ease 0.3s;
+}
+.balance-modal .address-group .question-wrap:hover {
+  -webkit-box-shadow: 0 0 30px 0 rgba(0, 199, 236, 0.5) !important;
+  box-shadow: 0 0 30px 0 rgba(0, 199, 236, 0.5) !important;
+  cursor: pointer;
+}
+.balance-modal .address-group .question-wrap:active {
+  -webkit-box-shadow: 0 0 30px 0 rgba(0, 199, 236, 0.5) !important;
+  box-shadow: 0 0 30px 0 rgba(0, 199, 236, 0.5) !important;
+}
+.balance-modal .address-group .question-wrap:focus {
+  outline: 0px none;
+}
+.balance-modal #wallet-label {
+  position: relative;
+  z-index: initial;
+  text-align: left;
+  width: 110px;
+}
+.balance-modal .address-group textarea {
+  width: calc(100% - 160px);
+}
+.balance-modal .address-group .question-wrap span {
+  position: relative;
+  top: -7px;
+  left: -0px;
+  color: #fff;
+  font-size: 19px;
+  transition: all ease 0.3s;
+  -o-transition: all ease 0.3s;
+  -moz-transition: all ease 0.3s;
+  -webkit-transition: all ease 0.3s;
+  font-family: "Atrament", Helvetica, Arial, sans-serif;
+  pointer-events: none;
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
 }

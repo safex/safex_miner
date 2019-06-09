@@ -17,6 +17,9 @@
   visibility: visible;
   opacity: 1;
 }
+.balanceAlert p.disabled {
+  padding-right: 0;
+}
 .balanceAlert p {
   background: transparent;
   border: 0px none;
@@ -60,7 +63,7 @@
   text-transform: uppercase;
   font-size: 17px;
   visibility: hidden;
-  min-height: 286px;
+  min-height: 299px;
   opacity: 0;
   transition: all ease 0.3s;
   -o-transition: all ease 0.3s;
@@ -71,6 +74,17 @@
 .sendModal.active {
   visibility: visible;
   opacity: 1;
+}
+.sendModal h3 {
+  margin: 10px 0 15px;
+}
+.sendModal #available-wrap {
+  position: absolute;
+  left: 15px;
+  top: 15px;
+}
+.sendModal #available-wrap span {
+  margin-right: 15px;
 }
 .sendModal p {
   background: transparent;

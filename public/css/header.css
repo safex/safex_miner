@@ -5,14 +5,12 @@ header {
   z-index: 1;
   margin: 0px 0 35px;
   position: relative;
-  -webkit-app-region: drag;
-  padding: 25px 0 0;
+  padding: 40px 0 0;
 }
 header .win-buttons-wrap {
   position: absolute;
   right: 10px;
   top: 10px;
-  -webkit-app-region: no-drag;
 }
 header .win-buttons-wrap button {
   margin-left: 10px;
@@ -87,8 +85,14 @@ header p {
   color: #fff;
   position: absolute;
   top: 10px;
-  left: 15px;
+  right: 15px;
   margin-bottom: 0;
+  -webkit-touch-callout: initial; /* iOS Safari */
+  -webkit-user-select: initial; /* Safari */
+  -khtml-user-select: initial; /* Konqueror HTML */
+  -moz-user-select: initial; /* Firefox */
+  -ms-user-select: initial; /* Internet Explorer/Edge */
+  user-select: initial; /* Non-prefixed version, currently supported by Chrome and Opera */
 }
 header p.fadeIn {
   animation-delay: .8s;

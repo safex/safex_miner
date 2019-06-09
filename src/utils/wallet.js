@@ -52,11 +52,6 @@ function create_new_wallet(target, e) {
         target.setState({
           wallet_loaded: true,
           wallet_meta: wallet,
-          wallet: {
-            address: wallet.address(),
-            spend_key: wallet.secretSpendKey(),
-            view_key: wallet.secretViewKey()
-          },
           modal_close_disabled: false,
           mining_info: false
         });
@@ -65,6 +60,7 @@ function create_new_wallet(target, e) {
         console.log("wallet view private key  " + target.state.wallet.view_key);
         wallet.on("refreshed", () => {
           console.log("Wallet File successfully created!");
+          target.setWalletData();
           target.closeModal();
           wallet
             .store()
@@ -159,11 +155,6 @@ function create_new_wallet_from_keys(target, e) {
         target.setState({
           wallet_loaded: true,
           wallet_meta: wallet,
-          wallet: {
-            address: wallet.address(),
-            spend_key: wallet.secretSpendKey(),
-            view_key: wallet.secretViewKey()
-          },
           modal_close_disabled: false,
           mining_info: false
         });
@@ -173,6 +164,7 @@ function create_new_wallet_from_keys(target, e) {
         console.log("create_new_wallet_from_keys checkpoint 1");
         wallet.on("refreshed", () => {
           console.log("Wallet File successfully created!");
+          target.setWalletData();
           target.closeModal();
           wallet
             .store()
@@ -197,7 +189,7 @@ function open_from_wallet_file(target, e) {
   const pass = e.target.pass.value;
   let filepath = e.target.filepath.value;
 
-  if (filepath === "") {
+  if (filepath === "N/A") {
     target.setOpenAlert("Choose the wallet file");
     return false;
   }
@@ -217,7 +209,7 @@ function open_from_wallet_file(target, e) {
     network: env.NETWORK,
     daemonAddress: env.ADDRESS
   };
-  target.setOpenAlert("Please wait while your wallet file is loaded", true);
+  target.setOpenAlert("Please wait while your wallet file is loaded. Do not close the application until the process is complete. This may take some time, please be patient.", true);
   safex.openWallet(args)
     .then(wallet => {
       target.setState({
@@ -232,6 +224,7 @@ function open_from_wallet_file(target, e) {
           view_key: wallet.secretViewKey()
         }
       });
+      target.setWalletData();
       target.setState({
         modal: false
       });
