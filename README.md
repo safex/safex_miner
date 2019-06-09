@@ -4,8 +4,7 @@ Official repository for SAFEX 1 click cpu mining app.
 
 ## Releases
 
-You can download [CASH Wallet](https://github.com/safex/safex_miner/releases) on the github release page.
-
+You can download the latest release from (https://github.com/safex/safex_miner/releases).
 Available for Mac, Windows (64, 32) and Linux.
 
 ## Development
@@ -29,10 +28,7 @@ $ npm run dev
 #### Linux
 
 ```
-$ sudo apt update && sudo apt install build-essential cmake pkg-config \
-    libboost-all-dev libssl-dev libzmq3-dev libunbound-dev libminiupnpc-dev \
-    libunwind8-dev liblzma-dev libreadline6-dev libldns-dev libexpat1-dev \
-    libgtest-dev doxygen graphviz libpcsclite-dev
+$ sudo apt update && sudo apt install build-essential cmake pkg-config libboost-all-dev libssl-dev libzmq3-dev libunbound-dev libminiupnpc-dev libunwind8-dev liblzma-dev libreadline6-dev libldns-dev libexpat1-dev libgtest-dev doxygen graphviz libpcsclite-dev
 $ npm install
 $ ./node_modules/.bin/electron-rebuild
 $ npm run dev
