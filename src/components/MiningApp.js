@@ -50,12 +50,12 @@ export default class MiningApp extends React.Component {
       pool_url: "",
       mining_info: "",
       pools_list: [
-        "pool.safexnews.net:1111",
-        "safex.cool-pool.net:3333",
-        "safex.cryptominingpools.net:3333",
-        "minesfx.com:1111",
-        "safex.luckypool.io:3366",
-        "safex.xmining.pro:3333"
+        'pool.safexnews.net:1111',
+        'safex.cryptominingpools.net:3333',
+        'cryptokafa.com:1111',
+        'safex.cool-pool.net:3333',
+        'minesfx.com:1111',
+        'safex.luckypool.io:3366'
       ],
       jsonConfig: {
         algo: "cryptonight/2",
