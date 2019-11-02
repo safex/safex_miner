@@ -41,7 +41,7 @@
     "react-scripts": "^0.8.5"
   },
   "dependencies": {
-    "axios": "^0.16.2",
+    "axios": "^0.19.0",
     "electron-context-menu": "^0.9.1",
     "js-file-download": "^0.4.4",
     "node-xmrig-cpu": "git+https://github.com/atanmarko/node-xmrig.git",
